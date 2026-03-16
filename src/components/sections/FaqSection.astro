@@ -1,70 +1,87 @@
 ---
-const collapsedItems = Array.from({ length: 6 }).map(() => ({
-  question: "What is the minimum age to start?",
-}));
+// DATA
+import { faqSectionData as faqs } from "@/data/faqSectionData";
 
-const expandedItem = {
-  question: "What is the minimum age to start?",
-  answer:
-    "The minimum age to start driving school is 16 in the country of Canada. But you can start earlier and will handle the rest. We can practice in localities where the cops do not show up.",
-};
-
-const arrowDown = "https://www.figma.com/api/mcp/asset/356c3e95-d206-4772-a740-3b544b52eb97";
-const arrowUp = "https://www.figma.com/api/mcp/asset/9cffd050-ddd9-427c-b7c9-5cd0a06dccf7";
 ---
 
-<section class="bg-[color:var(--color-n-50)]">
+<section>
   <div class="mx-auto flex w-full max-w-[1536px] flex-col items-center gap-16 overflow-hidden px-5 py-[144px] lg:px-0">
     <div class="flex flex-col items-center gap-2.5">
-      <p class="text-[14px] font-bold uppercase tracking-[0.6px] text-[color:var(--color-blue-600)]">
+      <p class="text-[14px] font-bold uppercase tracking-[0.6px] text-blue-600">
         Got Questions ?
       </p>
       <h2
-        class="text-center text-[30px] font-bold leading-[1.25] text-[color:var(--color-n-800)] md:text-[40px] lg:text-[48px]"
+        class="text-center text-[30px] font-bold leading-[1.25] text-n-800 md:text-[40px] lg:text-[48px]"
       >
         Frequently Asked Questions
       </h2>
     </div>
 
     <div class="flex w-full max-w-[1280px] flex-col gap-4">
-      <div class="flex w-full flex-col overflow-hidden rounded-[24px] border border-[color:var(--color-n-200)] bg-[color:var(--color-n-50)] p-px lg:hidden">
-        <div class="flex items-center justify-between px-6 py-6">
-          <p class="text-[18px] font-semibold leading-6 text-[color:var(--color-n-900)]">
-            {expandedItem.question}
-          </p>
-          <img alt="" src={arrowUp} class="h-[7.4px] w-3 rotate-180" />
-        </div>
-        <div class="px-6 pb-5">
-          <p class="text-[16px] leading-5 text-[color:var(--color-n-800)]">
-            {expandedItem.answer}
-          </p>
-        </div>
-      </div>
-
-      {collapsedItems.map((item) => (
-        <div class="flex w-full flex-col overflow-hidden rounded-[24px] border border-[color:var(--color-n-200)] bg-[color:var(--color-n-50)] p-px">
-          <div class="flex items-center justify-between px-6 py-6">
-            <p class="text-[18px] font-semibold leading-6 text-[color:var(--color-n-900)]">
+      {faqs.map((item, index) => (
+        <div
+          class="faq-item flex w-full flex-col overflow-hidden rounded-[24px] border border-n-200  p-px"
+        >
+          <button
+            class="faq-trigger flex w-full items-center justify-between px-6 py-6 text-left">
+            <p class="text-[18px] font-semibold leading-6 text-n-900">
               {item.question}
             </p>
-            <img alt="" src={arrowDown} class="h-[7.4px] w-3" />
+            <img
+              src="/icons/dropdown.svg"
+              alt="toggle"
+              class="faq-arrow h-[12px] w-3 shrink-0 transition-transform duration-300"
+              style={"transform: rotate(180deg)"}
+            />
+          </button>
+          <div
+            class="faq-answer overflow-hidden transition-all duration-300"
+            style={index === 0 ? "max-height: 500px; opacity: 1;" : "max-height: 0px; opacity: 0;"}
+          >
+            <div class="px-6 pb-5">
+              <p class="text-[16px] leading-5 text-n-800">
+                {item.answer}
+              </p>
+            </div>
           </div>
         </div>
       ))}
-
-      <div class="hidden w-full flex-col overflow-hidden rounded-[24px] border border-[color:var(--color-n-200)] bg-[color:var(--color-n-50)] p-px lg:flex">
-        <div class="flex items-center justify-between px-6 py-6">
-          <p class="text-[18px] font-semibold leading-6 text-[color:var(--color-n-900)]">
-            {expandedItem.question}
-          </p>
-          <img alt="" src={arrowUp} class="h-[7.4px] w-3 rotate-180" />
-        </div>
-        <div class="px-6 pb-5">
-          <p class="text-[16px] leading-5 text-[color:var(--color-n-800)]">
-            {expandedItem.answer}
-          </p>
-        </div>
-      </div>
     </div>
   </div>
 </section>
+
+<script>
+  document.querySelectorAll<HTMLElement>(".faq-item").forEach((item) => {
+    const trigger = item.querySelector<HTMLButtonElement>(".faq-trigger");
+    const answer = item.querySelector<HTMLElement>(".faq-answer");
+    const arrow = item.querySelector<SVGElement>(".faq-arrow");
+
+    trigger?.addEventListener("click", () => {
+      const isOpen = item.dataset.open === "true";
+
+      if (isOpen) {
+        // Collapse
+        item.dataset.open = "false";
+        trigger.setAttribute("aria-expanded", "false");
+        if (answer) {
+          answer.style.maxHeight = "0px";
+          answer.style.opacity = "0";
+        }
+        if (arrow) {
+          (arrow as HTMLElement).style.transform = "";
+        }
+      } else {
+        // Expand
+        item.dataset.open = "true";
+        trigger.setAttribute("aria-expanded", "true");
+        if (answer) {
+          answer.style.maxHeight = "500px";
+          answer.style.opacity = "1";
+        }
+        if (arrow) {
+          (arrow as HTMLElement).style.transform = "rotate(180deg)";
+        }
+      }
+    });
+  });
+</script>

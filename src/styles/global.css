@@ -14,7 +14,7 @@ html {
 }
 
 body {
-  font-family: "Neometric", sans-serif;
+  font-family: "Poppins", sans-serif;
   margin: 0;
   padding: 0;
   min-height: 100vh;
@@ -96,8 +96,9 @@ body {
   --color-blue-900: #08335e;
   --color-blue-950: #031426;
 
- 
+
 }
+
 /* ===== COLOR VARIABLES - DARK MODE ===== */
 
 .dark {
@@ -114,7 +115,7 @@ body {
   --color-n-950: #ffffff;
 
   /* Blue Shades Dark Mode */
-  --color-blue-50: #031426; 
+  --color-blue-50: #031426;
   --color-blue-100: #08335e;
   --color-blue-200: #0b4784;
   --color-blue-300: #0e5caa;
