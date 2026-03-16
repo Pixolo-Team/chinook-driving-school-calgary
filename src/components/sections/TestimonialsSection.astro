@@ -35,7 +35,7 @@ const testimonials = [
         testimonials.map((testimonial) => (
           <div
             class:list={[
-              "relative overflow-hidden rounded-[32px]",
+              "relative overflow-hidden rounded-4xl",
               "w-full max-w-[384px] justify-self-center",
               testimonial.customReview
                 ? "bg-[color:var(--color-n-900)]"
@@ -45,7 +45,7 @@ const testimonials = [
             {testimonial.customReview && (
               <div class="absolute -left-[99px] -top-[4px] h-[409px] w-[613px]">
                 <img
-                  alt=""
+                  alt="Profile photo"
                   class="absolute inset-0 size-full object-cover"
                   src={imgShotOfAYoungBusinessmanWorkingOnAComputerInAnOffice1}
                 />
@@ -53,19 +53,19 @@ const testimonials = [
             )}
             <div
               class:list={[
-                "relative z-10 flex flex-col items-start gap-5 overflow-hidden rounded-[32px] px-6 pb-6 pt-36",
+                "relative z-10 flex flex-col items-start gap-5 overflow-hidden rounded-4xl px-6 pb-6 pt-36",
                 testimonial.customReview
-                  ? "bg-[linear-gradient(180.05deg,rgba(34,31,31,0)_8.08%,rgb(34,31,31)_99.96%)]"
+                  ? "bg-[linear-gradient(180deg,transparent_8%,var(--color-n-900)_100%)]"
                   : "bg-[color:var(--color-n-50)]",
               ]}
             >
               <div class="h-6 w-[136px]">
-                <img alt="" class="block size-full" src={imgRatingWrap} />
+                <img alt="Profile photo" class="block size-full" src={imgRatingWrap} />
               </div>
               <div class="w-full">
                 <p
                   class:list={[
-                    "text-base leading-[1.25]",
+                    "text-base leading-tight",
                     testimonial.customReview
                       ? "text-[color:var(--color-n-50)]"
                       : "text-[color:var(--color-n-900)]",
@@ -78,21 +78,21 @@ const testimonials = [
                 <div class="flex flex-1 items-center gap-2.5">
                   <div
                     class:list={[
-                      "size-10 overflow-hidden rounded-[32px] border-2",
+                      "size-10 overflow-hidden rounded-4xl border-2",
                       testimonial.customReview
                         ? "border-[color:var(--color-n-50)]"
                         : "border-[color:var(--color-n-900)]",
                     ]}
                   >
                     <img
-                      alt=""
-                      class="size-full rounded-[32px] object-cover"
+                      alt="Profile"
+                      class="size-full rounded-4xl object-cover"
                       src={imgProfilePhoto}
                     />
                   </div>
                   <div
                     class:list={[
-                      "flex flex-1 flex-col gap-0.5 leading-[1.25]",
+                      "flex flex-1 flex-col gap-0.5 leading-tight",
                       testimonial.customReview
                         ? "text-[color:var(--color-n-50)]"
                         : "text-[color:var(--color-n-900)]",
@@ -103,7 +103,7 @@ const testimonials = [
                   </div>
                 </div>
                 <div class="size-6">
-                  <img alt="" class="block size-full" src={imgGoogleLogo} />
+                  <img alt="Profile photo" class="block size-full" src={imgGoogleLogo} />
                 </div>
               </div>
             </div>
