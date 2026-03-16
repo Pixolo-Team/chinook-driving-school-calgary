@@ -1,17 +1,79 @@
 ---
+// COMPONENTS //
+import { Image } from "astro:assets";
 
+// OTHERS //
+import Layout from "@/layouts/Layout.astro";
+
+// DATA //
+import { whyusSectionDetails } from "@/data/home/why-us";
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Layout title="Chinook Driving School">
+  <section class="bg-[color:var(--color-n-50)]">
+    <div
+      class="mx-auto flex w-full max-w-[640px] flex-col items-center gap-16 px-5 py-[144px] lg:max-w-[1536px] lg:px-0"
+    >
+      <header
+        class="flex w-full flex-col items-center gap-4 text-center lg:gap-[10px]"
+      >
+        <p
+          class="text-[14px] font-bold uppercase tracking-[0.6px] text-[#005dbe]"
+        >
+          {whyusSectionDetails.content.eyebrow}
+        </p>
+        <div class="flex w-full flex-col items-center gap-3 lg:gap-0">
+          <h2
+            class="text-[30px] font-bold leading-[1.25] text-[color:var(--color-n-800)] lg:text-[48px] lg:leading-[1.2]"
+          >
+            {whyusSectionDetails.content.title}
+          </h2>
+          <p
+            class="max-w-[221px] text-[14px] text-[color:var(--color-n-600)] lg:max-w-[516px] lg:text-[16px]"
+          >
+            {whyusSectionDetails.content.description}
+          </p>
+        </div>
+      </header>
+
+      <div
+        class="flex flex-col items-center gap-9 lg:flex-row lg:items-start lg:justify-center"
+      >
+        {
+          whyusSectionDetails.cards.map((cardItem) => (
+            <article class="relative h-[427px] w-[312px] overflow-hidden rounded-[32px] border-2 border-[color:var(--color-n-100)] px-6 pb-[44px] pt-8">
+              <div class="absolute left-[-126px] top-[-179px] h-[353px] w-[353px]">
+                <Image
+                  alt=""
+                  class="h-full w-full max-w-none"
+                  height={353}
+                  src={whyusSectionDetails.assets.cardBackdropSrc}
+                  width={353}
+                />
+              </div>
+              <div class="relative flex h-full flex-col gap-6">
+                <div class="relative h-[171px] w-[180px]">
+                  <Image
+                    alt={cardItem.imageAlt}
+                    class="absolute left-0 top-[-6.73%] h-[117.04%] w-full max-w-none"
+                    height={200}
+                    src={whyusSectionDetails.assets.cardIllustrationSrc}
+                    width={180}
+                  />
+                </div>
+                <div class="flex flex-col gap-[14px]">
+                  <h3 class="text-[24px] font-bold leading-[1.2] text-[color:var(--color-n-800)]">
+                    {cardItem.title}
+                  </h3>
+                  <p class="text-[14px] font-medium text-[color:var(--color-n-500)]">
+                    {cardItem.description}
+                  </p>
+                </div>
+              </div>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</Layout>
