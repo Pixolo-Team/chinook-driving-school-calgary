@@ -16,24 +16,28 @@
       description:
         "Learn from professionally trained and certified instructors who guide you step-by-step with patience and expertise.",
       imageAlt: "Certified driving instructors",
+      imageSrc: "/images/instructor.png",
     },
     {
       title: "Certified Driving Instructors",
       description:
         "Learn from professionally trained and certified instructors who guide you step-by-step with patience and expertise.",
       imageAlt: "Certified driving instructors",
+      imageSrc: "/images/instructor.png",
     },
     {
       title: "Certified Driving Instructors",
       description:
         "Learn from professionally trained and certified instructors who guide you step-by-step with patience and expertise.",
       imageAlt: "Certified driving instructors",
+      imageSrc: "/images/instructor.png",
     },
     {
       title: "Certified Driving Instructors",
       description:
         "Learn from professionally trained and certified instructors who guide you step-by-step with patience and expertise.",
       imageAlt: "Certified driving instructors",
+      imageSrc: "/images/instructor.png",
     },
   ],
 };
