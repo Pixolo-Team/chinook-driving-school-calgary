@@ -1,0 +1,115 @@
+---
+const imgShotOfAYoungBusinessmanWorkingOnAComputerInAnOffice1 =
+  "https://www.figma.com/api/mcp/asset/a57cfd7d-6589-4e63-a6e2-8538c8eb5fdd";
+const imgProfilePhoto =
+  "https://www.figma.com/api/mcp/asset/6d913e43-2c97-496e-bc62-66aa02c0babc";
+const imgRatingWrap =
+  "https://www.figma.com/api/mcp/asset/32acd613-f093-4371-b30d-d13841d51176";
+const imgGoogleLogo =
+  "https://www.figma.com/api/mcp/asset/3c8f71df-0c40-4439-b969-7b6360cc1a3d";
+
+const testimonials = [
+  {
+    id: "custom",
+    customReview: true,
+    review:
+      "The marketing campaign they created for us was outstanding, and we saw significant engagement. However, I wish they had provided more frequent updates during the process.",
+    name: "Henry Foster",
+    role: "Project Manager",
+  },
+  {
+    id: "standard",
+    customReview: false,
+    review:
+      "The marketing campaign they created for us was outstanding, and we saw significant engagement. However, I wish they had provided more frequent updates during the process.",
+    name: "Henry Foster",
+    role: "Project Manager",
+  },
+];
+---
+
+<section class="bg-[color:var(--color-n-900)] py-10 sm:py-12 lg:py-16">
+  <div class="mx-auto w-full max-w-[1200px] px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-10">
+      {
+        testimonials.map((testimonial) => (
+          <div
+            class:list={[
+              "relative overflow-hidden rounded-[32px]",
+              "w-full max-w-[384px] justify-self-center",
+              testimonial.customReview
+                ? "bg-[color:var(--color-n-900)]"
+                : "bg-[color:var(--color-n-50)]",
+            ]}
+          >
+            {testimonial.customReview && (
+              <div class="absolute -left-[99px] -top-[4px] h-[409px] w-[613px]">
+                <img
+                  alt=""
+                  class="absolute inset-0 size-full object-cover"
+                  src={imgShotOfAYoungBusinessmanWorkingOnAComputerInAnOffice1}
+                />
+              </div>
+            )}
+            <div
+              class:list={[
+                "relative z-10 flex flex-col items-start gap-5 overflow-hidden rounded-[32px] px-6 pb-6 pt-36",
+                testimonial.customReview
+                  ? "bg-[linear-gradient(180.05deg,rgba(34,31,31,0)_8.08%,rgb(34,31,31)_99.96%)]"
+                  : "bg-[color:var(--color-n-50)]",
+              ]}
+            >
+              <div class="h-6 w-[136px]">
+                <img alt="" class="block size-full" src={imgRatingWrap} />
+              </div>
+              <div class="w-full">
+                <p
+                  class:list={[
+                    "text-base leading-[1.25]",
+                    testimonial.customReview
+                      ? "text-[color:var(--color-n-50)]"
+                      : "text-[color:var(--color-n-900)]",
+                  ]}
+                >
+                  {testimonial.review}
+                </p>
+              </div>
+              <div class="flex w-full items-center gap-2.5">
+                <div class="flex flex-1 items-center gap-2.5">
+                  <div
+                    class:list={[
+                      "size-10 overflow-hidden rounded-[32px] border-2",
+                      testimonial.customReview
+                        ? "border-[color:var(--color-n-50)]"
+                        : "border-[color:var(--color-n-900)]",
+                    ]}
+                  >
+                    <img
+                      alt=""
+                      class="size-full rounded-[32px] object-cover"
+                      src={imgProfilePhoto}
+                    />
+                  </div>
+                  <div
+                    class:list={[
+                      "flex flex-1 flex-col gap-0.5 leading-[1.25]",
+                      testimonial.customReview
+                        ? "text-[color:var(--color-n-50)]"
+                        : "text-[color:var(--color-n-900)]",
+                    ]}
+                  >
+                    <p class="text-base font-semibold">{testimonial.name}</p>
+                    <p class="text-xs">{testimonial.role}</p>
+                  </div>
+                </div>
+                <div class="size-6">
+                  <img alt="" class="block size-full" src={imgGoogleLogo} />
+                </div>
+              </div>
+            </div>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>
