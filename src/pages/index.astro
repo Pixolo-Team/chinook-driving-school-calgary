@@ -12,7 +12,7 @@ import { whyusSectionDetails } from "@/data/home/why-us";
 <Layout title="Chinook Driving School">
   <section class="bg-[color:var(--color-n-50)]">
     <div
-      class="mx-auto flex w-full max-w-[640px] flex-col items-center gap-16 px-5 py-[144px] lg:max-w-[1536px] lg:px-0"
+      class="mx-auto flex w-full max-w-[640px] md:max-w-[768px] flex-col items-center gap-16 px-5 py-[144px] lg:max-w-[1536px] lg:px-0"
     >
       <header
         class="flex w-full flex-col items-center gap-4 text-center lg:gap-[10px]"
@@ -37,7 +37,7 @@ import { whyusSectionDetails } from "@/data/home/why-us";
       </header>
 
       <div
-        class="flex flex-col items-center gap-9 lg:flex-row lg:flex-wrap lg:items-start lg:justify-center"
+        class="grid grid-cols-1 gap-9 md:grid-cols-2 xl:grid-cols-4 place-items-center xl:place-items-start"
       >
         {
           whyusSectionDetails.cards.map((cardItem) => (
