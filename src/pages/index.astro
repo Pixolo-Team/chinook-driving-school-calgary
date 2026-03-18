@@ -41,7 +41,7 @@ import { whyusSectionDetails } from "@/data/home/why-us";
       >
         {
           whyusSectionDetails.cards.map((cardItem) => (
-            <div class="relative h-[427px] w-[312px] overflow-hidden rounded-4xl border-2 border-n-100 transform transition duration-300 ease-in-out hover:scale-105">
+            <div class="relative w-[312px] overflow-hidden rounded-4xl border-2 border-n-100 pb-11 transform transition duration-300 ease-in-out hover:scale-105">
               <div class="relative flex h-full flex-col gap-6">
                 <div class="relative h-[171px] w-[180px]">
                   <Image
@@ -52,7 +52,7 @@ import { whyusSectionDetails } from "@/data/home/why-us";
                     width={180}
                   />
                 </div>
-                <div class="flex flex-col gap-3.5">
+                <div class="flex flex-col gap-3.5 px-6">
                   <h3 class="text-2xl font-bold leading-[1.2] text-n-800">
                     {cardItem.title}
                   </h3>
