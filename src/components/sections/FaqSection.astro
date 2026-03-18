@@ -37,7 +37,6 @@ import { faqSectionData as faqs } from "@/data/faqSectionData";
               src="/icons/dropdown.svg"
               alt="toggle"
               class="faq-arrow h-[12px] w-3 shrink-0 transition-transform duration-300"
-              style={"transform: rotate(180deg)"}
             />
           </button>
           <div
@@ -58,35 +57,45 @@ import { faqSectionData as faqs } from "@/data/faqSectionData";
 </section>
 
 <script>
-  document.querySelectorAll<HTMLElement>(".faq-item").forEach((item) => {
-    const trigger = item.querySelector<HTMLButtonElement>(".faq-trigger");
-    const answer = item.querySelector<HTMLElement>(".faq-answer");
-    const arrow = item.querySelector<SVGElement>(".faq-arrow");
 
+  // Select all FAQ items (each question-answer block)
+  document.querySelectorAll<HTMLElement>(".faq-item").forEach((item) => {
+
+    // Get elements inside each FAQ item
+    const trigger = item.querySelector<HTMLButtonElement>(".faq-trigger"); // clickable question
+    const answer = item.querySelector<HTMLElement>(".faq-answer"); // hidden answer section
+    const arrow = item.querySelector<SVGElement>(".faq-arrow"); // arrow icon
+
+    // Add click event to each FAQ trigger
     trigger?.addEventListener("click", () => {
+
+      // Check if current FAQ is already open
       const isOpen = item.dataset.open === "true";
 
       if (isOpen) {
-        // Collapse
-        item.dataset.open = "false";
-        trigger.setAttribute("aria-expanded", "false");
+        item.dataset.open = "false"; 
+        trigger.setAttribute("aria-expanded", "false"); 
+
+        // Hide Content & Fade Out
         if (answer) {
           answer.style.maxHeight = "0px";
-          answer.style.opacity = "0";
+          answer.style.opacity = "0"; 
         }
         if (arrow) {
-          (arrow as HTMLElement).style.transform = "";
+          (arrow as HTMLElement).style.transform = ""; 
         }
       } else {
-        // Expand
-        item.dataset.open = "true";
-        trigger.setAttribute("aria-expanded", "true");
+        item.dataset.open = "true"; 
+        trigger.setAttribute("aria-expanded", "true"); 
+
+        // Show Content & Fade In
         if (answer) {
-          answer.style.maxHeight = "500px";
-          answer.style.opacity = "1";
+          answer.style.maxHeight = "500px"; 
+          answer.style.opacity = "1"; 
         }
+
         if (arrow) {
-          (arrow as HTMLElement).style.transform = "rotate(180deg)";
+          (arrow as HTMLElement).style.transform = "rotate(180deg)"; 
         }
       }
     });
