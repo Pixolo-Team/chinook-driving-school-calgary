@@ -5,28 +5,34 @@ import { faqSectionData as faqs } from "@/data/faqSectionData";
 ---
 
 <section>
-  <div class="mx-auto flex w-full max-w-[1536px] flex-col items-center gap-16 overflow-hidden px-5 py-[144px] lg:px-0">
+  <div class="container mx-auto flex w-full flex-col items-center gap-16 overflow-hidden px-5 py-36 lg:px-0">
+
+    <!-- Heading & Description -->
     <div class="flex flex-col items-center gap-2.5">
-      <p class="text-[14px] font-bold uppercase tracking-[0.6px] text-blue-600">
+      <p class="text-sm font-bold uppercase tracking-[0.6px] text-blue-600">
         Got Questions ?
       </p>
-      <h2
-        class="text-center text-[30px] font-bold leading-[1.25] text-n-800 md:text-[40px] lg:text-[48px]"
+      <p
+        class="text-center text-3xl font-bold leading-[1.25] text-n-800 md:text-5xl lg:text-5xl"
       >
         Frequently Asked Questions
-      </h2>
+      </p>
     </div>
 
-    <div class="flex w-full max-w-[1280px] flex-col gap-4">
-      {faqs.map((item, index) => (
+    <!-- FAQ Card Component -->
+    <div class="flex w-full max-w-3xl mx-auto flex-col gap-4">
+
+      <!-- Iterating through FAQs -->
+      {faqs.map((faqItem, index) => (
         <div
-          class="faq-item flex w-full flex-col overflow-hidden rounded-[24px] border border-n-200  p-px"
-        >
+          class="faq-item flex w-full flex-col overflow-hidden rounded-3xl border border-n-200  p-px">
+
           <button
             class="faq-trigger flex w-full items-center justify-between px-6 py-6 text-left">
             <p class="text-[18px] font-semibold leading-6 text-n-900">
-              {item.question}
+              {faqItem.question}
             </p>
+            {/* Dropdown Logo */}
             <img
               src="/icons/dropdown.svg"
               alt="toggle"
@@ -36,11 +42,12 @@ import { faqSectionData as faqs } from "@/data/faqSectionData";
           </button>
           <div
             class="faq-answer overflow-hidden transition-all duration-300"
-            style={index === 0 ? "max-height: 500px; opacity: 1;" : "max-height: 0px; opacity: 0;"}
-          >
+            style="max-height: 0px; opacity: 0;">
+
+              {/* FAQ Answer */}
             <div class="px-6 pb-5">
               <p class="text-[16px] leading-5 text-n-800">
-                {item.answer}
+                {faqItem.answer}
               </p>
             </div>
           </div>
