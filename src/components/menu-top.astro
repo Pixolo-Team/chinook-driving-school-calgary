@@ -12,7 +12,7 @@ const navItems = [
 ];
 ---
 
-<section class="relative w-full min-h-72 ">
+<section class="relative w-full min-h-72">
   <div class="absolute inset-0 h-72 w-full">
     <Image
       src={menuTopBackground}
@@ -24,10 +24,11 @@ const navItems = [
   </div>
 
   <div class="relative shadow-lg">
-    <div class="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-5 py-4 ">
-   
-        <Image src={menuTopLogo} alt="Chinook Driving Academy" width={146} height={58} />
-     
+    <!-- Static header: max-width capped at 955px -->
+    <div class="mx-auto flex w-full max-w-[955px] items-center justify-between px-5 py-4">
+
+      <Image src={menuTopLogo} alt="Chinook Driving Academy" width={146} height={58} />
+
       <div class="flex flex-col items-end gap-4 md:flex-row md:items-center md:gap-11">
         <nav aria-label="Primary" class="flex flex-col items-end gap-4 text-sm text-n-50 md:flex-row md:items-center md:gap-7">
           {navItems.map((item, index) => (
@@ -64,3 +65,116 @@ const navItems = [
     </div>
   </div>
 </section>
+
+<!--
+  FLOATING MENU
+  - max-width capped at 955px to match static header
+  - phone icon explicitly set to text-blue-500 to always match button color
+-->
+<nav
+  id="floating-menu"
+  class="fixed top-3 z-50
+         left-1/2 -translate-x-1/2 w-full max-w-[955px]
+         flex items-center
+         rounded-full border border-n-200 bg-n-50 shadow-xl
+         px-4 py-2.5
+         opacity-0 -translate-y-4 pointer-events-none
+         transition-all duration-300 ease-out"
+  aria-label="Floating navigation"
+  aria-hidden="true"
+>
+  <!-- Floating nav inner: max-width 955px -->
+  <div class="mx-auto flex w-full max-w-[955px] items-center justify-between">
+
+    <!-- Logo -->
+    <Image
+      src={menuTopLogo}
+      alt="Chinook Driving Academy"
+      width={130}
+      height={52}
+      class="h-11 w-auto"
+    />
+
+    <!-- Right side: nav links + CTA -->
+    <div class="ml-auto flex items-center gap-6">
+
+      <!-- Nav Links -->
+      <nav class="hidden items-center gap-8 lg:flex">
+        {navItems.map((item, index) => (
+          <a
+            href={item.href}
+            class={`relative whitespace-nowrap text-sm transition-colors duration-200 hover:text-blue-500 ${
+              index === 0 ? "font-semibold text-blue-500" : "font-medium text-n-700"
+            }`}
+          >
+            {item.label}
+            {index === 0 && (
+              <span class="absolute -bottom-1 left-0 h-0.5 w-full rounded-full bg-blue-500"></span>
+            )}
+          </a>
+        ))}
+      </nav>
+
+      <!-- CTA Buttons -->
+      <div class="flex items-center gap-2.5">
+        <button
+          class="flex h-9 w-28 items-center justify-center rounded-full bg-blue-500 px-3.5 text-sm font-semibold text-n-50 transition-colors duration-200 hover:bg-blue-600"
+          type="button"
+        >
+          Enroll Now
+        </button>
+        <button
+          class="flex h-9 items-center justify-center gap-1.5 rounded-full border border-blue-500 px-3.5 text-sm font-semibold text-blue-500 transition-colors duration-200 hover:bg-blue-50 text-n-500"
+          type="button"
+        >
+          <span>Call Us</span>
+          <!-- Fix: explicit text-blue-500 so icon color always matches button text -->
+          <Icon name="phone-icon" class="h-4 w-4" />
+        </button>
+      </div>
+
+    </div>
+  </div>
+</nav>
+
+<script>
+  const FLOATING_MENU_SCROLL_THRESHOLD = 80;
+
+  const floatingMenu = document.getElementById(
+    "floating-menu"
+  ) as HTMLElement | null;
+
+  let ticking = false;
+  let isVisible = false;
+
+  window.addEventListener("scroll", () => {
+    // Throttle using rAF to avoid layout thrashing
+    if (ticking) return;
+    ticking = true;
+
+    requestAnimationFrame(() => {
+      if (!floatingMenu) {
+        ticking = false;
+        return;
+      }
+
+      const shouldShow = window.scrollY > FLOATING_MENU_SCROLL_THRESHOLD;
+
+      if (shouldShow && !isVisible) {
+        // Animate in: slide down from above + fade in
+        floatingMenu.classList.remove("opacity-0", "-translate-y-4", "pointer-events-none");
+        floatingMenu.classList.add("opacity-100", "translate-y-0");
+        floatingMenu.removeAttribute("aria-hidden");
+        isVisible = true;
+      } else if (!shouldShow && isVisible) {
+        // Animate out: slide back up + fade out
+        floatingMenu.classList.remove("opacity-100", "translate-y-0");
+        floatingMenu.classList.add("opacity-0", "-translate-y-4", "pointer-events-none");
+        floatingMenu.setAttribute("aria-hidden", "true");
+        isVisible = false;
+      }
+
+      ticking = false;
+    });
+  });
+</script>
