@@ -3,6 +3,9 @@
 import "@/styles/animation.css";
 import "@/styles/global.css";
 
+// SECTIONS //
+import Header from "@/sections/Header.astro";
+
 interface Props {
   title?: string;
   description?: string;
@@ -30,6 +33,7 @@ const {
     />
   </head>
   <body>
+    <Header />
     <main class="relative">
       <slot />
     </main>
