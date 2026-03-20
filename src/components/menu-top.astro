@@ -1,0 +1,67 @@
+---
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+import menuTopBackground from "@/assets/menu-top-bg.png";
+import menuTopLogo from "@/assets/menu-logo.png";
+
+const navItems = [
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Courses", href: "/courses" },
+  { label: "Contact Us", href: "/contact" },
+];
+---
+
+<section class="relative w-full min-h-72 overflow-hidden">
+  <div class="absolute inset-0 h-72 w-full">
+    <Image
+      src={menuTopBackground}
+      alt=""
+      width={1920}
+      height={288}
+      class="h-full w-full object-cover"
+    />
+  </div>
+
+  <div class="relative">
+    <div class="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-5 py-4 shadow-lg">
+      <div class="relative h-14 w-36">
+        <Image src={menuTopLogo} alt="Chinook Driving Academy" width={146} height={58} />
+      </div>
+
+      <div class="flex flex-col items-end gap-4 md:flex-row md:items-center md:gap-11">
+        <nav aria-label="Primary" class="flex flex-col items-end gap-4 text-sm text-n-50 md:flex-row md:items-center md:gap-7">
+          {navItems.map((item, index) => (
+            <a
+              class={`${
+                index === 0 ? "font-semibold" : "font-medium"
+              } relative whitespace-nowrap`}
+              href={item.href}
+            >
+              <span>{item.label}</span>
+              {index === 0 && (
+                <span class="absolute -bottom-2 left-0 h-0.5 w-14 rounded-lg bg-n-50"></span>
+              )}
+            </a>
+          ))}
+        </nav>
+
+        <div class="flex items-center gap-2.5">
+          <button
+            class="flex h-10 w-28 items-center justify-center rounded-3xl bg-blue-500 px-3.5 text-sm font-semibold leading-6 text-n-50"
+            type="button"
+          >
+            Enroll Now
+          </button>
+          <button
+            class="flex h-10 items-center justify-center gap-1.5 rounded-3xl border border-n-50 px-3.5 text-sm font-semibold leading-6 text-n-50"
+            type="button"
+          >
+            <span>Call Us</span>
+            <Icon name="phone-icon" class="h-5 w-5" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
