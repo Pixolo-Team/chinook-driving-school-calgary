@@ -6,19 +6,12 @@ import TestimonialCard from "@/components/TestimonialCard.astro";
 import { testimonialSectionDetails } from "@/data/testimonials";
 import type { TestimonialData } from "@/types/testimonial";
 import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
 
 const { testimonials } = testimonialSectionDetails;
 ---
 
-<!-- ============================================================
-     review-section
-     Flow      : Vertical
-     Width     : Fill  → w-full
-     Max-width : container/2xl → max-w-screen-2xl
-     Padding   : top/bottom space/32 → pt-8 pb-8
-                 left/right space/40 → pl-10 pr-10
-     Gap       : space/16 → gap-4
-============================================================ -->
+
 <section class="review-section w-full">
 
   <!-- container -->
@@ -102,67 +95,31 @@ const { testimonials } = testimonialSectionDetails;
         </div>
  
         <!-- Mobile prev/next buttons — hidden on lg and above -->
-        <div class="flex items-center justify-end gap-3 lg:hidden">
+        <div class="flex items-center justify-end gap-6 ">
  
           <!-- Prev button -->
+        
+          
           <button
             id="testimonial-prev"
-            class="w-10 h-10 rounded-full bg-white shadow-md
-                   flex items-center justify-center
-                   hover:bg-gray-50 transition-colors duration-150"
+            class="w-11 h-11 rounded-full bg-n-50 shadow-md
+                   flex items-center justify-center text-n-900 lg:hidden"
             aria-label="Previous review"
           >
-            <svg
-              class="w-4 h-4 text-gray-600"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7" />
-            </svg>
+            <img src="/icons/arrow.svg" alt="previous" class="size-4 rotate-90" />
           </button>
 
- 
           <!-- Next button -->
           <button
             id="testimonial-next"
-            class="w-10 h-10 rounded-full bg-white shadow-md
+            class=" lg:absolute w-11 h-11 rounded-full bg-n-50 shadow-md
                    flex items-center justify-center
-                   hover:bg-gray-50 transition-colors duration-150"
+                   text-n-900 bottom-50 left-300 z-10"
             aria-label="Next review"
           >
-            <svg
-              class="w-4 h-4 text-gray-600"
-              fill="none"
-              stroke="currentColor"
-              stroke-width="2"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-            </svg>
+            <img src="/icons/arrow.svg" alt="next" class="size-4 -rotate-90" />
           </button>
-          <button
-              id="testimonial-next-desktop"
-              class="absolute -right-5 top-1/2 -translate-y-1/2
-                     w-10 h-10 rounded-full bg-white shadow-md
-                     items-center justify-center
-                     hover:bg-gray-50 transition-colors duration-150
-                     flex max-lg:hidden"
-              aria-label="Next review"
-            >
-              <svg
-                class="w-4 h-4 text-gray-600"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                viewBox="0 0 24 24"
-              >
-                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
-              </svg>
-          </button>
+
  
         </div>
         <!-- /mobile buttons -->
