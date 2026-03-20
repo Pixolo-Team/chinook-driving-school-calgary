@@ -36,5 +36,16 @@ export const testimonialSectionDetails: { testimonials: TestimonialData[] } = {
       profilePhoto: "/images/testimonials/profile-photo.jpg",
       backgroundImage: "/images/testimonials/bg-image.png",
     },
+       {
+      id: "custom",
+      customReview: true,
+      rating: 3,
+      review:
+        "The marketing campaign they created for us was outstanding, and we saw significant engagement. However, I wish they had provided more frequent updates during the process.",
+      name: "Henry Foster",
+      role: "Project Manager",
+      profilePhoto: "/images/testimonials/profile-photo.jpg",
+      backgroundImage: "/images/testimonials/bg-image.png",
+    },
   ],
 };

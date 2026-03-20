@@ -82,10 +82,10 @@ const { testimonials } = testimonialSectionDetails;
         <!-- Scrollable track -->
         <div
           id="testimonial-track"
-          class="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide lg:overflow-x-visible lg:grid lg:grid-cols-3"
+          class="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
         >
           {testimonials.map((testimonial) => (
-            <div class="flex-shrink-0 w-full snap-start lg:w-auto">
+            <div class="flex-shrink-0 w-full snap-start lg:w-100">
               <TestimonialCard
                 testimonial={testimonial}
                 rating={testimonial.rating}
@@ -103,7 +103,7 @@ const { testimonials } = testimonialSectionDetails;
           <button
             id="testimonial-prev"
             class="w-11 h-11 rounded-full bg-n-50 shadow-md
-                   flex items-center justify-center text-n-900 lg:hidden"
+                   flex items-center justify-center text-n-900 lg:hidden hover:cursor-pointer"
             aria-label="Previous review"
           >
             <img src="/icons/arrow.svg" alt="previous" class="size-4 rotate-90" />
@@ -114,7 +114,7 @@ const { testimonials } = testimonialSectionDetails;
             id="testimonial-next"
             class=" lg:absolute w-11 h-11 rounded-full bg-n-50 shadow-md
                    flex items-center justify-center
-                   text-n-900 bottom-50 left-300 z-10"
+                   text-n-900 bottom-50 left-300 z-10 hover:cursor-pointer"
             aria-label="Next review"
           >
             <img src="/icons/arrow.svg" alt="next" class="size-4 -rotate-90" />
@@ -137,3 +137,25 @@ const { testimonials } = testimonialSectionDetails;
 
 </section>
 <!-- /review-section -->
+
+
+<script>
+  const track = document.getElementById("testimonial-track");
+  const prevBtn = document.getElementById("testimonial-prev");
+  const nextBtn = document.getElementById("testimonial-next");
+
+  function getCardWidth(): number {
+    const firstCard = track?.querySelector<HTMLElement>(".flex-shrink-0");
+    if (!firstCard || !track) return 0;
+    const gap = 16; // gap-4 = 1rem = 16px
+    return firstCard.offsetWidth + gap;
+  }
+
+  prevBtn?.addEventListener("click", () => {
+    track?.scrollBy({ left: -getCardWidth(), behavior: "smooth" });
+  });
+
+  nextBtn?.addEventListener("click", () => {
+    track?.scrollBy({ left: getCardWidth(), behavior: "smooth" });
+  });
+</script>
