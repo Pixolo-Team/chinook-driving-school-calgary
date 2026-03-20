@@ -1,70 +1,46 @@
 ---
 // COMPONENTS //
-import { Image } from "astro:assets";
-
-// OTHERS //
-import Layout from "@/layouts/Layout.astro";
+import WhyUsCard from "@/components/WhyUsCard.astro";
 
 // DATA //
 import { whyusSectionDetails } from "@/data/home/why-us";
+
 ---
 
-<Layout title="Chinook Driving School">
-  <section class="bg-n-50">
+<section class="bg-n-50">
+  <div
+    class="container mx-auto flex w-full flex-col items-center gap-16 px-5 py-36 lg:px-0"
+  >
     <div
-      class="container mx-auto flex w-full flex-col items-center gap-16 px-5 py-36 lg:px-0"
+      class="flex w-full flex-col items-center gap-4 text-center lg:gap-2.5"
     >
-      <div
-        class="flex w-full flex-col items-center gap-4 text-center lg:gap-2.5"
+      <p
+        class="text-sm font-bold uppercase tracking-[0.6px] text-blue-500"
       >
+        {whyusSectionDetails.content.eyebrow}
+      </p>
+      <div class="flex w-full flex-col items-center gap-3 lg:gap-0">
         <p
-          class="text-sm font-bold uppercase tracking-[0.6px] text-blue-500"
+          class="text-3xl font-bold leading-tight text-n-800 lg:text-5xl lg:leading-[1.2]"
         >
-          {whyusSectionDetails.content.eyebrow}
+          {whyusSectionDetails.content.title}
+      </p>
+        <p
+          class="max-w-[221px] text-sm text-n-600 lg:max-w-[516px] lg:text-base"
+        >
+          {whyusSectionDetails.content.description}
         </p>
-        <div class="flex w-full flex-col items-center gap-3 lg:gap-0">
-          <p
-            class="text-3xl font-bold leading-tight text-n-800 lg:text-5xl lg:leading-[1.2]"
-          >
-            {whyusSectionDetails.content.title}
-        </p>
-          <p
-            class="max-w-[221px] text-sm text-n-600 lg:max-w-[516px] lg:text-base"
-          >
-            {whyusSectionDetails.content.description}
-          </p>
-        </div>
-      </div>
-
-      <div
-        class="grid grid-cols-1 gap-9 md:grid-cols-2 xl:grid-cols-4 place-items-center xl:place-items-start"
-      >
-        {
-          whyusSectionDetails.cards.map((cardItem) => (
-            <div class="relative w-[312px] overflow-hidden rounded-4xl border-2 border-n-100 pb-11 transform transition duration-300 ease-in-out hover:scale-105">
-              <div class="relative flex h-full flex-col gap-6">
-                <div class="relative h-[171px] w-[180px]">
-                  <Image
-                    alt={cardItem.imageAlt}
-                    class="absolute left-0 top-[-6.73%] h-[117.04%] w-full max-w-none"
-                    height={200}
-                    src={cardItem.imageSrc}
-                    width={180}
-                  />
-                </div>
-                <div class="flex flex-col gap-3.5 px-6">
-                  <h3 class="text-2xl font-bold leading-[1.2] text-n-800">
-                    {cardItem.title}
-                  </h3>
-                  <p class="text-sm font-medium text-n-500">
-                    {cardItem.description}
-                  </p>
-                </div>
-              </div>
-            </div>
-          ))
-        }
       </div>
     </div>
-  </section>
-</Layout>
+
+    <div
+      class="grid grid-cols-1 gap-9 md:grid-cols-2 xl:grid-cols-4 place-items-center xl:place-items-start"
+    >
+      {
+        whyusSectionDetails.cards.map((cardItem) => (
+          <WhyUsCard cardItem={cardItem} />
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -16,5 +16,9 @@
     "astro": "^6.0.4",
     "astro-icon": "^1.1.5",
     "tailwindcss": "^4.2.1"
+  },
+  "devDependencies": {
+    "prettier": "^3.8.1",
+    "prettier-plugin-astro": "^0.14.1"
   }
 }
