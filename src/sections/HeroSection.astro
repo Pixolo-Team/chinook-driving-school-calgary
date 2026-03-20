@@ -4,7 +4,9 @@ import { Image } from "astro:assets";
 const heroImage = "https://www.figma.com/api/mcp/asset/a43dd646-5d1f-4e3c-a550-47d7a2c37f44";
 ---
 
-<section class="relative w-full h-[100dvh] max-h-[945px] overflow-hidden bg-n-900 flex flex-col justify-end">
+<section
+  class="bg-n-900 relative flex h-[100dvh] max-h-[945px] w-full flex-col justify-end overflow-hidden"
+>
   <div class="absolute inset-0">
     <Image
       src={heroImage}
@@ -16,15 +18,16 @@ const heroImage = "https://www.figma.com/api/mcp/asset/a43dd646-5d1f-4e3c-a550-4
     />
   </div>
 
-  <div class="absolute inset-x-0 bottom-0 h-[70%] max-h-[600px] bg-gradient-to-t from-n-900/90 via-n-900/60 to-transparent"></div>
+  <div
+    class="from-n-900/90 via-n-900/60 absolute inset-x-0 bottom-0 h-[70%] max-h-[600px] bg-gradient-to-t to-transparent"
+  >
+  </div>
 
-  <div class="relative pb-12 sm:pb-16 lg:pb-20 z-10 w-full">
+  <div class="relative z-10 w-full pb-12 sm:pb-16 lg:pb-20">
     <div class="container mx-auto w-full max-w-screen-2xl px-5 lg:px-0">
-      <div class="flex max-w-3xl flex-col gap-1.5 text-n-50">
-        <p class="text-3xl uppercase tracking-wide">
-          WE LOVE TEACHING
-        </p>
-        <p class="text-3xl font-semibold leading-tight sm:text-4xl lg:text-5xl">
+      <div class="text-n-50 flex max-w-3xl flex-col gap-1.5">
+        <p class="text-3xl tracking-wide uppercase">WE LOVE TEACHING</p>
+        <p class="text-3xl leading-tight font-semibold sm:text-4xl lg:text-5xl">
           Proper guidance leads to Safer roads for our families.
         </p>
       </div>
