@@ -1,0 +1,116 @@
+---
+// TYPES //
+import type { TestimonialData } from "@/types/testimonial";
+
+// COMPONENTS //
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+
+// IMAGES //
+import googleLogo from "@/../public/images/google-logo.png";
+
+interface Props {
+  testimonial: TestimonialData;
+  rating: number;
+}
+
+const { testimonial, rating } = Astro.props;
+
+// Keep ratings within the expected 5-star scale so the UI stays predictable.
+const activeStarCount = Math.min(Math.max(Math.floor(rating), 0), 5);
+---
+
+<!-- TestimonialCard Component -->
+<div
+  class="relative overflow-hidden rounded-4xl w-full justify-self-center bg-n-900"  
+>
+  <!-- Only render the background photo for the highlighted testimonial variant. -->
+  {testimonial.customReview && testimonial.backgroundImage && (
+    <div class="absolute inset-0">
+      <Image
+        src={testimonial.backgroundImage}
+        alt="Testimonial background"
+        class="h-full w-full object-cover"
+        loading="lazy"
+        referrerpolicy="no-referrer"
+        width={100}
+        height={100}
+      />
+    </div>  
+  )}
+
+  <div
+    class:list={[
+      "relative z-10 flex flex-col items-start gap-5 overflow-hidden rounded-4xl px-6 pb-6 pt-36",
+      testimonial.customReview
+        ? "bg-gradient-to-b from-transparent from-8% to-n-900"
+        : "bg-n-50",
+    ]}
+  >
+    <!-- Render a fixed 5-star row and highlight only the stars included in the rating. -->
+    <div class="flex items-center gap-1" aria-label={`${activeStarCount} out of 5 stars`}>
+      {
+        Array.from({ length: 5 }, (_, index) => (
+          <Icon
+            name="star"
+            class:list={[
+              "size-5",
+              index < activeStarCount ? "text-yellow-500" : "text-n-300",
+            ]}
+            aria-hidden="true"
+          />
+        ))
+      }
+    </div>
+
+    <!-- Testimonial text -->
+    <div class="w-full">
+      <p
+        class:list={[
+          "text-base leading-tight",
+          testimonial.customReview ? "text-n-50" : "text-n-900",
+        ]}
+      >
+        {testimonial.review}
+      </p>
+    </div>
+
+    <div class="flex w-full items-center justify-center gap-2.5">
+      <div class="flex flex-1 items-center gap-2.5">
+        <!-- Match the avatar border color to the card theme for consistent contrast. -->
+        <div
+          class:list={[
+            "size-10 overflow-hidden rounded-4xl border-2",
+            testimonial.customReview ? "border-n-50" : "border-n-900",
+          ]}
+        >
+          <Image
+            src={testimonial.profilePhoto}
+            alt={`${testimonial.name} profile photo`}
+            class="size-full rounded-4xl object-cover"
+            loading="lazy"
+            referrerpolicy="no-referrer"
+            width={40}
+            height={40}
+          />
+        </div>
+
+        <!-- Name and role -->
+        <div
+          class:list={[
+            "flex flex-1 flex-col gap-0.5 leading-tight",
+            testimonial.customReview ? "text-n-50" : "text-n-900",
+          ]}
+        >
+          <p class="text-base font-semibold leading-tight">{testimonial.name}</p>
+          <p class="text-xs font-normal leading-tight">{testimonial.role}</p>
+        </div>
+      </div>
+
+      <!-- Google Logo -->
+      <div class="size-6">
+        <Image src={googleLogo} alt="Google logo" class="block size-full" loading="lazy" referrerpolicy="no-referrer"/>
+      </div>
+    </div>
+  </div>
+</div>

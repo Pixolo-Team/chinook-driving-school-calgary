@@ -1,457 +1,269 @@
-# Astro App – Copilot Instructions & Coding Standards
+# AGENTS.md
 
-This document defines **mandatory coding rules** for all Astro repositories.
+## Purpose
 
-All contributors (**human or AI**) must follow these rules strictly.
+This file defines **strict coding rules and execution behavior** for AI agents (Codex).
 
-This repository is built for **production-grade applications**.  
-Code quality, consistency, and clarity are **non-negotiable**.
-
-These rules ensure:
-
-predictable architecture  
-consistent naming  
-maintainable services  
-scalable frontend code  
-AI-generated code that matches repository standards
-
-If generated code violates these rules, **it must be considered incorrect even if it works**.
+All instructions are **mandatory**.
+If any rule is violated, the output is **incorrect even if it works**.
 
 ---
 
-# 1. Import Rules (MANDATORY)
+## Core Behavior
 
-Always use the **project alias @/** for imports.
+- Follow existing repository patterns before writing code
+- Reuse existing components and services
+- Do not introduce new patterns
+- Do not guess missing context → ask instead
+- Keep changes minimal and consistent
 
-Relative imports introduce fragile dependencies and must never be used.
+---
 
-### ✅ Correct
+## Project Structure
 
-ts
+- Follow the existing folder structure strictly
+- Do not create new directories unless necessary
+- Place files in the same locations as similar features
+
+---
+
+## Imports
+
+- Always use alias: `@/`
+- Relative imports are forbidden
+
+```ts
 import { getTournamentsRequest } from "@/services/tournament.service";
-import { formatCurrencyService } from "@/services/format-currency.service";
-import Hero from "@/components/Hero.astro";
-
-### ❌ Incorrect
-
-ts
-import { getTournaments } from "../../services/tournament.service";
-import Hero from "../../../components/Hero.astro";
+```
 
 ---
 
-# 2. File Naming Rules
+## File Naming
 
-All file names must follow **kebab-case**.
+- Use kebab-case for all files
+- Exception: `.astro` components may use PascalCase
 
-File names must clearly describe their responsibility.
+Examples:
 
-### ✅ Correct
-
-tournament.service.ts
-football-tournaments.request.ts
-organizer-profile.component.ts
-tournament-card.astro
-
-### ❌ Incorrect
-
-TournamentService.ts
-GetTournaments.ts
-OrganizerProfile.ts
-
-### Special Rule
-
-Only **UI component files (.astro)** may use **PascalCase**.
-
-All other files must use **kebab-case**.
+- `tournament.service.ts`
+- `tournament-card.astro`
 
 ---
 
-# 3. Function Naming Rules
+## Function Naming
 
-All function names must:
+- Must start with a verb
+- Must use camelCase
+- Must clearly describe the action
 
-start with a **verb**
-use **camelCase**
-clearly describe the action
+Examples:
 
-### ✅ Correct
-
-getTournamentsRequest()
-createTournamentService()
-formatPrizeData()
-
-### ❌ Incorrect
-
-tournaments()
-TournamentCreate()
-dataFormatter()
+- `getTournamentsRequest()`
+- `createTournamentService()`
 
 ---
 
-# 4. API Request Functions
+## API / Request Functions
 
-Any function that performs an **API / HTTP / database call** must end with **Request**.
+All API / DB / external calls must end with:
 
-This applies to:
-
-REST APIs  
-GraphQL calls  
-Supabase queries  
-external APIs  
-internal backend calls
-
-### ✅ Correct
-
-getTournamentsRequest()
-createTournamentLeadRequest()
-getTournamentDetailsRequest()
-
-### ❌ Incorrect
-
-fetchTournaments()
-loadTournamentData()
-getTournament()
+```
+Request
+```
 
 ---
 
-# 5. Service Layer Rules
+## Service Layer
 
-All **business logic must live inside service files**.
+- Business logic must exist only in service files
+- Service functions must end with:
 
-Service functions must end with **Service**.
+```
+Service
+```
 
-Services must **never directly interact with UI components**.
-
-### ✅ Correct
-
-createTournamentService()
-mapTournamentListingService()
-validateOrganizerService()
-
-### ❌ Incorrect
-
-createTournament()
-tournamentMapper()
-validateOrganizer()
+- Services must never interact with UI components
 
 ---
 
-# 6. Data Type Naming Rules (STRICT)
+## Data Types
 
-ALL data structures must end with **Data**.
+All types must end with:
 
-Applies to:
+```
+Data
+```
 
-interfaces  
-types  
-DTOs  
-API responses  
-domain models
-
-### ✅ Correct
-
-ts
+```ts
 interface TournamentData {}
-interface TournamentListingItemData {}
-type OrganizerProfileData = {}
-
-### ❌ Incorrect
-
-ts
-interface Tournament {}
-interface OrganizerProfile {}
-type TournamentItem = {}
+```
 
 ---
 
-# 7. JSDoc Comments (MANDATORY)
+## JSDoc
 
-Every exported function **must include a JSDoc comment**.
+All exported functions must include a JSDoc comment.
 
-Minimum requirement: **one-line explanation**.
-
-### ✅ Correct
-
-ts
-/\*\*
-
-- Fetches published tournaments with filters applied
-  \*/
-  export async function getTournamentsRequest() {}
-
-### ❌ Incorrect
-
-ts
-export async function getTournamentsRequest() {}
+```ts
+/**
+ * Fetches tournaments with filters applied.
+ */
+```
 
 ---
 
-# 8. Commenting Rules
+## Comments
 
-Comments must explain **WHY**, not **WHAT**.
-
-Use comments for:
-
-complex logic  
-business rules  
-integrations  
-edge cases
-
-### ✅ Good
-
-ts
-// External ref ID ensures idempotent imports from Google Sheets
-
-### ❌ Bad
-
-ts
-// increment i
-i++
+- Explain WHY, not WHAT
+- Do not add redundant comments
 
 ---
 
-# 9. Console Logs (STRICT)
+## Console Logs
 
-Console statements must **never exist in committed code**.
-
-Forbidden:
-
-console.log
-console.error
-console.warn
-console.debug
-
-Allowed only during **local debugging**.
-
-All console logs must be **removed before commit**.
+- Forbidden in final code
+- Remove all console statements before completion
 
 ---
 
-# 10. Error Handling Rules
+## Error Handling
 
-Errors must **always be handled explicitly**.
+- Never swallow errors
+- Always return structured errors or throw
 
-Never swallow errors silently.
-
-Errors must return a **predictable structure**.
-
-### ✅ Correct
-
-ts
-return { data: null, error }
-
-or
-
-ts
-throw new Error("Failed to fetch tournaments")
-
-### ❌ Incorrect
-
-ts
-catch (e) {
-return null;
-}
+```ts
+return { data: null, error };
+```
 
 ---
 
-# 11. Global Variables & Constants Rule
+## Constants
 
-Global variables and constants must always be used instead of hardcoding values.
+- Do not hardcode reusable values
+- Use:
 
-Reusable values must be defined in global files such as:
-
+```
 src/constants
 src/config
 src/globals
-
-Examples include:
-
-pagination sizes  
-API URLs  
-default filters  
-environment configuration  
-reusable limits
-
-### ✅ Correct
-
-ts
-const PAGE_SIZE = DEFAULT_PAGE_SIZE
-
-### ❌ Incorrect
-
-ts
-const PAGE_SIZE = 10
-
-Hardcoding repeated values inside components or services is **not allowed**.
+```
 
 ---
 
-# 12. General Code Quality Rules
+## Astro Rules
 
-Code must prioritize:
+### Images
 
-clarity  
-maintainability  
-predictability
+Always use:
 
-Guidelines:
-
-keep functions small  
-avoid deeply nested logic  
-prefer readability over clever code  
-remove unused variables  
-avoid premature optimization
-
----
-
-# 13. Astro Image Component Rule
-
-Images must use **Astro's Image component from astro:assets**.
-
-### Import
-
-ts
+```ts
 import { Image } from "astro:assets";
+```
 
-### Correct
-
-astro
-<Image
-  src="/images/tournament-banner.jpg"
-  alt="Tournament banner"
-  width={800}
-  height={400}
-/>
-
-### Incorrect
-
-html
-<img src="/images/tournament-banner.jpg" />
-
-The Astro Image component provides:
-
-automatic image optimization  
-responsive images  
-lazy loading  
-improved performance
+Never use `<img />`.
 
 ---
 
-# 14. Icon Component Rule
+### Icons
 
-Icons must be rendered using the **astro-icon component**.
+- Use `astro-icon`
+- Store icons in `src/icons`
+- No inline SVG
+- No external icon libraries
 
-All icons must be stored locally inside the project at:
+---
 
-src/icons
+### Hydration
 
-### Import
+- Default: server-rendered
+- Use hydration only when necessary
 
-ts
-import { Icon } from "astro-icon/components";
-
-### Correct Usage
-
-astro
-<Icon name="football" />
-
-The name property must match the **SVG filename** located inside the src/icons directory.
-
-### Example Icon Structure
-
-src/icons
-├ football.svg
-├ trophy.svg
-├ search.svg
-
-### Rules
-
-Icon names must match the SVG file name.
-All icons must be stored inside src/icons.
-Do not embed raw SVG code directly inside pages or components.
-Do not reference external icon libraries.
-
-Using the shared icon component ensures:
-
-consistent icon rendering across the project
-centralized icon management
-cleaner component code
-easier icon updates and maintenance
-
-# 15. Astro Hydration Rules
-
-Astro components must remain **server-rendered by default**.
-
-Client-side hydration must only be used when necessary.
-
-Astro hydration directives include:
-
-client:load
-client:visible
-client:idle
-client:only
-
-### Correct
-
-Use hydration only for **interactive components**.
-
-Example:
-
-astro
+```astro
 <SearchBar client:load />
-
-### Incorrect
-
-Adding hydration to **all components unnecessarily**.
+```
 
 ---
 
-# 16. Server Data Fetching Rules
+### Data Fetching
 
-Astro data fetching should occur in **component frontmatter**.
+Fetch data in frontmatter:
 
-Example:
-
-## astro
-
-import { getTournamentsRequest } from "@/services/tournament.service";
-
-## const { data } = await getTournamentsRequest();
-
-This ensures data fetching happens **server-side by default**.
+```astro
+---
+const { data } = await getTournamentsRequest();
+---
+```
 
 ---
 
-# 17. AI (Copilot) Generation Rules
+## TailwindCSS Rules
 
-When generating code, AI tools must:
-
-follow all naming conventions  
-match existing project patterns  
-use service + request architecture
-
-AI must **never introduce**:
-
-unused variables  
-commented-out code  
-console logs  
-inconsistent naming  
-new architectural patterns
-
-If unclear, AI must **ask for clarification instead of guessing**.
+- Use Tailwind utility classes only
+- Use theme tokens (`bg-blue-500`, `text-n-900`)
+- Do not use `var()`
+- Avoid arbitrary values
+- Use predefined radius (`rounded-lg`, `rounded-xl`)
+- Use responsive utilities (`sm`, `md`, `lg`, `xl`)
 
 ---
 
-# Final Rule (Non-Negotiable)
+## Figma Implementation Rules
 
-If code does not follow these rules, it is **incorrect even if it works**.
+When implementing UI:
 
-These standards ensure:
+- Analyze Figma frames (Desktop, Tablet, Mobile)
+- Follow existing layout patterns
+- Reuse existing components
+- Match spacing, typography, and structure
+- Follow Figma layer hierarchy exactly
+- Do not introduce new design patterns
 
-predictable architecture  
-scalable services  
-consistent naming  
-production-grade reliability
+---
 
-All contributors must follow these rules **without exception**.
+## Section Integration
+
+After creating a section:
+
+- Place it in the correct folder
+- Import it into the correct page
+- Follow existing rendering patterns
+
+---
+
+## Required Output (for UI tasks)
+
+Always return:
+
+- section component
+- reusable components (if any)
+- page integration update
+
+---
+
+## Forbidden
+
+Do NOT:
+
+- add console logs
+- leave unused variables
+- introduce new architecture
+- hardcode reusable values
+- use arbitrary Tailwind values unnecessarily
+- use inline SVGs
+- overuse hydration
+
+---
+
+## Execution Rule
+
+Before writing code:
+
+1. Inspect similar files in the repository
+2. Match their structure and patterns
+3. Reuse existing logic when possible
+
+---
+
+## Final Rule
+
+If the generated code does not follow these rules, it is **invalid**.

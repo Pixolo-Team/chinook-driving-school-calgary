@@ -1,25 +1,26 @@
 // @ts-check
 // MODULES //
-import { dirname, resolve } from "node:path";
+import { defineConfig } from 'astro/config';
+import icon from "astro-icon";
 
 // OTHERS //
-import { defineConfig } from "astro/config";
-import { fileURLToPath } from "node:url";
 import tailwindcss from "@tailwindcss/vite";
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
+import path from 'path';
 
 // https://astro.build/config
 export default defineConfig({
+  integrations: [
+    icon({
+      iconDir: "src/assets",
+    }),
+  ],
   vite: {
     plugins: [tailwindcss()],
     resolve: {
       alias: {
-        "@": resolve(__dirname, "src"),
+        '@': path.resolve('./src'),
       },
     },
-  },
-  image: {
-    domains: ["www.figma.com"],
-  },
+  }
 });
