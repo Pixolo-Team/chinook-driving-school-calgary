@@ -68,7 +68,7 @@ const { testimonials } = testimonialSectionDetails;
 
         <!-- Right: CTA button -->
         <button
-          class="font-inter w-fit py-2 px-4 rounded-lg opacity-100 lg:py-4 lg:px-6 lg:gap-2.5 bg-blue-500 text-n-100 text-xs text-medium leading-tight tracking-normal text-center lg:text-base lg:leading-5"
+          class="hover:cursor-pointer font-inter w-fit py-2 px-4 rounded-lg opacity-100 lg:py-4 lg:px-6 lg:gap-2.5 bg-blue-500 text-n-100 text-xs text-medium leading-tight tracking-normal text-center lg:text-base lg:leading-5"
         >
           Leave a Review  
         </button>
@@ -80,19 +80,19 @@ const { testimonials } = testimonialSectionDetails;
       <div class="cards-wrap flex flex-col gap-4 relative">
  
         <!-- Scrollable track -->
-        <div
-          id="testimonial-track"
-          class="flex gap-4 overflow-x-auto snap-x snap-mandatory scrollbar-hide"
-        >
-          {testimonials.map((testimonial) => (
-            <div class="flex-shrink-0 w-full snap-start lg:w-100">
-              <TestimonialCard
-                testimonial={testimonial}
-                rating={testimonial.rating}
-              />
-            </div>
-          ))}
+       <div id="testimonial-track" class="overflow-hidden">
+          <div id="testimonial-container" class="flex gap-5">
+            {testimonials.map((testimonial) => (
+              <div class="flex-shrink-0 w-full snap-start lg:w-100">
+                <TestimonialCard
+                  testimonial={testimonial}
+                  rating={testimonial.rating}
+                />
+              </div>
+            ))}
+          </div>
         </div>
+
  
         <!-- Mobile prev/next buttons — hidden on lg and above -->
         <div class="flex items-center justify-end gap-6 ">
@@ -138,24 +138,28 @@ const { testimonials } = testimonialSectionDetails;
 </section>
 <!-- /review-section -->
 
-
 <script>
-  const track = document.getElementById("testimonial-track");
-  const prevBtn = document.getElementById("testimonial-prev");
-  const nextBtn = document.getElementById("testimonial-next");
+  import EmblaCarousel from "embla-carousel";
 
-  function getCardWidth(): number {
-    const firstCard = track?.querySelector<HTMLElement>(".flex-shrink-0");
-    if (!firstCard || !track) return 0;
-    const gap = 16; // gap-4 = 1rem = 16px
-    return firstCard.offsetWidth + gap;
+  const trackEl = document.getElementById("testimonial-track") as HTMLElement;
+  const containerEl = document.getElementById("testimonial-container") as HTMLElement;
+
+  const embla = EmblaCarousel(trackEl, {
+    container: containerEl,
+    loop: false,
+    align: "start",
+    dragFree: false,
+  });
+
+ document.getElementById("testimonial-prev")?.addEventListener("click", () => {
+  embla.scrollPrev();
+});
+
+document.getElementById("testimonial-next")?.addEventListener("click", () => {
+  if (embla.canScrollNext()) {
+    embla.scrollNext();
+  } else {
+    embla.scrollTo(0);
   }
-
-  prevBtn?.addEventListener("click", () => {
-    track?.scrollBy({ left: -getCardWidth(), behavior: "smooth" });
-  });
-
-  nextBtn?.addEventListener("click", () => {
-    track?.scrollBy({ left: getCardWidth(), behavior: "smooth" });
-  });
+});
 </script>
