@@ -1,7 +1,10 @@
 ---
+// DATA //
+import { heroSectionData } from "@/data/hero-section-data";
+
+// COMPONENTS //
 import { Image } from "astro:assets";
 
-const heroImage = "https://www.figma.com/api/mcp/asset/a43dd646-5d1f-4e3c-a550-47d7a2c37f44";
 ---
 
 <section
@@ -9,11 +12,11 @@ const heroImage = "https://www.figma.com/api/mcp/asset/a43dd646-5d1f-4e3c-a550-4
 >
   <div class="absolute inset-0">
     <Image
-      src={heroImage}
+      src={heroSectionData.image}
       alt=""
       width={1920}
       height={945}
-      class="h-full w-full object-cover object-[60%_top] lg:object-top"
+      class="h-full w-full object-cover object-[68%_center] lg:object-top"
       aria-hidden="true"
     />
   </div>
@@ -24,15 +27,15 @@ const heroImage = "https://www.figma.com/api/mcp/asset/a43dd646-5d1f-4e3c-a550-4
   </div>
 
   <div class="relative z-10 w-full pb-12 sm:pb-16 lg:pb-20">
-    <div class="container mx-auto w-full max-w-screen-2xl px-5">
+    <div class="container mx-auto max-w-screen-2xl px-5">
       <div class="text-n-50 flex max-w-3xl flex-col gap-1.5">
         <p
-          class="text-base leading-[169%] font-normal tracking-normal tracking-wide uppercase lg:text-3xl"
+          class="text-base leading-[169%] lg:text-3xl"
         >
-          WE LOVE TEACHING
+          {heroSectionData.eyebrow}
         </p>
-        <p class="text-2xl leading-tight font-semibold tracking-normal lg:text-5xl">
-          Proper guidance leads to Safer roads for our families.
+        <p class="text-2xl leading-tight font-semibold lg:text-5xl">
+          {heroSectionData.heading}
         </p>
       </div>
     </div>
