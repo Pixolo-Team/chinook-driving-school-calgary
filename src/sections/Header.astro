@@ -1,0 +1,140 @@
+---
+// CONSTANTS //
+import { NAV_LINKS, FLOATING_MENU_SCROLL_THRESHOLD } from "@/constants/navigation";
+---
+
+<!-- ===== MENU ON TOP (static header) ===== -->
+<header
+  id="menu-on-top"
+  class="absolute left-0 right-0 top-0 z-40 w-full px-6 py-5 lg:px-12"
+>
+  <div class="mx-auto flex max-w-7xl items-center justify-between">
+
+    <!-- Logo -->
+    <a href="/" class="flex flex-col leading-tight">
+      <span class="text-lg font-bold text-blue-500">Chinook Driving</span>
+      <span class="text-xs font-semibold uppercase tracking-widest text-n-500">
+        School Calgary
+      </span>
+    </a>
+
+    <!-- Desktop Nav Links -->
+    <nav class="hidden items-center gap-8 lg:flex" aria-label="Main navigation">
+      {
+        NAV_LINKS.map(({ label, href }) => (
+          <a
+            href={href}
+            class="text-sm font-semibold text-n-700 transition-colors duration-200 hover:text-blue-500"
+          >
+            {label}
+          </a>
+        ))
+      }
+    </nav>
+
+    <!-- CTA -->
+    <a
+      href="/enroll"
+      class="hidden rounded-lg bg-blue-500 px-5 py-2.5 text-sm font-semibold text-n-50 shadow-md transition-colors duration-200 hover:bg-blue-600 lg:inline-block"
+    >
+      Enroll Now
+    </a>
+
+    <!-- Mobile menu button (decorative — desktop focus of this issue) -->
+    <button
+      id="mobile-menu-toggle"
+      class="flex flex-col gap-1.5 lg:hidden"
+      aria-label="Toggle mobile menu"
+      aria-expanded="false"
+    >
+      <span class="h-0.5 w-6 rounded-full bg-n-700 transition-all duration-200"></span>
+      <span class="h-0.5 w-6 rounded-full bg-n-700 transition-all duration-200"></span>
+      <span class="h-0.5 w-6 rounded-full bg-n-700 transition-all duration-200"></span>
+    </button>
+
+  </div>
+</header>
+
+<!-- ===== FLOATING MENU (fixed, animated in on scroll) ===== -->
+<nav
+  id="floating-menu"
+  class="fixed left-0 right-0 top-0 z-50 hidden w-full border-b border-n-200 bg-n-50 px-6 py-3 shadow-lg lg:px-12"
+  aria-label="Floating navigation"
+  aria-hidden="true"
+>
+  <div class="mx-auto flex max-w-7xl items-center justify-between">
+
+    <!-- Logo -->
+    <a href="/" class="flex flex-col leading-tight">
+      <span class="text-base font-bold text-blue-500">Chinook Driving</span>
+      <span class="text-xs font-semibold uppercase tracking-widest text-n-500">
+        School Calgary
+      </span>
+    </a>
+
+    <!-- Desktop Nav Links -->
+    <div class="hidden items-center gap-8 lg:flex">
+      {
+        NAV_LINKS.map(({ label, href }) => (
+          <a
+            href={href}
+            class="text-sm font-semibold text-n-700 transition-colors duration-200 hover:text-blue-500"
+          >
+            {label}
+          </a>
+        ))
+      }
+    </div>
+
+    <!-- CTA -->
+    <a
+      href="/enroll"
+      class="hidden rounded-lg bg-blue-500 px-5 py-2 text-sm font-semibold text-n-50 shadow-md transition-colors duration-200 hover:bg-blue-600 lg:inline-block"
+    >
+      Enroll Now
+    </a>
+
+  </div>
+</nav>
+
+<script>
+  import { FLOATING_MENU_SCROLL_THRESHOLD } from "@/constants/navigation";
+
+  const floatingMenu = document.getElementById(
+    "floating-menu"
+  ) as HTMLElement | null;
+
+  let ticking = false;
+
+  window.addEventListener("scroll", () => {
+    // Throttle scroll handler using requestAnimationFrame to avoid layout thrashing
+    if (ticking) return;
+    ticking = true;
+
+    requestAnimationFrame(() => {
+      if (!floatingMenu) {
+        ticking = false;
+        return;
+      }
+
+      if (window.scrollY > FLOATING_MENU_SCROLL_THRESHOLD) {
+        // Only trigger animation when the menu is currently hidden
+        if (floatingMenu.classList.contains("hidden")) {
+          floatingMenu.classList.remove("hidden");
+          floatingMenu.removeAttribute("aria-hidden");
+
+          // Force a reflow so the browser registers the element before animating
+          void floatingMenu.offsetHeight;
+
+          floatingMenu.classList.add("animate-slide-down");
+        }
+      } else {
+        floatingMenu.classList.add("hidden");
+        floatingMenu.setAttribute("aria-hidden", "true");
+        floatingMenu.classList.remove("animate-slide-down");
+      }
+
+      ticking = false;
+    });
+  });
+</script>
