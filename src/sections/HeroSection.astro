@@ -1,0 +1,43 @@
+---
+// DATA //
+import { heroSectionData } from "@/data/hero-section-data";
+
+// COMPONENTS //
+import { Image } from "astro:assets";
+
+---
+
+<section
+  class="bg-n-900 relative flex h-[100dvh] max-h-[945px] w-full flex-col justify-end overflow-hidden"
+>
+  <div class="absolute inset-0">
+    <Image
+      src={heroSectionData.image}
+      alt=""
+      width={1920}
+      height={945}
+      class="h-full w-full object-cover object-[68%_center] lg:object-top"
+      aria-hidden="true"
+    />
+  </div>
+
+  <div
+    class="from-n-900/90 via-n-900/60 absolute inset-x-0 bottom-0 h-[70%] max-h-[600px] bg-gradient-to-t to-transparent"
+  >
+  </div>
+
+  <div class="relative z-10 w-full pb-12 sm:pb-16 lg:pb-20">
+    <div class="container mx-auto max-w-screen-2xl px-5">
+      <div class="text-n-50 flex max-w-3xl flex-col gap-1.5">
+        <p
+          class="text-base leading-[169%] lg:text-3xl"
+        >
+          {heroSectionData.eyebrow}
+        </p>
+        <p class="text-2xl leading-tight font-semibold lg:text-5xl">
+          {heroSectionData.heading}
+        </p>
+      </div>
+    </div>
+  </div>
+</section>

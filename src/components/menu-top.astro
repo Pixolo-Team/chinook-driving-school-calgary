@@ -1,31 +1,20 @@
 ---
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
-import menuTopBackground from "@/assets/menu-top-bg.png";
 import menuTopLogo from "@/assets/menu-logo.png";
 
 const navItems = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Courses", href: "/courses" },
-  { label: "Contact Us", href: "/contact" },
+  { label: "Contact Us", href: "/contact-us" },
 ];
 ---
 
-<section class="relative w-full min-h-72">
-  <div class="absolute inset-0 h-72 w-full">
-    <Image
-      src={menuTopBackground}
-      alt=""
-      width={1920}
-      height={288}
-      class="h-full w-full object-cover"
-    />
-  </div>
-
-  <div class="relative shadow-lg">
+<section class="relative hidden w-full sm:block">
+  <div class="">
     <!-- Static header: max-width capped at 955px -->
-    <div class="mx-auto flex w-full max-w-[955px] items-center justify-between px-5 py-4">
+    <div class="container mx-auto flex w-full items-center justify-between px-5 py-4">
 
       <Image src={menuTopLogo} alt="Chinook Driving Academy" width={146} height={58} />
 
@@ -40,7 +29,7 @@ const navItems = [
             >
               <span>{item.label}</span>
               {index === 0 && (
-                <span class="absolute -bottom-2 left-0 h-0.5 w-14 rounded-lg bg-n-50"></span>
+                <span class="absolute -bottom-1 left-0 h-0.5 w-full rounded-lg bg-n-50"></span>
               )}
             </a>
           ))}
@@ -74,8 +63,9 @@ const navItems = [
 <nav
   id="floating-menu"
   class="fixed top-3 z-50
+         hidden sm:flex
          left-1/2 -translate-x-1/2 w-full max-w-[955px]
-         flex items-center
+         items-center
          rounded-full border border-n-200 bg-n-50 shadow-xl
          px-4 py-2.5
          opacity-0 -translate-y-4 pointer-events-none
