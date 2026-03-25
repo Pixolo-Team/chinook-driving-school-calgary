@@ -1,0 +1,63 @@
+---
+// COMPONENTS //
+import { Icon } from "astro-icon/components";
+
+const numberStats = [
+  {
+    icon: "user-check-validate",
+    value: "10k+",
+    label: "Students Trained",
+  },
+  {
+    icon: "steering-wheel",
+    value: "50k+",
+    label: "Lessons Delivered",
+  },
+  {
+    icon: "smiley-very-happy",
+    value: "99%",
+    label: "Satisfaction Rate",
+  },
+  {
+    icon: "document-contract-license",
+    value: "100%",
+    label: "Licensed Coaches",
+  },
+  {
+    icon: "cars-traffic-jam",
+    value: "15+ Yrs",
+    label: "Combined Experience",
+  },
+];
+---
+
+<section class="bg-n-100">
+  <div class="container mx-auto flex w-full flex-col items-center gap-12 px-6 py-20 sm:gap-14 sm:py-24 lg:gap-12 lg:py-28 lg:px-0">
+    <div class="flex w-full flex-col items-center gap-2 text-center">
+      <p class="text-sm font-bold uppercase tracking-[0.6px] text-blue-500">
+        Our Track Record
+      </p>
+      <p class="text-3xl font-bold leading-tight text-n-800 md:text-4xl lg:text-5xl">
+        Our Driving School in Numbers
+      </p>
+    </div>
+
+    <div class="grid w-full grid-cols-1 gap-3.5 sm:grid-cols-2 sm:gap-5 lg:grid-cols-5">
+      {numberStats.map((stat) => (
+        <div class="flex h-full flex-col items-center justify-center gap-3.5 rounded-4xl border border-n-200 bg-n-50 px-8 pb-7 pt-5 text-center sm:gap-4 lg:pb-8 lg:pt-6">
+          <div class="rounded-full bg-blue-50 p-3">
+            <Icon name={stat.icon} class="size-7" aria-hidden="true" />
+          </div>
+          <div class="flex flex-col items-center gap-1">
+            <p class="text-3xl font-bold text-blue-500 lg:text-5xl">
+              {stat.value}
+            </p>
+            <p class="text-sm font-semibold text-n-700 lg:text-base">
+              {stat.label}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
