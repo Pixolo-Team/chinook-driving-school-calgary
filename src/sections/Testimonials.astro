@@ -77,13 +77,13 @@ const { testimonials } = testimonialSectionDetails;
       <!-- /review-rating -->
 
       <!-- ── cards-wrap ─────────────────────────────────── -->
-      <div class="cards-wrap flex flex-col gap-4 relative">
+      <div class="cards-wrap flex flex-col  relative">
  
         <!-- Scrollable track -->
-       <div id="testimonial-track" class="overflow-hidden">
+       <div id="testimonial-track" class="overflow-hidden ">
           <div id="testimonial-container" class="flex ">
             {testimonials.map((testimonial) => (
-              <div class="flex-shrink-0 w-full snap-start lg:w-[400px] pr-5">
+              <div class="flex-shrink-0 w-full lg:w-1/3 pr-5">
                 <TestimonialCard
                   testimonial={testimonial}
                   rating={testimonial.rating}
@@ -114,7 +114,7 @@ const { testimonials } = testimonialSectionDetails;
             id="testimonial-next"
             class=" lg:absolute w-11 h-11 rounded-full bg-n-50 shadow-md
                    flex items-center justify-center
-                   text-n-900 bottom-50 lg:left-300 z-10 hover:cursor-pointer"
+                   text-n-900 bottom-45 lg:left-295 z-10 hover:cursor-pointer"
             aria-label="Next review"
           >
             <img src="/icons/arrow.svg" alt="next" class="size-4 ml-1 rounded-xl  -rotate-90" />
