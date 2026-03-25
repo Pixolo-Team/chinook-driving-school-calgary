@@ -1,0 +1,154 @@
+---
+// DATA //
+import { courseSectionData } from "@/data/course-section-data";
+
+// COMPONENTS //
+import { Image } from "astro:assets";
+---
+
+<section class="bg-n-100">
+  <div class="container mx-auto flex w-full max-w-screen-2xl flex-col items-center gap-10 px-6 py-20 lg:gap-16 lg:px-12 lg:py-28">
+    <div class="flex w-full max-w-2xl flex-col items-center gap-2 text-center">
+      <p class="text-sm font-bold uppercase tracking-[0.6px] text-blue-500">
+        {courseSectionData.eyebrow}
+      </p>
+      <p class="text-3xl font-bold leading-tight text-n-800 sm:text-4xl lg:text-5xl">
+        {courseSectionData.heading}
+      </p>
+      <p class="text-sm leading-relaxed text-n-600 sm:text-base">
+        {courseSectionData.description}
+      </p>
+    </div>
+
+    <div class="flex w-full flex-col gap-7">
+      <div class="grid w-full grid-cols-3 items-center border-b border-n-200">
+        {courseSectionData.tabs.map((tab) => (
+          <div
+            class:list={[
+              "flex items-center justify-center border-b py-2.5 text-center text-xs font-semibold sm:py-3 sm:text-sm",
+              tab.isActive
+                ? "border-blue-500 text-blue-500"
+                : "border-transparent text-n-600",
+            ]}
+          >
+            {tab.label}
+          </div>
+        ))}
+      </div>
+
+      <div class="grid w-full grid-cols-1 gap-5 lg:grid-cols-3 lg:gap-5 lg:divide-x-0">
+        {courseSectionData.cards.map((card) => (
+          <div
+            class:list={[
+              "relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border p-8 lg:p-10",
+              card.isFeatured
+                ? "border-transparent bg-blue-500 text-n-50"
+                : "border-n-300 bg-n-50 text-n-800",
+            ]}
+          >
+            <Image
+              src={card.ellipse}
+              alt=""
+              width={353}
+              height={353}
+              class="pointer-events-none absolute -bottom-24 -right-24 h-80 w-80 opacity-90 sm:h-96 sm:w-96"
+              aria-hidden="true"
+            />
+
+            <div class="relative z-10 flex flex-col gap-7">
+              <div class="flex items-start justify-between gap-3">
+                <div class="flex flex-col gap-2">
+                  <p
+                    class:list={[
+                      "text-xs font-bold uppercase tracking-[1.4px]",
+                      card.isFeatured ? "text-n-50" : "text-blue-500",
+                    ]}
+                  >
+                    {card.label}
+                  </p>
+                  <div class="flex items-baseline gap-1">
+                    <span
+                      class:list={[
+                        "text-4xl font-bold leading-none sm:text-5xl",
+                        card.isFeatured ? "text-n-50" : "text-n-800",
+                      ]}
+                    >
+                      {card.price}
+                    </span>
+                    <span
+                      class:list={[
+                        "text-xs",
+                        card.isFeatured ? "text-n-200" : "text-n-500",
+                      ]}
+                    >
+                      {card.taxLabel}
+                    </span>
+                  </div>
+                </div>
+
+                <span
+                  class:list={[
+                    "rounded-full px-4 py-1.5 text-xs font-bold",
+                    card.isFeatured
+                      ? "bg-white/20 text-n-50"
+                      : "bg-n-200 text-n-800",
+                  ]}
+                >
+                  {card.duration}
+                </span>
+              </div>
+
+              <div class="flex flex-col gap-4">
+                <p
+                  class:list={[
+                    "text-base font-bold",
+                    card.isFeatured ? "text-n-50" : "text-n-800",
+                  ]}
+                >
+                  {card.title}
+                </p>
+
+                <div class="flex flex-col gap-3">
+                  {card.features.map((feature) => (
+                    <div class="flex items-center gap-3 text-sm">
+                      <Image
+                        src={card.checkIcon}
+                        alt=""
+                        width={15}
+                        height={15}
+                        class="size-4"
+                        aria-hidden="true"
+                      />
+                      <span
+                        class:list={[
+                          "text-sm",
+                          card.isFeatured ? "text-n-50" : "text-n-800",
+                        ]}
+                      >
+                        {feature}
+                      </span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            <div class="relative z-10 mt-8">
+              <button
+                class:list={[
+                  "relative w-full rounded-full py-3 text-sm font-bold",
+                  card.isFeatured
+                    ? "bg-n-50 text-blue-500"
+                    : "border border-blue-500 bg-n-50 text-blue-500",
+                ]}
+                type="button"
+              >
+                {card.buttonLabel}
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
