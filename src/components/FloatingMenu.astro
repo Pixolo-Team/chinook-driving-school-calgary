@@ -1,0 +1,38 @@
+---
+// COMPONENTS //
+import { Image } from "astro:assets";
+import Button from "@/components/ui/Button.astro";
+import MenuBar from "@/components/MenuBar.astro";
+
+// CONSTANTS //
+import { URLS } from "@/infrastructure/constants/urls";
+
+// IMAGES //
+import menuLogo from "@/assets/menu-logo.png";
+
+// DATA //
+import { menuItems } from "@/data/menu";
+---
+
+<div
+  id="floating-menu"
+  class="outline-n-300 bg-n-50 pointer-events-none fixed top-1 left-1/2 z-50 hidden w-[calc(100%-32px)] max-w-248.5 -translate-x-1/2 -translate-y-4 items-center rounded-4xl px-4 py-2 opacity-0 shadow-[0_14px_16px_0_rgba(0,0,0,0.1)] outline-2 transition-all duration-300 ease-out sm:flex lg:px-5 lg:py-2.5"
+  aria-hidden="true"
+  inert
+>
+  <!-- Keep a dedicated floating version so scroll-specific styling does not complicate the primary header. -->
+  <div class="flex w-full items-center justify-between">
+    <a href="/" aria-label="Chinook Driving Academy home" class="w-24 shrink-0 lg:w-30">
+      <Image src={menuLogo} alt="Chinook Driving Academy" width={117} height={46} class="w-full" />
+    </a>
+
+    <div class="flex items-center gap-8 lg:gap-11">
+      <MenuBar variant="floating" items={menuItems} />
+
+      <div class="flex items-center gap-2 lg:gap-2.5">
+        <Button buttonText="Enroll Now" className="w-26.5" href={URLS.ENROLL} />
+        <Button buttonText="Call Us" rightIcon="phone-icon" variant="outline" href={URLS.CONTACT} />
+      </div>
+    </div>
+  </div>
+</div>

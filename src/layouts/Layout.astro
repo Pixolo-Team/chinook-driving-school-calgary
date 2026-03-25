@@ -4,7 +4,8 @@ import "@/styles/animation.css";
 import "@/styles/global.css";
 
 // COMPONENTS //
-import MenuTop from "@/components/menu-top.astro";
+import Header from "@/components/Header.astro";
+import Menu from "@/components/Menu.astro";
 
 interface Props {
   title?: string;
@@ -33,9 +34,12 @@ const {
     />
   </head>
   <body class="relative">
-    <header class="absolute inset-x-0 top-0 z-30">
-      <MenuTop />
-    </header>
+    <!-- Header -->
+    <div class="absolute inset-x-0 top-0 z-30">
+      <Header />
+    </div>
+
+    <!-- Main -->
     <main class="relative">
       <slot />
     </main>
