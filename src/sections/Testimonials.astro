@@ -81,9 +81,9 @@ const { testimonials } = testimonialSectionDetails;
  
         <!-- Scrollable track -->
        <div id="testimonial-track" class="overflow-hidden">
-          <div id="testimonial-container" class="flex gap-5">
+          <div id="testimonial-container" class="flex ">
             {testimonials.map((testimonial) => (
-              <div class="flex-shrink-0 w-full snap-start lg:w-100">
+              <div class="flex-shrink-0 w-full snap-start lg:w-[400px] pr-5">
                 <TestimonialCard
                   testimonial={testimonial}
                   rating={testimonial.rating}
@@ -106,7 +106,7 @@ const { testimonials } = testimonialSectionDetails;
                    flex items-center justify-center text-n-900 lg:hidden hover:cursor-pointer"
             aria-label="Previous review"
           >
-            <img src="/icons/arrow.svg" alt="previous" class="size-4 rotate-90" />
+            <img src="/icons/arrow.svg" alt="previous" class="size-4 mr-1 rotate-90" />
           </button>
 
           <!-- Next button -->
@@ -114,10 +114,10 @@ const { testimonials } = testimonialSectionDetails;
             id="testimonial-next"
             class=" lg:absolute w-11 h-11 rounded-full bg-n-50 shadow-md
                    flex items-center justify-center
-                   text-n-900 bottom-50 left-300 z-10 hover:cursor-pointer"
+                   text-n-900 bottom-50 lg:left-300 z-10 hover:cursor-pointer"
             aria-label="Next review"
           >
-            <img src="/icons/arrow.svg" alt="next" class="size-4 -rotate-90" />
+            <img src="/icons/arrow.svg" alt="next" class="size-4 ml-1 rounded-xl  -rotate-90" />
           </button>
 
  
@@ -149,6 +149,7 @@ const { testimonials } = testimonialSectionDetails;
     loop: false,
     align: "start",
     dragFree: false,
+     containScroll: "trimSnaps",
   });
 
  document.getElementById("testimonial-prev")?.addEventListener("click", () => {
