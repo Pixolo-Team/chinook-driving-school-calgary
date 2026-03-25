@@ -3,168 +3,183 @@ import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import menuTopLogo from "@/assets/menu-logo.png";
 
+const currentPath = Astro.url.pathname;
+
 const navItems = [
   { label: "Home", href: "/" },
   { label: "About Us", href: "/about" },
   { label: "Courses", href: "/courses" },
   { label: "Contact Us", href: "/contact-us" },
 ];
+
+const getIsActiveLink = (href: string) =>
+  href === "/" ? currentPath === href : currentPath.startsWith(href);
 ---
 
 <section class="relative hidden w-full sm:block">
-  <div class="">
-    <!-- Static header: max-width capped at 955px -->
-    <div class="container mx-auto flex w-full items-center justify-between px-5 py-4">
+  <!-- Static header -->
+  <div class="container mx-auto flex w-full items-center justify-between px-5 py-4">
+    <a href="/" aria-label="Chinook Driving Academy home" class="shrink-0">
+      <Image
+        src={menuTopLogo}
+        alt="Chinook Driving Academy"
+        width={146}
+        height={58}
+      />
+    </a>
 
-      <Image src={menuTopLogo} alt="Chinook Driving Academy" width={146} height={58} />
+    <div class="ml-auto flex items-center gap-3 md:gap-4 lg:gap-11">
+      <nav
+        aria-label="Primary"
+        class="hidden items-center gap-5 text-sm text-n-50 lg:flex xl:gap-7"
+      >
+        {
+          navItems.map((item) => {
+            const isActiveLink = getIsActiveLink(item.href);
 
-      <div class="flex flex-col items-end gap-4 md:flex-row md:items-center md:gap-11">
-        <nav aria-label="Primary" class="flex flex-col items-end gap-4 text-sm text-n-50 md:flex-row md:items-center md:gap-7">
-          {navItems.map((item, index) => (
-            <a
-              class={`${
-                index === 0 ? "font-semibold" : "font-medium"
-              } relative whitespace-nowrap`}
-              href={item.href}
-            >
-              <span>{item.label}</span>
-              {index === 0 && (
-                <span class="absolute -bottom-1 left-0 h-0.5 w-full rounded-lg bg-n-50"></span>
-              )}
-            </a>
-          ))}
-        </nav>
-
-        <div class="flex items-center gap-2.5">
-          <button
-            class="flex h-10 w-28 items-center justify-center rounded-3xl bg-blue-500 px-3.5 text-sm font-semibold leading-6 text-n-50"
-            type="button"
-          >
-            Enroll Now
-          </button>
-          <button
-            class="flex h-10 items-center justify-center gap-1.5 rounded-3xl border border-n-50 px-3.5 text-sm font-semibold leading-6 text-n-50"
-            type="button"
-          >
-            <span>Call Us</span>
-            <Icon name="phone-icon" class="h-5 w-5" />
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!--
-  FLOATING MENU
-  - max-width capped at 955px to match static header
-  - phone icon explicitly set to text-blue-500 to always match button color
--->
-<nav
-  id="floating-menu"
-  class="fixed top-3 z-50
-         hidden sm:flex
-         left-1/2 -translate-x-1/2 w-full max-w-[955px]
-         items-center
-         rounded-full border border-n-200 bg-n-50 shadow-xl
-         px-4 py-2.5
-         opacity-0 -translate-y-4 pointer-events-none
-         transition-all duration-300 ease-out"
-  aria-label="Floating navigation"
-  aria-hidden="true"
->
-  <!-- Floating nav inner: max-width 955px -->
-  <div class="mx-auto flex w-full max-w-[955px] items-center justify-between">
-
-    <!-- Logo -->
-    <Image
-      src={menuTopLogo}
-      alt="Chinook Driving Academy"
-      width={130}
-      height={52}
-      class="h-11 w-auto"
-    />
-
-    <!-- Right side: nav links + CTA -->
-    <div class="ml-auto flex items-center gap-6">
-
-      <!-- Nav Links -->
-      <nav class="hidden items-center gap-8 lg:flex">
-        {navItems.map((item, index) => (
-          <a
-            href={item.href}
-            class={`relative whitespace-nowrap text-sm transition-colors duration-200 hover:text-blue-500 ${
-              index === 0 ? "font-semibold text-blue-500" : "font-medium text-n-700"
-            }`}
-          >
-            {item.label}
-            {index === 0 && (
-              <span class="absolute -bottom-1 left-0 h-0.5 w-full rounded-full bg-blue-500"></span>
-            )}
-          </a>
-        ))}
+            return (
+              <a
+                class:list={[
+                  "relative whitespace-nowrap pb-1 transition-colors duration-200 hover:text-blue-500 focus:outline-none focus-visible:text-blue-500",
+                  isActiveLink ? "font-semibold text-n-50" : "font-medium text-n-50/85",
+                ]}
+                href={item.href}
+                aria-current={isActiveLink ? "page" : undefined}
+              >
+                <span>{item.label}</span>
+                {isActiveLink && (
+                  <span class="absolute inset-x-0 -bottom-1 h-0.5 rounded-full bg-n-50"></span>
+                )}
+              </a>
+            );
+          })
+        }
       </nav>
 
-      <!-- CTA Buttons -->
-      <div class="flex items-center gap-2.5">
+      <div class="flex items-center gap-2">
         <button
-          class="flex h-9 w-28 items-center justify-center rounded-full bg-blue-500 px-3.5 text-sm font-semibold text-n-50 transition-colors duration-200 hover:bg-blue-600"
+          class="flex h-10 items-center justify-center rounded-full bg-blue-500 px-4 text-sm font-semibold leading-6 text-n-50 transition-colors duration-200 hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-n-50/70"
           type="button"
         >
           Enroll Now
         </button>
         <button
-          class="flex h-9 items-center justify-center gap-1.5 rounded-full border border-blue-500 px-3.5 text-sm font-semibold text-blue-500 transition-colors duration-200 hover:bg-blue-50 text-n-500"
+          class="hidden h-10 items-center justify-center gap-1.5 rounded-full border border-n-50/80 bg-n-50/10 px-4 text-sm font-semibold leading-6 text-n-50 transition-colors duration-200 hover:bg-n-50/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-n-50/70 md:flex"
           type="button"
         >
           <span>Call Us</span>
-          <!-- Fix: explicit text-blue-500 so icon color always matches button text -->
+          <Icon name="phone-icon" class="h-5 w-5" />
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div
+  id="floating-menu"
+  class="fixed left-1/2 top-3 z-50
+         hidden w-[calc(100%-2rem)] max-w-[955px] -translate-x-1/2 items-center
+         rounded-full border border-n-200/80 bg-n-50/85 px-3 py-3 shadow-xl backdrop-blur-xl
+         opacity-0 -translate-y-4 pointer-events-none
+         transition-all duration-300 ease-out
+         sm:flex lg:px-4"
+  aria-hidden="true"
+  inert
+>
+  <div class="flex w-full items-center gap-3 lg:gap-6">
+    <a href="/" aria-label="Chinook Driving Academy home" class="shrink-0">
+      <Image
+        src={menuTopLogo}
+        alt="Chinook Driving Academy"
+        width={130}
+        height={52}
+        class="h-10 w-auto lg:h-11"
+      />
+    </a>
+
+    <div class="ml-auto flex min-w-0 items-center gap-2 md:gap-3 lg:gap-4">
+      <nav aria-label="Floating navigation" class="hidden items-center gap-6 lg:flex xl:gap-8">
+        {
+          navItems.map((item) => {
+            const isActiveLink = getIsActiveLink(item.href);
+
+            return (
+              <a
+                href={item.href}
+                class:list={[
+                  "relative whitespace-nowrap pb-1 text-sm transition-colors duration-200 hover:text-blue-500 focus:outline-none focus-visible:text-blue-500",
+                  isActiveLink ? "font-semibold text-blue-500" : "font-medium text-n-700",
+                ]}
+                aria-current={isActiveLink ? "page" : undefined}
+              >
+                <span>{item.label}</span>
+                {isActiveLink && (
+                  <span class="absolute inset-x-0 -bottom-1 h-0.5 rounded-full bg-blue-500"></span>
+                )}
+              </a>
+            );
+          })
+        }
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <button
+          class="flex h-9 items-center justify-center rounded-full bg-blue-500 px-3.5 text-sm font-semibold text-n-50 transition-all duration-200 hover:-translate-y-px hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-200"
+          type="button"
+        >
+          Enroll Now
+        </button>
+        <button
+          class="hidden h-9 items-center justify-center gap-1.5 rounded-full border border-blue-500/25 bg-n-50/80 px-3.5 text-sm font-semibold text-blue-500 transition-all duration-200 hover:-translate-y-px hover:bg-blue-50 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-200 md:flex"
+          type="button"
+        >
+          <span>Call Us</span>
           <Icon name="phone-icon" class="h-4 w-4" />
         </button>
       </div>
-
     </div>
   </div>
-</nav>
+</div>
 
 <script>
   const FLOATING_MENU_SCROLL_THRESHOLD = 80;
-
   const floatingMenu = document.getElementById(
     "floating-menu"
   ) as HTMLElement | null;
+  
+  if (floatingMenu) {
+    let ticking = false;
+    let isVisible = false;
 
-  let ticking = false;
-  let isVisible = false;
+    const setFloatingMenuVisibility = (shouldShow: boolean) => {
+      floatingMenu.classList.toggle("opacity-100", shouldShow);
+      floatingMenu.classList.toggle("translate-y-0", shouldShow);
+      floatingMenu.classList.toggle("pointer-events-auto", shouldShow);
+      floatingMenu.classList.toggle("opacity-0", !shouldShow);
+      floatingMenu.classList.toggle("-translate-y-4", !shouldShow);
+      floatingMenu.classList.toggle("pointer-events-none", !shouldShow);
+      floatingMenu.setAttribute("aria-hidden", String(!shouldShow));
+      floatingMenu.toggleAttribute("inert", !shouldShow);
+      isVisible = shouldShow;
+    };
 
-  window.addEventListener("scroll", () => {
-    // Throttle using rAF to avoid layout thrashing
-    if (ticking) return;
-    ticking = true;
-
-    requestAnimationFrame(() => {
-      if (!floatingMenu) {
-        ticking = false;
-        return;
-      }
-
+    const updateFloatingMenu = () => {
       const shouldShow = window.scrollY > FLOATING_MENU_SCROLL_THRESHOLD;
 
-      if (shouldShow && !isVisible) {
-        // Animate in: slide down from above + fade in
-        floatingMenu.classList.remove("opacity-0", "-translate-y-4", "pointer-events-none");
-        floatingMenu.classList.add("opacity-100", "translate-y-0");
-        floatingMenu.removeAttribute("aria-hidden");
-        isVisible = true;
-      } else if (!shouldShow && isVisible) {
-        // Animate out: slide back up + fade out
-        floatingMenu.classList.remove("opacity-100", "translate-y-0");
-        floatingMenu.classList.add("opacity-0", "-translate-y-4", "pointer-events-none");
-        floatingMenu.setAttribute("aria-hidden", "true");
-        isVisible = false;
+      if (shouldShow !== isVisible) {
+        setFloatingMenuVisibility(shouldShow);
       }
 
       ticking = false;
-    });
-  });
+    };
+
+    const handleScroll = () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(updateFloatingMenu);
+    };
+
+    setFloatingMenuVisibility(window.scrollY > FLOATING_MENU_SCROLL_THRESHOLD);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+  }
 </script>
