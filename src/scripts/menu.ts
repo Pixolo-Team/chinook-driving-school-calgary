@@ -8,6 +8,7 @@ interface FloatingMenuConfigData {
 
 interface MotionAnimationData {
   stop: () => void;
+  then: (onFulfilled: () => void) => unknown;
 }
 
 const FLOATING_MENU_SHELL_ID = "floating-menu-shell";
@@ -39,32 +40,13 @@ export const initializeFloatingMenu = ({ menuId, scrollThreshold }: FloatingMenu
   let ticking = false;
   let isVisible = false;
   let menuAnimation: MotionAnimationData | null = null;
-  let visibilityTimeoutId: number | null = null;
-
-  /** Clears the visibility timeout if it exists. */
-  const clearVisibilityTimeout = () => {
-    if (visibilityTimeoutId === null) {
-      return;
-    }
-
-    window.clearTimeout(visibilityTimeoutId);
-    visibilityTimeoutId = null;
-  };
-
-  /** Schedules the completion of the floating menu visibility animation. */
-  const scheduleVisibilityCompletion = (durationInSeconds: number, callback: () => void) => {
-    clearVisibilityTimeout();
-    visibilityTimeoutId = window.setTimeout(() => {
-      visibilityTimeoutId = null;
-      callback();
-    }, durationInSeconds * 1000);
-  };
+  let currentAnimationId = 0;
 
   /** Stops the floating menu animation if it is running. */
   const stopFloatingMenuAnimation = () => {
     menuAnimation?.stop();
     menuAnimation = null;
-    clearVisibilityTimeout();
+    currentAnimationId += 1;
   };
 
   /** Updates the classes of the floating menu based on its visibility state. */
@@ -104,6 +86,7 @@ export const initializeFloatingMenu = ({ menuId, scrollThreshold }: FloatingMenu
   /** Animates the floating menu into view. */
   const animateFloatingMenuIn = () => {
     stopFloatingMenuAnimation();
+    const animationId = currentAnimationId;
     setFloatingMenuShellVisibility(true);
     updateFloatingMenuClasses(FLOATING_MENU_HIDDEN_CLASS_NAMES, false);
     updateFloatingMenuClasses(FLOATING_MENU_VISIBLE_CLASS_NAMES, true);
@@ -121,7 +104,11 @@ export const initializeFloatingMenu = ({ menuId, scrollThreshold }: FloatingMenu
       },
     ) as MotionAnimationData;
 
-    scheduleVisibilityCompletion(FLOATING_MENU_ENTER_DURATION, () => {
+    menuAnimation.then(() => {
+      if (animationId !== currentAnimationId) {
+        return;
+      }
+
       menuAnimation = null;
       setFloatingMenuVisibleState();
     });
@@ -130,6 +117,7 @@ export const initializeFloatingMenu = ({ menuId, scrollThreshold }: FloatingMenu
   /** Animates the floating menu out of view. */
   const animateFloatingMenuOut = () => {
     stopFloatingMenuAnimation();
+    const animationId = currentAnimationId;
     setFloatingMenuShellVisibility(true);
     updateFloatingMenuClasses(FLOATING_MENU_HIDDEN_CLASS_NAMES, false);
     updateFloatingMenuClasses(FLOATING_MENU_VISIBLE_CLASS_NAMES, true);
@@ -147,7 +135,11 @@ export const initializeFloatingMenu = ({ menuId, scrollThreshold }: FloatingMenu
       },
     ) as MotionAnimationData;
 
-    scheduleVisibilityCompletion(FLOATING_MENU_EXIT_DURATION, () => {
+    menuAnimation.then(() => {
+      if (animationId !== currentAnimationId) {
+        return;
+      }
+
       menuAnimation = null;
       setFloatingMenuHiddenState();
     });
