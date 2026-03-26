@@ -10,7 +10,7 @@ import path from 'path';
 export default defineConfig({
   integrations: [
     icon({
-      iconDir: "src/assets",
+      iconDir: "public/icons",
     }),
   ],
   vite: {

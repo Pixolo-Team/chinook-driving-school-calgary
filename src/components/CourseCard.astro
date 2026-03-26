@@ -1,0 +1,114 @@
+---
+// COMPONENTS //
+import { Image } from "astro:assets";
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  card: {
+    id: string;
+    label: string;
+    price: string;
+    taxLabel: string;
+    duration: string;
+    title: string;
+    features: string[];
+    isFeatured: boolean;
+    ellipse: string;
+    buttonLabel: string;
+  };
+}
+
+const { card } = Astro.props;
+---
+
+<div
+  class:list={[
+    "relative flex h-full flex-col justify-between overflow-hidden rounded-3xl border p-8 lg:p-10",
+    card.isFeatured
+      ? "text-n-50 border-transparent bg-blue-500"
+      : "border-n-300 bg-n-50 text-n-800",
+  ]}
+>
+  <!-- Background Ellipse -->
+  <Image
+    src={card.ellipse}
+    alt=""
+    width={130}
+    height={229}
+    class="absolute right-0 bottom-0"
+    aria-hidden="true"
+  />
+
+  <!--  -->
+  <div class="relative z-10 flex flex-col gap-7">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex flex-col gap-2">
+        <p
+          class:list={[
+            "text-xs font-bold tracking-[1.4px] uppercase",
+            card.isFeatured ? "text-n-50" : "text-blue-500",
+          ]}
+        >
+          {card.label}
+        </p>
+        <div class="flex items-baseline gap-1">
+          <span
+            class:list={[
+              "text-4xl leading-none font-bold sm:text-5xl",
+              card.isFeatured ? "text-n-50" : "text-n-800",
+            ]}
+          >
+            {card.price}
+          </span>
+          <span class:list={["text-xs", card.isFeatured ? "text-n-200" : "text-n-500"]}>
+            {card.taxLabel}
+          </span>
+        </div>
+      </div>
+
+      <span
+        class:list={[
+          "rounded-full px-4 py-1.5 text-xs font-bold",
+          card.isFeatured ? "text-n-50 bg-white/20" : "bg-n-200 text-n-800",
+        ]}
+      >
+        {card.duration}
+      </span>
+    </div>
+
+    <div class="flex flex-col gap-4">
+      <p class:list={["text-base font-bold", card.isFeatured ? "text-n-50" : "text-n-800"]}>
+        {card.title}
+      </p>
+
+      <div class="flex flex-col gap-3">
+        {
+          card.features.map((feature) => (
+            <div class="flex items-center gap-3 text-sm">
+              <Icon
+                name="check-icon"
+                class:list={["size-4", card.isFeatured ? "text-n-50" : "text-blue-500"]}
+                aria-hidden="true"
+              />
+              <span class:list={["text-sm", card.isFeatured ? "text-n-50" : "text-n-800"]}>
+                {feature}
+              </span>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+
+  <div class="relative z-10 mt-8">
+    <button
+      class:list={[
+        "relative w-full rounded-full py-3 text-sm font-bold",
+        card.isFeatured ? "bg-n-50 text-blue-500" : "bg-n-50 border border-blue-500 text-blue-500",
+      ]}
+      type="button"
+    >
+      {card.buttonLabel}
+    </button>
+  </div>
+</div>
