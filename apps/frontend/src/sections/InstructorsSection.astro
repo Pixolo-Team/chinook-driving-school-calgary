@@ -1,0 +1,106 @@
+---
+import { Image } from "astro:assets";
+
+import InstructorCard from "@/components/InstructorCard.astro";
+import { instructorsSectionData } from "@/data/instructors-section-data";
+
+import arrowIcon from "@/assets/instructor-arrow-icon.png";
+import arrowLeftMobile from "@/assets/instructor-arrow-left.png";
+import arrowRightMobile from "@/assets/instructor-arrow-right.png";
+import paginationDots from "@/assets/instructors-pagination.png";
+---
+
+<section class="bg-n-100">
+  <div class="container mx-auto w-full px-6 py-20 md:px-12 lg:px-24 lg:py-28">
+    <div class="flex flex-col items-center gap-5 text-center lg:gap-7">
+      <div class="flex flex-col items-center gap-2 lg:gap-3">
+        <p class="text-sm font-bold uppercase tracking-[0.6px] text-blue-600">
+          {instructorsSectionData.eyebrow}
+        </p>
+        <p class="text-3xl font-bold leading-tight text-n-800 lg:text-5xl">
+          {instructorsSectionData.heading}
+        </p>
+      </div>
+      <p class="max-w-2xl text-xs text-n-600 lg:text-base">
+        {instructorsSectionData.description}
+      </p>
+    </div>
+
+    <div class="mt-11 flex flex-col gap-5 lg:mt-16 lg:gap-16">
+      <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
+        {instructorsSectionData.instructors.map((instructor) => (
+          <InstructorCard
+            firstName={instructor.firstName}
+            lastName={instructor.lastName}
+            role={instructor.role}
+            description={instructor.description}
+          />
+        ))}
+      </div>
+
+      <div class="relative flex w-full items-center justify-end">
+        <div class="absolute left-1/2 top-5 -translate-x-1/2">
+          <Image
+            src={paginationDots}
+            alt=""
+            width={36}
+            height={8}
+            class="h-2 w-9"
+            aria-hidden="true"
+          />
+        </div>
+
+        <div class="hidden items-center gap-4 lg:flex">
+          <button
+            type="button"
+            class="flex items-center justify-center rounded-3xl border border-n-300 bg-n-50 p-3.5"
+            aria-label="Previous instructor"
+          >
+            <Image
+              src={arrowIcon}
+              alt=""
+              width={20}
+              height={20}
+              class="rotate-180"
+              aria-hidden="true"
+            />
+          </button>
+          <button
+            type="button"
+            class="flex items-center justify-center rounded-3xl border border-n-300 bg-n-50 p-3.5"
+            aria-label="Next instructor"
+          >
+            <Image
+              src={arrowIcon}
+              alt=""
+              width={20}
+              height={20}
+              aria-hidden="true"
+            />
+          </button>
+        </div>
+
+        <div class="flex items-center gap-3 lg:hidden">
+          <button type="button" aria-label="Previous instructor">
+            <Image
+              src={arrowLeftMobile}
+              alt=""
+              width={36}
+              height={36}
+              aria-hidden="true"
+            />
+          </button>
+          <button type="button" aria-label="Next instructor">
+            <Image
+              src={arrowRightMobile}
+              alt=""
+              width={36}
+              height={36}
+              aria-hidden="true"
+            />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
