@@ -1,0 +1,79 @@
+---
+// DATA
+import { faqSectionData as faqs } from "@/data/faqSectionData";
+
+// COMPONENTS
+import FaqItem from "@/components/FaqItem.astro";
+---
+
+<section>
+  <div class="container bg-n-50 mx-auto flex w-full flex-col items-center gap-16 overflow-hidden px-5 py-36 lg:px-0">
+
+    <!-- Heading & Description -->
+    <div class="flex flex-col items-center gap-2.5">
+      <p class="text-sm font-bold uppercase tracking-[0.6px] text-blue-600">
+        Got Questions ?
+      </p>
+      <p
+        class="text-center text-3xl font-bold leading-tight text-n-800 md:text-5xl"
+      >
+        Frequently Asked Questions
+      </p>
+    </div>
+
+    <!-- FAQ Cards -->
+    <div class="flex w-full max-w-3xl mx-auto flex-col gap-4">
+      {faqs.map((faqItem) => (
+        <FaqItem question={faqItem.question} answer={faqItem.answer} />
+      ))}
+    </div>
+
+  </div>
+</section>
+
+<script>
+
+  // Select all Faq items on the page
+  document.querySelectorAll<HTMLElement>(".faq-item").forEach((item) => {
+
+    // Get interactive elements inside each Faq item
+    const trigger = item.querySelector<HTMLButtonElement>(".faq-trigger"); // Trigger button for the question
+    const answer = item.querySelector<HTMLElement>(".faq-answer"); // Collapsible answer section
+    const arrow = item.querySelector<SVGElement>(".faq-arrow"); // Rotating arrow icon
+
+    // Add click event to toggle Faq answer visibility
+    trigger?.addEventListener("click", () => {
+
+      // Check if current Faq item is already open
+      const isOpen = item.dataset.open === "true";
+
+      if (isOpen) {
+        item.dataset.open = "false"; 
+        trigger.setAttribute("aria-expanded", "false"); 
+
+        // Hide Content & Fade Out
+        if (answer) {
+          answer.style.maxHeight = "0px";
+          answer.style.opacity = "0"; 
+        }
+        if (arrow) {
+          (arrow as HTMLElement).style.transform = ""; 
+        }
+      } else {
+        item.dataset.open = "true"; 
+        trigger.setAttribute("aria-expanded", "true"); 
+
+        // Show Content & Fade In
+        if (answer) {
+          answer.style.maxHeight = "500px"; 
+          answer.style.opacity = "1"; 
+        }
+
+        if (arrow) {
+          (arrow as HTMLElement).style.transform = "rotate(180deg)"; 
+        }
+      }
+    });
+  });
+
+</script>
