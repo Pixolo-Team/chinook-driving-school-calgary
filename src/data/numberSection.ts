@@ -1,4 +1,4 @@
-export const numberStats = [
+export const numberStatsData = [
   {
     icon: "user-check-validate",
     value: "10k+",
