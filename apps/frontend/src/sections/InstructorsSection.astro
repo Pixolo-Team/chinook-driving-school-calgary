@@ -3,11 +3,8 @@ import { Image } from "astro:assets";
 
 import InstructorCard from "@/components/InstructorCard.astro";
 import { instructorsSectionData } from "@/data/instructors-section-data";
+import SliderArrows from "@/components/SliderArrows.astro";
 
-import arrowIcon from "@/assets/instructor-arrow-icon.png";
-import arrowLeftMobile from "@/assets/instructor-arrow-left.png";
-import arrowRightMobile from "@/assets/instructor-arrow-right.png";
-import paginationDots from "@/assets/instructors-pagination.png";
 ---
 
 <section class="bg-n-100">
@@ -26,81 +23,102 @@ import paginationDots from "@/assets/instructors-pagination.png";
       </p>
     </div>
 
-    <div class="mt-11 flex flex-col gap-5 lg:mt-16 lg:gap-16">
-      <div class="grid grid-cols-1 gap-3 md:grid-cols-2 lg:grid-cols-3 lg:gap-5">
-        {instructorsSectionData.instructors.map((instructor) => (
-          <InstructorCard
-            firstName={instructor.firstName}
-            lastName={instructor.lastName}
-            role={instructor.role}
-            description={instructor.description}
-          />
-        ))}
-      </div>
-
-      <div class="relative flex w-full items-center justify-end">
-        <div class="absolute left-1/2 top-5 -translate-x-1/2">
-          <Image
-            src={paginationDots}
-            alt=""
-            width={36}
-            height={8}
-            class="h-2 w-9"
-            aria-hidden="true"
-          />
-        </div>
-
-        <div class="hidden items-center gap-4 lg:flex">
-          <button
-            type="button"
-            class="flex items-center justify-center rounded-3xl border border-n-300 bg-n-50 p-3.5"
-            aria-label="Previous instructor"
-          >
-            <Image
-              src={arrowIcon}
-              alt=""
-              width={20}
-              height={20}
-              class="rotate-180"
-              aria-hidden="true"
-            />
-          </button>
-          <button
-            type="button"
-            class="flex items-center justify-center rounded-3xl border border-n-300 bg-n-50 p-3.5"
-            aria-label="Next instructor"
-          >
-            <Image
-              src={arrowIcon}
-              alt=""
-              width={20}
-              height={20}
-              aria-hidden="true"
-            />
-          </button>
-        </div>
-
-        <div class="flex items-center gap-3 lg:hidden">
-          <button type="button" aria-label="Previous instructor">
-            <Image
-              src={arrowLeftMobile}
-              alt=""
-              width={36}
-              height={36}
-              aria-hidden="true"
-            />
-          </button>
-          <button type="button" aria-label="Next instructor">
-            <Image
-              src={arrowRightMobile}
-              alt=""
-              width={36}
-              height={36}
-              aria-hidden="true"
-            />
-          </button>
+    <div class="carousel-wrapper relative mt-11 flex flex-col gap-5 lg:mt-16 lg:gap-16">
+      
+      <div class="embla overflow-hidden cursor-grab active:cursor-grabbing">
+        
+        <div class="embla__container flex -ml-3 lg:-ml-5">
+          {instructorsSectionData.instructors.map((instructor) => (
+            
+            <div class="embla__slide cursor-default min-w-0 flex-[0_0_100%] pl-3 md:flex-[0_0_50%] lg:pl-5 xl:flex-[0_0_33.3333%]">
+              <InstructorCard
+                firstName={instructor.firstName}
+                lastName={instructor.lastName}
+                role={instructor.role}
+                description={instructor.description}
+              />
+            </div>
+          ))}
         </div>
       </div>
+
+      <SliderArrows/>
+      
     </div>
   </div>
 </section>
+<script>
+  import EmblaCarousel from "embla-carousel";
+
+  const initCarousels = () => {
+    const wrappers = document.querySelectorAll(".carousel-wrapper");
+
+    wrappers.forEach((wrapper) => {
+      const viewport = wrapper.querySelector(".embla") as HTMLElement;
+      if (!viewport) return;
+
+      // Initialize Embla
+      const emblaApi = EmblaCarousel(viewport, { 
+        loop: true, 
+        align: "start" 
+      });
+
+      // 1. Setup Arrow Buttons
+      const prevBtns = wrapper.querySelectorAll("[data-embla-prev]");
+      const nextBtns = wrapper.querySelectorAll("[data-embla-next]");
+
+      prevBtns.forEach((btn) => btn.addEventListener("click", () => emblaApi.scrollPrev()));
+      nextBtns.forEach((btn) => btn.addEventListener("click", () => emblaApi.scrollNext()));
+
+      // 2. Setup Dynamic Dots
+      const dotsContainer = wrapper.querySelector(".embla__dots");
+      let dotNodes: HTMLElement[] = [];
+
+      if (dotsContainer) {
+        const scrollSnaps = emblaApi.scrollSnapList();
+        
+        // Generate the dot HTML elements based on total snaps
+        dotsContainer.innerHTML = scrollSnaps.map((_, i) => `
+          <button 
+            class="h-2 w-2 rounded-full bg-n-300 transition-all duration-300 cursor-pointer" 
+            type="button" 
+            aria-label="Go to slide ${i + 1}"
+          ></button>
+        `).join("");
+
+        dotNodes = Array.from(dotsContainer.querySelectorAll("button"));
+
+        // Click a dot to go to its slide
+        dotNodes.forEach((dotNode, i) => {
+          dotNode.addEventListener("click", () => emblaApi.scrollTo(i));
+        });
+
+        // Function to highlight the active dot
+        const updateDots = () => {
+          const selected = emblaApi.selectedScrollSnap();
+          
+          dotNodes.forEach((dot, index) => {
+            if (index === selected) {
+              // Active State: Stretches into a blue pill
+              dot.classList.remove("w-2", "bg-n-300");
+              dot.classList.add("w-6", "bg-blue-600"); 
+            } else {
+              // Inactive State: Small gray circle
+              dot.classList.remove("w-6", "bg-blue-600");
+              dot.classList.add("w-2", "bg-n-300");
+            }
+          });
+        };
+
+        // Listen for embla events to update the dots
+        emblaApi.on("select", updateDots);
+        emblaApi.on("reInit", updateDots);
+        updateDots(); // Set initial state
+      }
+    });
+  };
+
+  // Ensure DOM is fully loaded before running
+  document.addEventListener("DOMContentLoaded", initCarousels);
+  document.addEventListener("astro:page-load", initCarousels);
+</script>

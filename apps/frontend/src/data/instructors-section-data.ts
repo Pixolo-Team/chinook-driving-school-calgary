@@ -28,5 +28,13 @@ export const instructorsSectionData = {
       description:
         "Darshan Sengupta is a senior instructor and co-founder of the driving school, bringing years of hands-on experience in training new drivers.",
     },
+    {
+      id: "darshan-3",
+      firstName: "Darshan",
+      lastName: "Sengupta",
+      role: "Senior Instructor",
+      description:
+        "Darshan Sengupta is a senior instructor and co-founder of the driving school, bringing years of hands-on experience in training new drivers.",
+    },
   ],
 };
