@@ -1,0 +1,37 @@
+---
+// DATA //
+import { courseSectionData } from "@/data/courses";
+
+// COMPONENTS //
+import CourseCard from "@/components/CourseCard.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Tabs from "@/components/ui/Tabs.astro";
+---
+
+<section class="bg-n-100">
+  <div
+    class="container mx-auto flex w-full max-w-screen-2xl flex-col items-center gap-10 px-6 py-14 lg:gap-16 lg:px-28 lg:py-28"
+  >
+    <SectionHeader
+      eyebrow={courseSectionData.eyebrow}
+      heading={courseSectionData.heading}
+      description={courseSectionData.description}
+    />
+
+    <div class="flex w-full flex-col items-center gap-7 lg:gap-12">
+      <div class="w-full max-w-3xl">
+        <Tabs items={courseSectionData.tabs} activeIndex={0} />
+      </div>
+
+      <div class="w-full">
+        <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+          {
+            courseSectionData.cards.map((card) => (
+              <CourseCard {...card} />
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

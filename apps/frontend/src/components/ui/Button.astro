@@ -1,0 +1,32 @@
+---
+interface ButtonProps {
+  value: string;
+  theme?: "light" | "brand";
+  type?: "button" | "submit" | "reset";
+  href?: string;
+  target?: "_self" | "_blank" | "_parent" | "_top";
+  rel?: string;
+}
+
+const { value, theme = "light", type = "button", href, target, rel } =
+  Astro.props as ButtonProps;
+
+const buttonClasses = [
+  "mt-8 block w-full rounded-full border py-3 text-center text-sm font-bold transition-colors lg:text-base",
+  theme === "brand"
+    ? "border-n-50 bg-n-50 text-blue-500"
+    : "border-blue-500 bg-n-50 text-blue-500",
+];
+---
+
+{
+  href ? (
+    <a class:list={buttonClasses} href={href} target={target} rel={rel}>
+      {value}
+    </a>
+  ) : (
+    <button class:list={buttonClasses} type={type}>
+      {value}
+    </button>
+  )
+}
