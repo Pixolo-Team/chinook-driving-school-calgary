@@ -20,7 +20,7 @@ declare(strict_types=1);
 const ALLOWED_SESSION_TYPES = ['CURRENT_SESSION', 'NEXT_SESSION', 'FUTURE_SESSION'];
 
 /** @var string[] Valid values for the license_status field. */
-const ALLOWED_LICENSE_STATUSES = ['NO_LICENSE_YET', 'LEARNER', 'CLASS_5', 'FULLY_LICENSED', 'OTHER'];
+const ALLOWED_LICENSE_STATUSES = ['none', 'learning', 'permanent'];
 
 /** @var string[] Valid Canadian province/territory codes for license_issuing_region. */
 const ALLOWED_LICENSE_REGIONS = ['AB', 'BC', 'SK', 'MB', 'ON', 'QC', 'NS', 'NB', 'PE', 'NL', 'NT', 'NU', 'YT', 'OTHER'];

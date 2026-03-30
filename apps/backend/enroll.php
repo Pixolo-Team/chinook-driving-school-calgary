@@ -226,12 +226,12 @@ if ($isMinor) {
 // Step 8: Validate license details when the student already holds a license
 // ---------------------------------------------------------------------------
 
-$hasLicense = isset($input['license_status']) && $input['license_status'] !== 'NO_LICENSE_YET';
+$hasLicense = isset($input['license_status']) && $input['license_status'] !== 'none';
 
 if ($hasLicense) {
     // License number, region, type, and both dates are required
     if (!isNonEmptyString($input['license_number'] ?? null)) {
-        $errors['license_number'] = 'license_number is required when license_status is not NO_LICENSE_YET';
+        $errors['license_number'] = 'license_number is required when license_status is not none';
     }
 
     if (!isNonEmptyString($input['license_issuing_region'] ?? null) || !in_array($input['license_issuing_region'], ALLOWED_LICENSE_REGIONS, true)) {
