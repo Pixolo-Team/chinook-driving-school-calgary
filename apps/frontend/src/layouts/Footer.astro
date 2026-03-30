@@ -11,7 +11,7 @@ import { Image } from "astro:assets";
 
     <!-- Chinook Logo & Links  -->
     <div class="relative flex flex-col gap-9 md:gap-10 lg:flex-row lg:items-start lg:justify-between">
-      <div class="flex w-full flex-col gap-3.5 lg:w-64">
+      <div class="flex w-full flex-col gap-3.5 lg:gap-9 lg:w-64">
 
         <!-- Chinook Logo -->
         <div
@@ -46,7 +46,7 @@ import { Image } from "astro:assets";
       </div>
 
       <!-- Nav Links -->
-      <div class="flex flex-col gap-6 lg:absolute lg:left-1/2 lg:top-6 lg:-translate-x-1/2 lg:items-center">
+      <div class="flex flex-col gap-6 lg:self-center lg:items-center ">
         <div class="flex flex-col gap-2.5 text-sm text-n-600 md:text-base lg:flex-row lg:gap-10">
           {
             footerSectionData.navLinks.map((link) => (
@@ -76,7 +76,7 @@ import { Image } from "astro:assets";
       </div>
 
       <!-- Privacy Policy & T&C Links -->
-      <div class="flex flex-col gap-3 text-sm text-n-600 md:text-base lg:items-end">
+      <div class="flex flex-col gap-3 text-sm text-n-600 md:text-base lg:items-end lg:self-center ">
         {
           footerSectionData.legalLinks.map((link) => (
             <a href={link.href} class="leading-4">
