@@ -3,7 +3,7 @@
 import { faqSectionData as faqs } from "@/data/faqSectionData";
 
 // COMPONENTS
-import FaqCard from "@/components/FaqCard.astro";
+import FaqItem from "@/components/FaqItem.astro";
 ---
 
 <section>
@@ -24,7 +24,7 @@ import FaqCard from "@/components/FaqCard.astro";
     <!-- FAQ Cards -->
     <div class="flex w-full max-w-3xl mx-auto flex-col gap-4">
       {faqs.map((faqItem) => (
-        <FaqCard question={faqItem.question} answer={faqItem.answer} />
+        <FaqItem question={faqItem.question} answer={faqItem.answer} />
       ))}
     </div>
 
