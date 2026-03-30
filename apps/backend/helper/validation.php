@@ -17,7 +17,7 @@ declare(strict_types=1);
 // ---------------------------------------------------------------------------
 
 /** @var string[] Valid values for the session_type field. */
-const ALLOWED_SESSION_TYPES = ['CURRENT_SESSION', 'NEXT_SESSION', 'FUTURE_SESSION'];
+const ALLOWED_SESSION_TYPES = ['In-Person', 'Online', 'Not Applicable'];
 
 /** @var string[] Valid values for the license_status field. */
 const ALLOWED_LICENSE_STATUSES = ['none', 'learning', 'permanent'];
@@ -29,7 +29,7 @@ const ALLOWED_LICENSE_REGIONS = ['AB', 'BC', 'SK', 'MB', 'ON', 'QC', 'NS', 'NB',
 const ALLOWED_LICENSE_TYPES = ['CLASS_7', 'CLASS_5_GDL', 'CLASS_5', 'OTHER'];
 
 /** @var string[] Valid values for the payment_method field. */
-const ALLOWED_PAYMENT_METHODS = ['CREDIT_CARD', 'DEBIT_CARD', 'INTERAC_E_TRANSFER', 'PAY_IN_PERSON'];
+const ALLOWED_PAYMENT_METHODS = ['cash', 'card', 'upi', 'bank_transfer', 'offline'];
 
 /** @var string[] Valid day-of-week labels for availability_days_of_week entries. */
 const ALLOWED_DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
