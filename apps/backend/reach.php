@@ -146,8 +146,8 @@ $row = [
     'contact_number' => $contactNumber,
     'reason'         => $reason,
     'query'          => $query,
-    'status'         => 'PENDING',
-    'source'         => 'WEBSITE',
+    'status'         => 'new',
+    'source'         => 'website',
 ];
 
 $result = supabaseInsert(CONTACT_REQUESTS_TABLE, $row);
