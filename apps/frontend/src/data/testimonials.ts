@@ -1,5 +1,5 @@
 // TYPES //
-import type { TestimonialData } from "apps/frontend/src/types/testimonial";
+import type { TestimonialData } from "@/types/testimonial";
 
 // Testimonial Section Details
 export const testimonialSectionDetails: { testimonials: TestimonialData[] } = {
