@@ -3,6 +3,9 @@
 import "@/styles/animation.css";
 import "@/styles/global.css";
 
+// COMPONENTS //
+import Footer from "@/layouts/Footer.astro";
+
 interface Props {
   title?: string;
   description?: string;
@@ -33,5 +36,6 @@ const {
     <main class="relative">
       <slot />
     </main>
+    <Footer />
   </body>
 </html>
