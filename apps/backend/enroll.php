@@ -32,8 +32,8 @@ require_once __DIR__ . '/helper/validation.php';
 // Configuration: Supabase credentials and table names
 // ---------------------------------------------------------------------------
 
-const SUPABASE_URL              = 'https://YOUR_PROJECT_ID.supabase.co';
-const SUPABASE_SERVICE_ROLE_KEY = 'YOUR_SUPABASE_SERVICE_ROLE_KEY';
+const SUPABASE_URL              = 'https://rwosruoldgimytqwdkwg.supabase.co';
+const SUPABASE_SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3b3NydW9sZGdpbXl0cXdka3dnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDgzNjI2MSwiZXhwIjoyMDkwNDEyMjYxfQ.Cy9CHcQhqM1_fgPsIofIVS8ivTn50LSBEola2OgADR0';
 
 const STUDENTS_TABLE           = 'students';
 const ENROLLMENTS_TABLE        = 'enrollments';
