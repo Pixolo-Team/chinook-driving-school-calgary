@@ -332,7 +332,7 @@ $enrollmentRow = [
     'tax_amount'           => (float)$input['course']['tax_amount'],
     'total_payable'        => (float)$input['course']['total_amount'],
     'amount_paid'          => 0,
-    'enrollment_status'    => 'LEAD',
+    'enrollment_status'    => 'pending',
     'payment_status'       => 'PENDING',
     'did_agree_conditions' => true,
 ];
@@ -381,6 +381,8 @@ try {
         throw new RuntimeException('Failed to insert student: ' . $studentInsert['error']);
     }
     $studentId = (string)$studentInsert['data'][0]['id'];
+
+    print_r("STUDENT ".$studentId);
 
     // Insert the enrollment, linking it to the new student
     $enrollmentRow['student_id'] = $studentId;
