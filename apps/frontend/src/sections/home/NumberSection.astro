@@ -1,0 +1,26 @@
+---
+// COMPONENTS //
+import StatCard from "@/components/StatCard.astro";
+
+// DATA //
+import { numberStatsData } from "@/data/numberSection";
+---
+
+<section class="bg-n-100">
+  <div class="container mx-auto flex w-full flex-col items-center gap-9 px-6 py-20 sm:px-0 sm:gap-10 lg:gap-12 lg:px-0 lg:py-28">
+    <div class="flex w-full flex-col items-center gap-2 text-center">
+      <p class="text-sm font-bold uppercase tracking-[0.6px] text-blue-500">
+        Our Track Record
+      </p>
+      <p class="text-3xl font-bold leading-tight text-n-800 md:text-4xl lg:text-5xl">
+        Our Driving School in Numbers
+      </p>
+    </div>
+
+    <div class="grid w-full grid-cols-1 gap-3.5 px-6 sm:grid-cols-3 sm:gap-5 sm:px-0 lg:grid-cols-4 xl:grid-cols-5">
+      {numberStatsData.map((stat) => (
+        <StatCard value={stat.value} label={stat.label} />
+      ))}
+    </div>
+  </div>
+</section>
