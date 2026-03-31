@@ -11,18 +11,6 @@ interface MotionAnimationData {
   then: (onFulfilled: () => void) => unknown;
 }
 
-const FLOATING_MENU_SHELL_ID = "floating-menu-shell";
-const FLOATING_MENU_HIDDEN_CLASS_NAMES = ["opacity-0", "pointer-events-none"];
-const FLOATING_MENU_VISIBLE_CLASS_NAMES = ["opacity-100", "pointer-events-auto"];
-const FLOATING_MENU_ENTER_DURATION = 0.34;
-const FLOATING_MENU_ENTER_TIMES = [0, 0.82, 1];
-const FLOATING_MENU_ENTER_EASING = [0.22, 1, 0.36, 1];
-const FLOATING_MENU_EXIT_DURATION = 0.2;
-const FLOATING_MENU_EXIT_TIMES = [0, 0.35, 1];
-const FLOATING_MENU_EXIT_EASING = [0.4, 0, 1, 1];
-const FLOATING_MENU_HIDDEN_TRANSFORM = "scaleX(0.88)";
-const FLOATING_MENU_VISIBLE_TRANSFORM = "scaleX(1)";
-
 /**
  * Initializes the floating menu scroll behavior for the provided menu element.
  * @param menuId The DOM id of the floating menu element that receives the animation.
@@ -31,7 +19,7 @@ const FLOATING_MENU_VISIBLE_TRANSFORM = "scaleX(1)";
  */
 export const initializeFloatingMenu = ({ menuId, scrollThreshold }: FloatingMenuConfigData) => {
   const floatingMenu = document.getElementById(menuId) as HTMLElement | null;
-  const floatingMenuShell = document.getElementById(FLOATING_MENU_SHELL_ID) as HTMLElement | null;
+  const floatingMenuShell = document.getElementById("floating-menu-shell") as HTMLElement | null;
 
   if (!floatingMenu || !floatingMenuShell) {
     return;
@@ -65,20 +53,20 @@ export const initializeFloatingMenu = ({ menuId, scrollThreshold }: FloatingMenu
 
   /** Sets the floating menu to its hidden state. */
   const setFloatingMenuHiddenState = () => {
-    updateFloatingMenuClasses(FLOATING_MENU_VISIBLE_CLASS_NAMES, false);
-    updateFloatingMenuClasses(FLOATING_MENU_HIDDEN_CLASS_NAMES, true);
+    updateFloatingMenuClasses(["opacity-100", "pointer-events-auto"], false);
+    updateFloatingMenuClasses(["opacity-0", "pointer-events-none"], true);
     floatingMenu.style.opacity = "0";
-    floatingMenu.style.transform = FLOATING_MENU_HIDDEN_TRANSFORM;
+    floatingMenu.style.transform = "scaleX(0.88)";
     setFloatingMenuShellVisibility(false);
     isVisible = false;
   };
 
   /** Sets the floating menu to its visible state. */
   const setFloatingMenuVisibleState = () => {
-    updateFloatingMenuClasses(FLOATING_MENU_HIDDEN_CLASS_NAMES, false);
-    updateFloatingMenuClasses(FLOATING_MENU_VISIBLE_CLASS_NAMES, true);
+    updateFloatingMenuClasses(["opacity-0", "pointer-events-none"], false);
+    updateFloatingMenuClasses(["opacity-100", "pointer-events-auto"], true);
     floatingMenu.style.opacity = "1";
-    floatingMenu.style.transform = FLOATING_MENU_VISIBLE_TRANSFORM;
+    floatingMenu.style.transform = "scaleX(1)";
     setFloatingMenuShellVisibility(true);
     isVisible = true;
   };
@@ -88,8 +76,8 @@ export const initializeFloatingMenu = ({ menuId, scrollThreshold }: FloatingMenu
     stopFloatingMenuAnimation();
     const animationId = currentAnimationId;
     setFloatingMenuShellVisibility(true);
-    updateFloatingMenuClasses(FLOATING_MENU_HIDDEN_CLASS_NAMES, false);
-    updateFloatingMenuClasses(FLOATING_MENU_VISIBLE_CLASS_NAMES, true);
+    updateFloatingMenuClasses(["opacity-0", "pointer-events-none"], false);
+    updateFloatingMenuClasses(["opacity-100", "pointer-events-auto"], true);
 
     menuAnimation = animate(
       floatingMenu,
@@ -98,9 +86,9 @@ export const initializeFloatingMenu = ({ menuId, scrollThreshold }: FloatingMenu
         scaleX: [0.88, 1.02, 1],
       },
       {
-        duration: FLOATING_MENU_ENTER_DURATION,
-        ease: FLOATING_MENU_ENTER_EASING,
-        times: FLOATING_MENU_ENTER_TIMES,
+        duration: 0.34,
+        ease: [0.22, 1, 0.36, 1],
+        times: [0, 0.82, 1],
       },
     ) as MotionAnimationData;
 
@@ -119,8 +107,8 @@ export const initializeFloatingMenu = ({ menuId, scrollThreshold }: FloatingMenu
     stopFloatingMenuAnimation();
     const animationId = currentAnimationId;
     setFloatingMenuShellVisibility(true);
-    updateFloatingMenuClasses(FLOATING_MENU_HIDDEN_CLASS_NAMES, false);
-    updateFloatingMenuClasses(FLOATING_MENU_VISIBLE_CLASS_NAMES, true);
+    updateFloatingMenuClasses(["opacity-0", "pointer-events-none"], false);
+    updateFloatingMenuClasses(["opacity-100", "pointer-events-auto"], true);
 
     menuAnimation = animate(
       floatingMenu,
@@ -129,9 +117,9 @@ export const initializeFloatingMenu = ({ menuId, scrollThreshold }: FloatingMenu
         scaleX: [1, 0.98, 0.88],
       },
       {
-        duration: FLOATING_MENU_EXIT_DURATION,
-        ease: FLOATING_MENU_EXIT_EASING,
-        times: FLOATING_MENU_EXIT_TIMES,
+        duration: 0.2,
+        ease: [0.4, 0, 1, 1],
+        times: [0, 0.35, 1],
       },
     ) as MotionAnimationData;
 

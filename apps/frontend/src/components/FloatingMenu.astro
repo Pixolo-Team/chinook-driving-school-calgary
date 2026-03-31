@@ -9,7 +9,6 @@ import menuLogo from "@/assets/menu-logo.png";
 
 // DATA //
 import { menuItems } from "@/data/menu";
-
 ---
 
 <!-- FloatingMenu -->
@@ -22,7 +21,7 @@ import { menuItems } from "@/data/menu";
   <div class="mx-auto w-full max-w-screen-2xl px-4 lg:px-5">
     <div
       id="floating-menu"
-      class="outline-n-300 bg-n-50 pointer-events-none mx-auto flex w-full max-w-248.5 items-center overflow-hidden rounded-4xl px-4 py-2 opacity-0 shadow-[0_14px_16px_0_rgba(0,0,0,0.1)] outline-2 lg:px-5 lg:py-2.5"
+      class="outline-n-300 bg-n-50 pointer-events-none mx-auto flex w-full max-w-248.5 items-center overflow-hidden rounded-4xl px-4 py-2 opacity-0 shadow-lg outline-2 lg:px-5 lg:py-2.5"
     >
       <div class="flex w-full items-center justify-between">
         <!-- Brand Logo -->
@@ -43,12 +42,7 @@ import { menuItems } from "@/data/menu";
           <!-- Menu Button Group -->
           <div class="flex items-center gap-2 lg:gap-2.5">
             <Button buttonText="Enroll Now" className="w-26.5" href="/enroll" />
-            <Button
-              buttonText="Call Us"
-              rightIcon="phone-icon"
-              variant="outline"
-              href="/contact"
-            />
+            <Button buttonText="Call Us" rightIcon="phone-icon" variant="outline" href="/contact" />
           </div>
         </div>
       </div>
