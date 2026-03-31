@@ -5,234 +5,94 @@ declare(strict_types=1);
  * Chinook Enrollment Endpoint
  * Core PHP + Supabase REST API
  *
- * Required env/config:
- * - SUPABASE_URL
- * - SUPABASE_SERVICE_ROLE_KEY
+ * Accepts a single POST request with a JSON body describing a new student
+ * enrollment, validates every field, then persists the data across five
+ * Supabase tables in sequence.  On any database error the code attempts a
+ * best-effort rollback in reverse-insertion order.
  *
- * Expected method:
- * - POST
+ * Required constants (defined below):
+ * - SUPABASE_URL               – base URL of your Supabase project
+ * - SUPABASE_SERVICE_ROLE_KEY  – service-role secret key
+ *
+ * Expected HTTP method: POST
+ * Expected Content-Type: application/json
  */
+
+// ---------------------------------------------------------------------------
+// Bootstrap: response headers & helper includes
+// ---------------------------------------------------------------------------
 
 header('Content-Type: application/json');
 
-const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
-const SUPABASE_SERVICE_ROLE_KEY = 'YOUR_SUPABASE_SERVICE_ROLE_KEY';
+require_once __DIR__ . '/helper/utils.php';
+require_once __DIR__ . '/helper/supabase.php';
+require_once __DIR__ . '/helper/validation.php';
 
-// Table Names
-const STUDENTS_TABLE = 'students';
-const ENROLLMENTS_TABLE = 'enrollments';
-const PAYMENTS_TABLE = 'payments';
-const CARD_INFORMATION_TABLE = 'card_information';
+// ---------------------------------------------------------------------------
+// Configuration: Supabase credentials and table names
+// ---------------------------------------------------------------------------
+
+const SUPABASE_URL              = 'https://rwosruoldgimytqwdkwg.supabase.co';
+const SUPABASE_SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3b3NydW9sZGdpbXl0cXdka3dnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDgzNjI2MSwiZXhwIjoyMDkwNDEyMjYxfQ.Cy9CHcQhqM1_fgPsIofIVS8ivTn50LSBEola2OgADR0';
+
+const STUDENTS_TABLE           = 'students';
+const ENROLLMENTS_TABLE        = 'enrollments';
+const PAYMENTS_TABLE           = 'payments';
+const CARD_INFORMATION_TABLE   = 'card_information';
 const AVAILABILITY_SLOTS_TABLE = 'availability_slots';
 
-/**
- * ===== Utility functions =====
- */
+// ---------------------------------------------------------------------------
+// Step 1: Reject non-POST requests early
+// ---------------------------------------------------------------------------
 
-function respond(int $statusCode, array $payload): void
-{
-    http_response_code($statusCode);
-    echo json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
-    exit;
+if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+    respond(405, ['success' => false, 'message' => 'Method Not Allowed']);
 }
 
-function getJsonInput(): array
-{
-    $raw = file_get_contents('php://input');
-    if (!$raw) {
-        respond(400, ['success' => false, 'message' => 'Empty request body']);
-    }
+// ---------------------------------------------------------------------------
+// Step 2: Read and decode the JSON request body
+// ---------------------------------------------------------------------------
 
-    $decoded = json_decode($raw, true);
-    if (!is_array($decoded)) {
-        respond(400, ['success' => false, 'message' => 'Invalid JSON body']);
-    }
-
-    return $decoded;
-}
-
-function isNonEmptyString($value): bool
-{
-    return is_string($value) && trim($value) !== '';
-}
-
-function sanitizeString(?string $value): ?string
-{
-    if ($value === null) {
-        return null;
-    }
-    $value = trim($value);
-    return $value === '' ? null : $value;
-}
-
-function isValidEmail(?string $email): bool
-{
-    return is_string($email) && filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
-}
-
-function isValidDate(?string $date): bool
-{
-    if (!is_string($date) || trim($date) === '') {
-        return false;
-    }
-
-    $dt = DateTime::createFromFormat('Y-m-d', $date);
-    return $dt && $dt->format('Y-m-d') === $date;
-}
-
-function calculateAge(string $dateOfBirth): int
-{
-    $dob = new DateTime($dateOfBirth);
-    $today = new DateTime('today');
-    return (int)$dob->diff($today)->y;
-}
-
-function normalizePhone(?string $phone): ?string
-{
-    if ($phone === null) {
-        return null;
-    }
-
-    $trimmed = trim($phone);
-    if ($trimmed === '') {
-        return null;
-    }
-
-    return preg_replace('/\s+/', ' ', $trimmed);
-}
-
-function isValidAmount($value): bool
-{
-    return is_numeric($value) && (float)$value >= 0;
-}
-
-function isValidCardNumber(?string $cardNumber): bool
-{
-    if (!is_string($cardNumber)) {
-        return false;
-    }
-
-    $digits = preg_replace('/\D/', '', $cardNumber);
-    return strlen($digits) >= 12 && strlen($digits) <= 19;
-}
-
-function supabaseRequest(
-    string $method,
-    string $endpoint,
-    ?array $body = null,
-    array $extraHeaders = []
-): array {
-    $url = rtrim(SUPABASE_URL, '/') . $endpoint;
-
-    $headers = array_merge([
-        'apikey: ' . SUPABASE_SERVICE_ROLE_KEY,
-        'Authorization: Bearer ' . SUPABASE_SERVICE_ROLE_KEY,
-        'Content-Type: application/json',
-    ], $extraHeaders);
-
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_CUSTOMREQUEST, strtoupper($method));
-    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-    if ($body !== null) {
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($body, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE));
-    }
-
-    $responseBody = curl_exec($ch);
-    $curlError = curl_error($ch);
-    $httpCode = (int)curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-
-    if ($curlError) {
-        return [
-            'ok' => false,
-            'status' => 500,
-            'data' => null,
-            'error' => 'cURL error: ' . $curlError
-        ];
-    }
-
-    $decoded = null;
-    if ($responseBody !== '' && $responseBody !== null) {
-        $decoded = json_decode($responseBody, true);
-    }
-
-    $ok = $httpCode >= 200 && $httpCode < 300;
-
-    return [
-        'ok' => $ok,
-        'status' => $httpCode,
-        'data' => $decoded,
-        'raw' => $responseBody,
-        'error' => $ok ? null : ($decoded['message'] ?? $decoded['hint'] ?? $responseBody ?? 'Supabase request failed')
-    ];
-}
-
-function supabaseInsert(string $table, array $row): array
-{
-    $endpoint = '/rest/v1/' . $table;
-    return supabaseRequest(
-        'POST',
-        $endpoint,
-        $row,
-        ['Prefer: return=representation']
-    );
-}
-
-function supabaseDeleteById(string $table, string $id): void
-{
-    $endpoint = '/rest/v1/' . $table . '?id=eq.' . rawurlencode($id);
-    supabaseRequest('DELETE', $endpoint, null, ['Prefer: return=minimal']);
-}
-
-function requireField(array $data, string $key, array &$errors, string $message = null): void
-{
-    if (!array_key_exists($key, $data) || $data[$key] === null || $data[$key] === '') {
-        $errors[$key] = $message ?? ($key . ' is required');
-    }
-}
-
-/**
- * ===== Request validation =====
- */
-
-$input = getJsonInput();
+$input  = getJsonInput();
 $errors = [];
 
-/**
- * Top-level required fields
- */
-requireField($input, 'session_type', $errors);
-requireField($input, 'course', $errors);
-requireField($input, 'student_first_name', $errors);
-requireField($input, 'student_last_name', $errors);
-requireField($input, 'student_address', $errors);
-requireField($input, 'student_city', $errors);
-requireField($input, 'student_state', $errors);
-requireField($input, 'student_postal_code', $errors);
-requireField($input, 'student_email', $errors);
-requireField($input, 'student_mobile_phone_number', $errors);
-requireField($input, 'student_date_of_birth', $errors);
-requireField($input, 'license_status', $errors);
-requireField($input, 'driving_experience', $errors);
-requireField($input, 'availability_date', $errors);
-requireField($input, 'avilability_time_slots', $errors);
-requireField($input, 'availability_days_of_week', $errors);
-requireField($input, 'payment_method', $errors);
-requireField($input, 'amount', $errors);
-requireField($input, 'did_agree_conditions', $errors, 'did_agree_conditions is required');
+// ---------------------------------------------------------------------------
+// Step 3: Validate that all top-level required fields are present
+// ---------------------------------------------------------------------------
 
-/**
- * Course validation
- */
+requireField($input, 'session_type',                  $errors);
+requireField($input, 'course',                        $errors);
+requireField($input, 'student_first_name',            $errors);
+requireField($input, 'student_last_name',             $errors);
+requireField($input, 'student_address',               $errors);
+requireField($input, 'student_city',                  $errors);
+requireField($input, 'student_state',                 $errors);
+requireField($input, 'student_postal_code',           $errors);
+requireField($input, 'student_email',                 $errors);
+requireField($input, 'student_mobile_phone_number',   $errors);
+requireField($input, 'student_date_of_birth',         $errors);
+requireField($input, 'license_status',                $errors);
+requireField($input, 'driving_experience',            $errors);
+requireField($input, 'availability_date',             $errors);
+requireField($input, 'avilability_time_slots',        $errors);
+requireField($input, 'availability_days_of_week',     $errors);
+requireField($input, 'payment_method',                $errors);
+requireField($input, 'amount',                        $errors);
+requireField($input, 'did_agree_conditions',          $errors, 'did_agree_conditions is required');
+
+// ---------------------------------------------------------------------------
+// Step 4: Validate the nested course object and its numeric amounts
+// ---------------------------------------------------------------------------
+
 if (!isset($errors['course'])) {
     if (!is_array($input['course'])) {
         $errors['course'] = 'course must be an object';
     } else {
         $course = $input['course'];
-        if (!isset($course['course_id']) || !is_numeric($course['course_id'])) {
-            $errors['course.course_id'] = 'course.course_id is required and must be numeric';
+
+        // Ensure all four course amount fields are present and numeric
+        if (!isset($course['course_id'])) {
+            $errors['course.course_id'] = 'course.course_id is required';
         }
         if (!isset($course['course_price']) || !isValidAmount($course['course_price'])) {
             $errors['course.course_price'] = 'course.course_price is required and must be a non-negative number';
@@ -244,6 +104,7 @@ if (!isset($errors['course'])) {
             $errors['course.total_amount'] = 'course.total_amount is required and must be a non-negative number';
         }
 
+        // Verify that course_price + tax_amount equals total_amount (rounded to 2 dp)
         if (
             isset($course['course_price'], $course['tax_amount'], $course['total_amount']) &&
             is_numeric($course['course_price']) &&
@@ -260,17 +121,21 @@ if (!isset($errors['course'])) {
     }
 }
 
-/**
- * Simple type/format validation
- */
+// ---------------------------------------------------------------------------
+// Step 5: Validate email addresses and date fields
+// ---------------------------------------------------------------------------
+
+// Student email must be a valid RFC-5321 address
 if (isset($input['student_email']) && !isValidEmail($input['student_email'])) {
     $errors['student_email'] = 'student_email is invalid';
 }
 
+// Parent email is optional, but must be valid when supplied
 if (isset($input['parent_email']) && $input['parent_email'] !== null && $input['parent_email'] !== '' && !isValidEmail($input['parent_email'])) {
     $errors['parent_email'] = 'parent_email is invalid';
 }
 
+// Date fields must use strict Y-m-d format
 if (isset($input['student_date_of_birth']) && !isValidDate($input['student_date_of_birth'])) {
     $errors['student_date_of_birth'] = 'student_date_of_birth must be in Y-m-d format';
 }
@@ -283,41 +148,36 @@ if (isset($input['expiry_date']) && $input['expiry_date'] !== null && $input['ex
     $errors['expiry_date'] = 'expiry_date must be in Y-m-d format';
 }
 
-/**
- * Enum validation
- * Replace these allowed values with your exact DB enum values.
- */
-$allowedSessionTypes = ['CURRENT_SESSION', 'NEXT_SESSION', 'FUTURE_SESSION'];
-$allowedLicenseStatuses = ['NO_LICENSE_YET', 'LEARNER', 'CLASS_5', 'FULLY_LICENSED', 'OTHER'];
-$allowedLicenseRegions = ['AB', 'BC', 'SK', 'MB', 'ON', 'QC', 'NS', 'NB', 'PE', 'NL', 'NT', 'NU', 'YT', 'OTHER'];
-$allowedLicenseTypes = ['CLASS_7', 'CLASS_5_GDL', 'CLASS_5', 'OTHER'];
-$allowedPaymentMethods = ['CREDIT_CARD', 'DEBIT_CARD', 'INTERAC_E_TRANSFER', 'PAY_IN_PERSON'];
-$allowedDaysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+// ---------------------------------------------------------------------------
+// Step 6: Validate enum fields against their allowed value sets
+// ---------------------------------------------------------------------------
 
-if (isset($input['session_type']) && !in_array($input['session_type'], $allowedSessionTypes, true)) {
+if (isset($input['session_type']) && !in_array($input['session_type'], ALLOWED_SESSION_TYPES, true)) {
     $errors['session_type'] = 'Invalid session_type';
 }
 
-if (isset($input['license_status']) && !in_array($input['license_status'], $allowedLicenseStatuses, true)) {
+if (isset($input['license_status']) && !in_array($input['license_status'], ALLOWED_LICENSE_STATUSES, true)) {
     $errors['license_status'] = 'Invalid license_status';
 }
 
-if (isset($input['payment_method']) && !in_array($input['payment_method'], $allowedPaymentMethods, true)) {
+if (isset($input['payment_method']) && !in_array($input['payment_method'], ALLOWED_PAYMENT_METHODS, true)) {
     $errors['payment_method'] = 'Invalid payment_method';
 }
 
+// Validate each day in the availability_days_of_week array
 if (!isset($errors['availability_days_of_week'])) {
     if (!is_array($input['availability_days_of_week']) || count($input['availability_days_of_week']) === 0) {
         $errors['availability_days_of_week'] = 'availability_days_of_week must be a non-empty array';
     } else {
         foreach ($input['availability_days_of_week'] as $index => $day) {
-            if (!in_array($day, $allowedDaysOfWeek, true)) {
+            if (!in_array($day, ALLOWED_DAYS_OF_WEEK, true)) {
                 $errors["availability_days_of_week.$index"] = 'Invalid day value';
             }
         }
     }
 }
 
+// Validate each time slot object within avilability_time_slots
 if (!isset($errors['avilability_time_slots'])) {
     if (!is_array($input['avilability_time_slots']) || count($input['avilability_time_slots']) === 0) {
         $errors['avilability_time_slots'] = 'avilability_time_slots must be a non-empty array';
@@ -328,6 +188,7 @@ if (!isset($errors['avilability_time_slots'])) {
                 continue;
             }
 
+            // Both start_time and end_time must match HH:MM or HH:MM:SS
             if (!isset($slot['start_time']) || !preg_match('/^\d{2}:\d{2}(:\d{2})?$/', (string)$slot['start_time'])) {
                 $errors["avilability_time_slots.$index.start_time"] = 'start_time must be HH:MM or HH:MM:SS';
             }
@@ -339,15 +200,17 @@ if (!isset($errors['avilability_time_slots'])) {
     }
 }
 
-/**
- * Minor / parent validation
- */
+// ---------------------------------------------------------------------------
+// Step 7: Additional validation for minor students (age < 18)
+// ---------------------------------------------------------------------------
+
 $isMinor = false;
 if (isset($input['student_date_of_birth']) && isValidDate($input['student_date_of_birth'])) {
     $isMinor = calculateAge($input['student_date_of_birth']) < 18;
 }
 
 if ($isMinor) {
+    // Parent details are mandatory when the student is under 18
     if (!isNonEmptyString($input['parent_full_name'] ?? null)) {
         $errors['parent_full_name'] = 'parent_full_name is required for minors';
     }
@@ -359,22 +222,23 @@ if ($isMinor) {
     }
 }
 
-/**
- * License validation
- * Only required if license_status !== NO_LICENSE_YET
- */
-$hasLicense = isset($input['license_status']) && $input['license_status'] !== 'NO_LICENSE_YET';
+// ---------------------------------------------------------------------------
+// Step 8: Validate license details when the student already holds a license
+// ---------------------------------------------------------------------------
+
+$hasLicense = isset($input['license_status']) && $input['license_status'] !== 'none';
 
 if ($hasLicense) {
+    // License number, region, type, and both dates are required
     if (!isNonEmptyString($input['license_number'] ?? null)) {
-        $errors['license_number'] = 'license_number is required when license_status is not NO_LICENSE_YET';
+        $errors['license_number'] = 'license_number is required when license_status is not none';
     }
 
-    if (!isNonEmptyString($input['license_issuing_region'] ?? null) || !in_array($input['license_issuing_region'], $allowedLicenseRegions, true)) {
+    if (!isNonEmptyString($input['license_issuing_region'] ?? null) || !in_array($input['license_issuing_region'], ALLOWED_LICENSE_REGIONS, true)) {
         $errors['license_issuing_region'] = 'Valid license_issuing_region is required';
     }
 
-    if (!isNonEmptyString($input['license_type'] ?? null) || !in_array($input['license_type'], $allowedLicenseTypes, true)) {
+    if (!isNonEmptyString($input['license_type'] ?? null) || !in_array($input['license_type'], ALLOWED_LICENSE_TYPES, true)) {
         $errors['license_type'] = 'Valid license_type is required';
     }
 
@@ -387,16 +251,19 @@ if ($hasLicense) {
     }
 }
 
-/**
- * Payment validation
- */
+// ---------------------------------------------------------------------------
+// Step 9: Validate payment amount and card details
+// ---------------------------------------------------------------------------
+
+// The top-level amount must match the course total
 $courseTotal = isset($input['course']['total_amount']) ? (float)$input['course']['total_amount'] : null;
-$inputAmount = isset($input['amount']) ? (float)$input['amount'] : null;
+$inputAmount = isset($input['amount'])                 ? (float)$input['amount']                 : null;
 
 if ($courseTotal !== null && $inputAmount !== null && round($courseTotal, 2) !== round($inputAmount, 2)) {
     $errors['amount'] = 'amount must equal course.total_amount';
 }
 
+// Card fields are required only for CREDIT_CARD and DEBIT_CARD payments
 $requiresCard = isset($input['payment_method']) && in_array($input['payment_method'], ['CREDIT_CARD', 'DEBIT_CARD'], true);
 
 if ($requiresCard) {
@@ -413,21 +280,26 @@ if ($requiresCard) {
     }
 }
 
+// The student must have explicitly agreed to the enrollment conditions
 if (!isset($input['did_agree_conditions']) || $input['did_agree_conditions'] !== true) {
     $errors['did_agree_conditions'] = 'User must agree to conditions';
 }
+
+// ---------------------------------------------------------------------------
+// Step 10: Return all accumulated validation errors (if any)
+// ---------------------------------------------------------------------------
 
 if (!empty($errors)) {
     respond(422, [
         'success' => false,
         'message' => 'Validation failed',
-        'errors' => $errors
+        'errors'  => $errors,
     ]);
 }
 
-/**
- * ===== Build rows =====
- */
+// ---------------------------------------------------------------------------
+// Step 11: Build the database row payloads from the validated input
+// ---------------------------------------------------------------------------
 
 $studentRow = [
     'first_name'            => sanitizeString($input['student_first_name']),
@@ -453,71 +325,73 @@ $studentRow = [
 ];
 
 $enrollmentRow = [
-    'student_id'           => null,
-    'course_id'            => (int)$input['course']['course_id'],
+    'student_id'           => null, // filled after student insert
+    'course_id'            => $input['course']['course_id'],
     'session_type'         => $input['session_type'],
     'course_price'         => (float)$input['course']['course_price'],
     'tax_amount'           => (float)$input['course']['tax_amount'],
     'total_payable'        => (float)$input['course']['total_amount'],
     'amount_paid'          => 0,
-    'enrollment_status'    => 'LEAD',
-    'payment_status'       => 'PENDING',
+    'enrollment_status'    => 'pending',
+    'payment_status'       => 'pending',
     'did_agree_conditions' => true,
 ];
 
 $paymentRow = [
-    'enrollment_id' => null,
+    'enrollment_id'  => null, // filled after enrollment insert
     'payment_method' => $input['payment_method'],
-    'amount' => (float)$input['amount'],
-    'status' => 'PENDING',
+    'amount'         => (float)$input['amount'],
+    'status'         => 'pending',
 ];
 
+// Build card info row only when the payment method requires it
 $cardInfoRow = null;
 if ($requiresCard) {
     $cardInfoRow = [
-        'name_on_card' => sanitizeString($input['name_on_card']),
-        'card_number'  => preg_replace('/\D/', '', (string)$input['card_number']),
-        'expiry_date'  => $input['expiry_date'],
-        'enrollment_id'=> null,
+        'name_on_card'  => sanitizeString($input['name_on_card']),
+        'card_number'   => preg_replace('/\D/', '', (string)$input['card_number']),
+        'expiry_date'   => $input['expiry_date'],
+        'enrollment_id' => null, // filled after enrollment insert
     ];
 }
 
 $availabilityRow = [
-    'enrollment_id' => null,
+    'enrollment_id' => null, // filled after enrollment insert
     'start_date'    => $input['availability_date'],
     'days_of_week'  => $input['availability_days_of_week'],
     'time_slots'    => $input['avilability_time_slots'],
 ];
 
-/**
- * ===== Insert in required order =====
- * Note: This is not a true DB transaction when using REST.
- * On failure, the code attempts best-effort rollback.
- */
+// ---------------------------------------------------------------------------
+// Step 12: Insert rows in dependency order; roll back on any failure
+// Note: This is not a true atomic transaction over the REST API.
+//       On failure the code attempts a best-effort rollback in reverse order.
+// ---------------------------------------------------------------------------
 
-$studentId = null;
-$enrollmentId = null;
-$paymentId = null;
-$cardInfoId = null;
+$studentId      = null;
+$enrollmentId   = null;
+$paymentId      = null;
+$cardInfoId     = null;
 $availabilityId = null;
 
 try {
-    // 1) STUDENTS
+    // Insert the student record first so we have a student_id for downstream rows
     $studentInsert = supabaseInsert(STUDENTS_TABLE, $studentRow);
     if (!$studentInsert['ok'] || empty($studentInsert['data'][0]['id'])) {
         throw new RuntimeException('Failed to insert student: ' . $studentInsert['error']);
     }
     $studentId = (string)$studentInsert['data'][0]['id'];
 
-    // 2) ENROLLMENTS
+    // Insert the enrollment, linking it to the new student
     $enrollmentRow['student_id'] = $studentId;
+    print_r($enrollmentRow);
     $enrollmentInsert = supabaseInsert(ENROLLMENTS_TABLE, $enrollmentRow);
     if (!$enrollmentInsert['ok'] || empty($enrollmentInsert['data'][0]['id'])) {
         throw new RuntimeException('Failed to insert enrollment: ' . $enrollmentInsert['error']);
     }
     $enrollmentId = (string)$enrollmentInsert['data'][0]['id'];
 
-    // 3) PAYMENTS
+    // Insert the payment record, linked to the enrollment
     $paymentRow['enrollment_id'] = $enrollmentId;
     $paymentInsert = supabaseInsert(PAYMENTS_TABLE, $paymentRow);
     if (!$paymentInsert['ok'] || empty($paymentInsert['data'][0]['id'])) {
@@ -525,7 +399,7 @@ try {
     }
     $paymentId = (string)$paymentInsert['data'][0]['id'];
 
-    // 4) CARD_INFORMATION if applicable
+    // Insert card information only when the payment method requires it
     if ($cardInfoRow !== null) {
         $cardInfoRow['enrollment_id'] = $enrollmentId;
         $cardInsert = supabaseInsert(CARD_INFORMATION_TABLE, $cardInfoRow);
@@ -535,7 +409,7 @@ try {
         $cardInfoId = (string)$cardInsert['data'][0]['id'];
     }
 
-    // 5) AVAILABILITY_SLOTS
+    // Insert the availability slots, linked to the enrollment
     $availabilityRow['enrollment_id'] = $enrollmentId;
     $availabilityInsert = supabaseInsert(AVAILABILITY_SLOTS_TABLE, $availabilityRow);
     if (!$availabilityInsert['ok'] || empty($availabilityInsert['data'][0]['id'])) {
@@ -543,20 +417,23 @@ try {
     }
     $availabilityId = (string)$availabilityInsert['data'][0]['id'];
 
+    // All inserts succeeded – return the IDs of the created records
     respond(201, [
         'success' => true,
         'message' => 'Enrollment created successfully',
-        'data' => [
-            'student_id' => $studentId,
-            'enrollment_id' => $enrollmentId,
-            'payment_id' => $paymentId,
+        'data'    => [
+            'student_id'          => $studentId,
+            'enrollment_id'       => $enrollmentId,
+            'payment_id'          => $paymentId,
             'card_information_id' => $cardInfoId,
-            'availability_id' => $availabilityId,
-        ]
+            'availability_id'     => $availabilityId,
+        ],
     ]);
 
 } catch (Throwable $e) {
-    // Best-effort rollback in reverse order
+    // ---------------------------------------------------------------------------
+    // Best-effort rollback: delete already-inserted rows in reverse order
+    // ---------------------------------------------------------------------------
     if ($availabilityId !== null) {
         supabaseDeleteById(AVAILABILITY_SLOTS_TABLE, $availabilityId);
     }
@@ -576,6 +453,6 @@ try {
     respond(500, [
         'success' => false,
         'message' => 'Enrollment creation failed',
-        'error' => $e->getMessage()
+        'error'   => $e->getMessage(),
     ]);
 }

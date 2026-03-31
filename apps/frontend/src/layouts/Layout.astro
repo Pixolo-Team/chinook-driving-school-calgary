@@ -4,7 +4,8 @@ import "@/styles/animation.css";
 import "@/styles/global.css";
 
 // COMPONENTS //
-import Header from "@/components/Header.astro";
+import Header from "@/components/layout/Header.astro";
+import Footer from "@/components/layout/Footer.astro";
 
 interface Props {
   title?: string;
@@ -42,5 +43,8 @@ const {
     <main class="relative">
       <slot />
     </main>
+
+    <!-- Footer -->
+    <Footer />
   </body>
 </html>
