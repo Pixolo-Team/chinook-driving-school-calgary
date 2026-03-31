@@ -4,7 +4,8 @@ import "@/styles/animation.css";
 import "@/styles/global.css";
 
 // COMPONENTS //
-import Footer from "@/layouts/Footer.astro";
+import Header from "@/components/layout/Header.astro";
+import Footer from "@/components/layout/Footer.astro";
 
 interface Props {
   title?: string;
@@ -32,10 +33,18 @@ const {
       rel="stylesheet"
     />
   </head>
-  <body>
+  <body class="relative">
+    <!-- Header -->
+    <div class="absolute inset-x-0 top-0 z-30">
+      <Header />
+    </div>
+
+    <!-- Main -->
     <main class="relative">
       <slot />
     </main>
+
+    <!-- Footer -->
     <Footer />
   </body>
 </html>

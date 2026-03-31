@@ -4,6 +4,7 @@ import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 import Button from "@/components/ui/Button.astro";
 import Chip from "@/components/ui/Chip.astro";
+import { URLS } from "@/infrastructure/constants/urls";
 
 // SVG's //
 import ellipseLight from "@/assets/ellipse-light.svg";
@@ -224,7 +225,7 @@ const card = Astro.props as CourseCardProps;
     </div>
 
     <div class="relative z-10">
-      <Button value="Select Package" theme={card.theme} href="/enroll" />
+      <Button value="Select Package" theme={card.theme} href={URLS.ENROLL} />
     </div>
   </div>
 </div>

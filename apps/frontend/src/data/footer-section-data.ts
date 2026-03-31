@@ -1,3 +1,5 @@
+import { URLS } from "@/infrastructure/constants/urls";
+
 export const footerSectionData = {
   logo: {
     mark: "/images/footer-logo-mark.svg",
@@ -9,10 +11,10 @@ export const footerSectionData = {
     emphasis: "Alberta Transportation",
   },
   navLinks: [
-    { label: "About Us", href: "/about" },
-    { label: "Courses", href: "/courses" },
-    { label: "Enroll", href: "/enroll" },
-    { label: "Contact Support", href: "/contact" },
+    { label: "About Us", href: URLS.ABOUT },
+    { label: "Courses", href: URLS.COURSES },
+    { label: "Enroll", href: URLS.ENROLL },
+    { label: "Contact Support", href: URLS.CONTACT },
   ],
   socialLinks: [
     {
