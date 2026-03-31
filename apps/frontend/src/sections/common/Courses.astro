@@ -27,8 +27,8 @@ import Tabs from "@/components/ui/Tabs.astro";
       </div>
 
       <!--  -->
-      <div >
-        <div class="grid grid-cols-1 gap-5 lg:grid-cols-3">
+      <div class="w-full max-w-3xl lg:max-w-none">
+        <div class="grid w-full grid-cols-1 gap-5 md:grid-cols-2 xl:grid-cols-3">
           {
             courseSectionData.cards.map((card) => (
               <CourseCard {...card} />

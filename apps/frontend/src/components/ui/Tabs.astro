@@ -9,7 +9,7 @@ const { items, activeIndex = 0 } = Astro.props as TabsProps;
 
 <div
   data-tabs
-  class="grid w-full grid-cols-3 items-center rounded-full border border-n-200 bg-n-50 p-1"
+  class="flex w-full items-center rounded-full border border-n-200 bg-n-50 p-1"
 >
   {
     items.map((item, index) => (
@@ -19,7 +19,7 @@ const { items, activeIndex = 0 } = Astro.props as TabsProps;
         data-active={index === activeIndex ? "true" : "false"}
         aria-pressed={index === activeIndex ? "true" : "false"}
         class:list={[
-          "flex cursor-pointer items-center justify-center rounded-full py-3 text-center text-xs font-semibold transition-colors sm:text-sm lg:text-base",
+          "flex min-w-0 flex-1 cursor-pointer items-center justify-center rounded-full py-3 text-center text-xs font-semibold transition-colors sm:text-sm lg:text-base",
           index === activeIndex ? "bg-blue-500 text-n-50" : "text-n-600",
         ]}
       >
@@ -34,22 +34,34 @@ const { items, activeIndex = 0 } = Astro.props as TabsProps;
   const inactiveClasses = ["text-n-600"];
 
   document.querySelectorAll("[data-tabs]").forEach((tabs) => {
-    const buttons = tabs.querySelectorAll("[data-tab-button]");
+    if (tabs.dataset.initialized === "true") {
+      return;
+    }
 
-    buttons.forEach((button) => {
-      button.addEventListener("click", () => {
-        buttons.forEach((tabButton) => {
-          tabButton.dataset.active = "false";
-          tabButton.setAttribute("aria-pressed", "false");
-          tabButton.classList.remove(...activeClasses);
-          tabButton.classList.add(...inactiveClasses);
-        });
+    tabs.dataset.initialized = "true";
 
-        button.dataset.active = "true";
-        button.setAttribute("aria-pressed", "true");
-        button.classList.remove(...inactiveClasses);
-        button.classList.add(...activeClasses);
+    tabs.addEventListener("click", (event) => {
+      const button = event.target instanceof Element
+        ? event.target.closest("[data-tab-button]")
+        : null;
+
+      if (!(button instanceof HTMLButtonElement) || !tabs.contains(button)) {
+        return;
+      }
+
+      const buttons = tabs.querySelectorAll("[data-tab-button]");
+
+      buttons.forEach((tabButton) => {
+        tabButton.dataset.active = "false";
+        tabButton.setAttribute("aria-pressed", "false");
+        tabButton.classList.remove(...activeClasses);
+        tabButton.classList.add(...inactiveClasses);
       });
+
+      button.dataset.active = "true";
+      button.setAttribute("aria-pressed", "true");
+      button.classList.remove(...inactiveClasses);
+      button.classList.add(...activeClasses);
     });
   });
 </script>

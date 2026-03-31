@@ -11,6 +11,13 @@ interface ButtonProps {
 const { value, theme = "light", type = "button", href, target, rel } =
   Astro.props as ButtonProps;
 
+const anchorRel =
+  target === "_blank"
+    ? Array.from(
+        new Set(["noopener", "noreferrer", ...(rel?.split(/\s+/).filter(Boolean) ?? [])]),
+      ).join(" ")
+    : rel;
+
 const buttonClasses = [
   "mt-8 block w-full rounded-full border py-3 text-center text-sm font-bold transition-colors lg:text-base",
   theme === "brand"
@@ -21,7 +28,7 @@ const buttonClasses = [
 
 {
   href ? (
-    <a class:list={buttonClasses} href={href} target={target} rel={rel}>
+    <a class:list={buttonClasses} href={href} target={target} rel={anchorRel}>
       {value}
     </a>
   ) : (
