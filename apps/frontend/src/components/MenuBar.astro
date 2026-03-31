@@ -48,7 +48,12 @@ const navLabel = variant === "primary" ? "Primary" : "Floating navigation";
                 : "text-n-800 font-medium hover:text-blue-500",
           ]}
         >
-          <span class="relative inline-block">
+            <span
+              class:list={[
+                "relative inline-flex",
+                variant === "floating" && "px-1 lg:px-1.5",
+              ]}
+            >
             {/* Menu item name */}
             <span>{item.name}</span>
 
@@ -59,7 +64,7 @@ const navLabel = variant === "primary" ? "Primary" : "Floating navigation";
                   "absolute left-1/2 -translate-x-1/2 rounded-lg",
                   variant === "primary"
                     ? "bg-n-50 -bottom-3 h-0.5 w-full"
-                    : "-bottom-4 h-1 w-[calc(100%+10px)] bg-blue-500 lg:-bottom-6 lg:w-[calc(100%+14px)]",
+                    : "bg-blue-500 inset-x-0 -bottom-4 h-1 lg:-bottom-6",
                 ]}
               />
             )}
