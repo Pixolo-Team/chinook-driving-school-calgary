@@ -60,16 +60,23 @@ import { Image } from "astro:assets";
         <div class="flex items-center gap-3">
           {
             footerSectionData.socialLinks.map((link) => (
-              <div class="size-11">
+              <a
+                href={link.href}
+                aria-label={link.label}
+                target="_blank"
+                rel="noreferrer"
+                class="block size-11"
+              >
                 <Image
                   src={link.icon}
-                  alt={link.label}
+                  alt=""
                   width={44}
                   height={44}
                   class="size-full"
                   loading="lazy"
+                  aria-hidden="true"
                 />
-              </div>
+              </a>
             ))
           }
         </div>

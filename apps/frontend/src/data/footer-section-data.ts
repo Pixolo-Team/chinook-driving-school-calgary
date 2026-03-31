@@ -15,10 +15,16 @@ export const footerSectionData = {
     { label: "Contact Support", href: "/contact" },
   ],
   socialLinks: [
-    { label: "Instagram", icon: "/images/footer-social-instagram.svg" },
-    { label: "LinkedIn", icon: "/images/footer-social-linkedin.svg" },
-    { label: "Instagram", icon: "/images/footer-social-instagram.svg" },
-    { label: "LinkedIn", icon: "/images/footer-social-linkedin.svg" },
+    {
+      label: "Instagram",
+      icon: "/images/footer-social-instagram.svg",
+      href: "https://www.instagram.com/",
+    },
+    {
+      label: "LinkedIn",
+      icon: "/images/footer-social-linkedin.svg",
+      href: "https://www.linkedin.com/",
+    },
   ],
   legalLinks: [
     { label: "Privacy Policy", href: "#" },
