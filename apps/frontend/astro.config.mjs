@@ -10,7 +10,7 @@ const srcDir = fileURLToPath(new URL("./src", import.meta.url));
 export default defineConfig({
   integrations: [
     icon({
-      iconDir: "src/icons",
+      iconDir: "public/icons",
     }),
   ],
   vite: {
