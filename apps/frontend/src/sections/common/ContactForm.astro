@@ -118,34 +118,35 @@ const fieldRows = [
             class="bg-n-50 relative h-full overflow-hidden rounded-4xl px-4 py-4 md:px-7 md:py-6"
           >
             <div
-              class="absolute top-12 -right-16 size-64 rounded-full bg-blue-100/20 md:top-44 md:-right-24 md:size-88"
+              class="absolute top-12 -right-16 size-64 rounded-full bg-blue-100/20 md:top-1/2 md:-left-44 md:size-70 md:right-auto md:-translate-y-1/2 xl:top-44 xl:-right-24 xl:left-auto xl:size-88 xl:translate-y-0"
             >
             </div>
 
 
-            <div class="relative z-10 flex h-full flex-col gap-10 md:gap-24">
-              <div class="space-y-3 md:space-y-5">
-                <div class="mx-auto max-w-sm md:max-w-60 xl:max-w-sm">
-                  <Image
-                    src={contactIllustration}
-                    alt="An advisor at a desk ready to help with driving school questions."
-                    width={472}
-                    height={516}
-                    class="h-auto w-full"
-                  />
-                </div>
-
-
-                <p class="text-n-800 text-xl leading-tight font-semibold md:text-3xl">
-                  We normally get back to you within <span class="font-bold">24 hours</span>.
-                </p>
+            <div class="relative z-10 flex h-full flex-col gap-10 md:flex-row md:items-stretch md:gap-8 xl:flex-col xl:gap-24">
+              <div class="mx-auto max-w-sm md:-ml-4 md:mx-0 md:flex md:w-[15rem] md:max-w-none md:flex-none md:items-center xl:ml-0 xl:w-auto xl:max-w-sm">
+                <Image
+                  src={contactIllustration}
+                  alt="Instructor illustration"
+                  width={472}
+                  height={516}
+                  class="h-auto w-full"
+                />
               </div>
 
-              <div class="space-y-3.5 md:space-y-6">
-                <div class="border-n-200 border-t"></div>
-                <p class="text-n-600 text-sm leading-tight md:text-base">
-                  Our team is here to help you every step of the way.
-                </p>
+              <div class="flex flex-col gap-10 md:flex-1 md:justify-between xl:gap-24">
+                <div class="space-y-3 md:max-w-[23rem] md:space-y-5 xl:max-w-none">
+                  <p class="text-n-800 text-xl leading-tight font-semibold md:text-3xl">
+                    We normally get back to you within <span class="font-bold">24 hours</span>.
+                  </p>
+                </div>
+
+                <div class="space-y-3.5 md:space-y-6">
+                  <div class="border-n-200 border-t"></div>
+                  <p class="text-n-600 max-w-[23rem] text-sm leading-tight md:text-base xl:max-w-none">
+                    Our team is here to help you every step of the way.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

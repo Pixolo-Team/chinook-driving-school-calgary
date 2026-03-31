@@ -1,0 +1,51 @@
+---
+// COMPONENTS //
+import { Image } from "astro:assets";
+import Button from "@/components/ui/Button.astro";
+import MenuBar from "@/components/MenuBar.astro";
+
+// IMAGES //
+import menuLogo from "@/assets/menu-logo.png";
+
+// DATA //
+import { menuItems } from "@/data/menu";
+---
+
+<!-- FloatingMenu -->
+<div
+  id="floating-menu-shell"
+  class="fixed inset-x-0 top-3 z-50 hidden sm:block"
+  aria-hidden="true"
+  inert
+>
+  <div class="mx-auto w-full max-w-screen-2xl px-4 lg:px-5">
+    <div
+      id="floating-menu"
+      class="outline-n-300 bg-n-50 pointer-events-none mx-auto flex w-full max-w-248.5 items-center overflow-hidden rounded-4xl px-4 py-2 opacity-0 shadow-lg outline-2 lg:px-5 lg:py-2.5"
+    >
+      <div class="flex w-full items-center justify-between">
+        <!-- Brand Logo -->
+        <a href="/" aria-label="Chinook Driving Academy home" class="w-24 shrink-0 lg:w-30">
+          <Image
+            src={menuLogo}
+            alt="Chinook Driving Academy"
+            width={117}
+            height={46}
+            class="w-full"
+          />
+        </a>
+
+        <div class="flex items-center gap-8 lg:gap-11">
+          <!-- Navigation Menu -->
+          <MenuBar variant="floating" items={menuItems} />
+
+          <!-- Menu Button Group -->
+          <div class="flex items-center gap-2 lg:gap-2.5">
+            <Button buttonText="Enroll Now" className="w-26.5" href="/enroll" />
+            <Button buttonText="Call Us" rightIcon="phone-icon" variant="outline" href="/contact" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

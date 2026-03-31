@@ -91,8 +91,8 @@ if (!isset($errors['course'])) {
         $course = $input['course'];
 
         // Ensure all four course amount fields are present and numeric
-        if (!isset($course['course_id']) || !is_numeric($course['course_id'])) {
-            $errors['course.course_id'] = 'course.course_id is required and must be numeric';
+        if (!isset($course['course_id'])) {
+            $errors['course.course_id'] = 'course.course_id is required';
         }
         if (!isset($course['course_price']) || !isValidAmount($course['course_price'])) {
             $errors['course.course_price'] = 'course.course_price is required and must be a non-negative number';
@@ -326,14 +326,14 @@ $studentRow = [
 
 $enrollmentRow = [
     'student_id'           => null, // filled after student insert
-    'course_id'            => (int)$input['course']['course_id'],
+    'course_id'            => $input['course']['course_id'],
     'session_type'         => $input['session_type'],
     'course_price'         => (float)$input['course']['course_price'],
     'tax_amount'           => (float)$input['course']['tax_amount'],
     'total_payable'        => (float)$input['course']['total_amount'],
     'amount_paid'          => 0,
     'enrollment_status'    => 'pending',
-    'payment_status'       => 'PENDING',
+    'payment_status'       => 'pending',
     'did_agree_conditions' => true,
 ];
 
@@ -341,7 +341,7 @@ $paymentRow = [
     'enrollment_id'  => null, // filled after enrollment insert
     'payment_method' => $input['payment_method'],
     'amount'         => (float)$input['amount'],
-    'status'         => 'PENDING',
+    'status'         => 'pending',
 ];
 
 // Build card info row only when the payment method requires it
@@ -382,10 +382,9 @@ try {
     }
     $studentId = (string)$studentInsert['data'][0]['id'];
 
-    print_r("STUDENT ".$studentId);
-
     // Insert the enrollment, linking it to the new student
     $enrollmentRow['student_id'] = $studentId;
+    print_r($enrollmentRow);
     $enrollmentInsert = supabaseInsert(ENROLLMENTS_TABLE, $enrollmentRow);
     if (!$enrollmentInsert['ok'] || empty($enrollmentInsert['data'][0]['id'])) {
         throw new RuntimeException('Failed to insert enrollment: ' . $enrollmentInsert['error']);
