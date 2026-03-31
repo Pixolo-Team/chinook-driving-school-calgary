@@ -28,7 +28,7 @@ import SliderArrows from "@/components/SliderArrows.astro";
         <div class="embla__container flex -ml-3">
           {instructorsSectionData.instructors.map((instructor) => (
             
-            <div class="embla__slide pl-3 cursor-default min-w-0 flex-[0_0_100%] md:flex-[0_0_49%] lg:pl-5 xl:flex-[0_0_32%]">
+            <div class="embla__slide pl-3 cursor-default min-w-0 flex-[0_0_100%] md:flex-[0_0_50%] lg:pl-5 xl:flex-[0_0_33.33%]">
               <InstructorCard
                 firstName={instructor.firstName}
                 lastName={instructor.lastName}
@@ -45,6 +45,7 @@ import SliderArrows from "@/components/SliderArrows.astro";
     </div>
   </div>
 </section>
+
 <script>
   import EmblaCarousel from "embla-carousel";
 
@@ -55,68 +56,72 @@ import SliderArrows from "@/components/SliderArrows.astro";
       const viewport = wrapper.querySelector(".embla") as HTMLElement;
       if (!viewport) return;
 
-      // Initialize Embla
-      const emblaApi = EmblaCarousel(viewport, { 
-        loop: true, 
-        align: "start" 
+      let emblaApi = EmblaCarousel(viewport, {
+        loop: true,
+        align: "start",
+        slidesToScroll: 1, 
+        breakpoints: {
+          '(min-width: 768px)': { slidesToScroll: 2 }, 
+          '(min-width: 1280px)': { slidesToScroll: 3 } 
+        }
       });
 
-      // 1. Setup Arrow Buttons
-      const prevBtns = wrapper.querySelectorAll("[data-embla-prev]");
-      const nextBtns = wrapper.querySelectorAll("[data-embla-next]");
+      wrapper.querySelectorAll("[data-embla-prev]")
+        .forEach(btn => btn.addEventListener("click", () => emblaApi.scrollPrev()));
 
-      prevBtns.forEach((btn) => btn.addEventListener("click", () => emblaApi.scrollPrev()));
-      nextBtns.forEach((btn) => btn.addEventListener("click", () => emblaApi.scrollNext()));
+      wrapper.querySelectorAll("[data-embla-next]")
+        .forEach(btn => btn.addEventListener("click", () => emblaApi.scrollNext()));
 
-      // 2. Setup Dynamic Dots
       const dotsContainer = wrapper.querySelector(".embla__dots");
-      let dotNodes: HTMLElement[] = [];
+      let dotNodes: HTMLButtonElement[] = [];
 
       if (dotsContainer) {
-        const scrollSnaps = emblaApi.scrollSnapList();
         
-        // Generate the dot HTML elements based on total snaps
-        dotsContainer.innerHTML = scrollSnaps.map((_, i) => `
-          <button 
-            class="h-2 w-2 rounded-full bg-n-300 transition-all duration-300 cursor-pointer" 
-            type="button" 
-            aria-label="Go to slide ${i + 1}"
-          ></button>
-        `).join("");
-
-        dotNodes = Array.from(dotsContainer.querySelectorAll("button"));
-
-        // Click a dot to go to its slide
-        dotNodes.forEach((dotNode, i) => {
-          dotNode.addEventListener("click", () => emblaApi.scrollTo(i));
-        });
-
-        // Function to highlight the active dot
-        const updateDots = () => {
-          const selected = emblaApi.selectedScrollSnap();
+        const createDots = () => {
+          const snapList = emblaApi.scrollSnapList();
           
+          dotsContainer.innerHTML = snapList.map((_, i) => `
+            <button 
+              class="h-2 w-2 rounded-full bg-n-300 transition-all duration-300 cursor-pointer" 
+              type="button"
+              aria-label="Go to group ${i + 1}"
+            ></button>
+          `).join("");
+
+          dotNodes = Array.from(dotsContainer.querySelectorAll("button"));
+
+          dotNodes.forEach((dot, i) => {
+            dot.addEventListener("click", () => emblaApi.scrollTo(i));
+          });
+        };
+
+        const updateDots = () => {
+          const selectedIndex = emblaApi.selectedScrollSnap();
+
           dotNodes.forEach((dot, index) => {
-            if (index === selected) {
-              // Active State: Stretches into a blue pill
+            if (index === selectedIndex) {
               dot.classList.remove("w-2", "bg-n-300");
-              dot.classList.add("w-6", "bg-blue-600"); 
+              dot.classList.add("w-6", "bg-blue-600");
             } else {
-              // Inactive State: Small gray circle
               dot.classList.remove("w-6", "bg-blue-600");
               dot.classList.add("w-2", "bg-n-300");
             }
           });
         };
 
-        // Listen for embla events to update the dots
+        createDots();
+        updateDots();
+
         emblaApi.on("select", updateDots);
-        emblaApi.on("reInit", updateDots);
-        updateDots(); // Set initial state
+
+        emblaApi.on("reInit", () => {
+          createDots();
+          updateDots();
+        });
       }
     });
   };
 
-  // Ensure DOM is fully loaded before running
   document.addEventListener("DOMContentLoaded", initCarousels);
   document.addEventListener("astro:page-load", initCarousels);
 </script>
