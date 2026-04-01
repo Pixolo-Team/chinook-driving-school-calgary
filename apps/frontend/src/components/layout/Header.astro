@@ -1,11 +1,12 @@
 ---
+import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
-import BrandLogo from "@/components/common/BrandLogo.astro";
 import Button from "@/components/ui/Button.astro";
 import FloatingMenu from "@/components/layout/FloatingMenu.astro";
 import MobileMenu from "@/components/layout/MobileMenu.astro";
 import MenuBar from "@/components/MenuBar.astro";
 import { URLS } from "@/infrastructure/constants/urls";
+import chinookLogoLight from "@/../public/icons/chinook-logo-light.svg";
 
 // DATA //
 import { menuItems } from "@/data/menu";
@@ -22,23 +23,24 @@ import { menuItems } from "@/data/menu";
     aria-label="Chinook Driving Academy home"
     class="shrink-0"
   >
-    <BrandLogo
-      containerClass="relative h-14 w-36"
-      markClass="absolute top-0 left-0 h-full w-12 object-contain"
-      textClass="absolute top-1/2 left-11 h-8 w-28 -translate-y-1/2 object-contain"
-      textAlt="Chinook Driving Academy"
+    <Image
+      src={chinookLogoLight}
+      alt="Chinook Driving Academy"
+      class="h-14 w-auto"
+      width={210}
+      height={82}
     />
   </a>
 
   <button
     id="mobile-menu-open-button"
     type="button"
-    class="border-n-100 inline-flex size-10 items-center justify-center rounded-full border bg-transparent"
+    class="border-blue-500/30 bg-n-50/72 shadow-n-900/8 inline-flex size-10 items-center justify-center rounded-full border shadow-sm backdrop-blur-sm"
     aria-controls="mobile-menu-panel"
     aria-expanded="false"
     aria-label="Open mobile menu"
   >
-    <Icon id="mobile-menu-open-icon" name="menu-open" class="text-n-100 size-6" />
+    <Icon id="mobile-menu-open-icon" name="menu-open" class="text-blue-500 size-6" />
   </button>
 </header>
 
@@ -52,11 +54,12 @@ import { menuItems } from "@/data/menu";
     
     <!-- Brand Header Logo -->
     <a href="/" aria-label="Chinook Driving Academy home" class="shrink-0">
-      <BrandLogo
-        containerClass="relative h-14 w-36"
-        markClass="absolute top-0 left-0 h-full w-12 object-contain"
-        textClass="absolute top-1/2 left-11 h-8 w-28 -translate-y-1/2 object-contain"
-        textAlt="Chinook Driving Academy"
+      <Image
+        src={chinookLogoLight}
+        alt="Chinook Driving Academy"
+        class="h-14 w-auto"
+        width={210}
+        height={82}
       />
     </a>
 
