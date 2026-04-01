@@ -1,23 +1,52 @@
+// REACT //
 import { useState } from "react";
 
-import { submitEnrollment } from "../services/api/enrollment.api.service";
-import type { EnrollmentPayload, EnrollmentResponse } from "../types/enrollment.type";
+// SERVICES //
+import { submitEnrollmentRequest } from "../services/api/enrollment.api.service";
 
-export function useEnrollment() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [response, setResponse] = useState<EnrollmentResponse | null>(null);
+// TYPES //
+import type {
+  EnrollmentPayloadData,
+  EnrollmentResponseData,
+} from "../types/enrollment.type";
 
-  async function enroll(payload: EnrollmentPayload) {
+/**
+ * Manages the enrollment submission lifecycle for the React flow.
+ */
+export function useEnrollment(): {
+  enroll: (payload: EnrollmentPayloadData) => Promise<EnrollmentResponseData<EnrollmentPayloadData>>;
+  isSubmitting: boolean;
+  response: EnrollmentResponseData<EnrollmentPayloadData> | null;
+} {
+  // Define Navigation
+
+  // Define Context
+
+  // Define Refs
+
+  // Define States
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [response, setResponse] = useState<EnrollmentResponseData<EnrollmentPayloadData> | null>(
+    null,
+  );
+
+  // Helper Functions
+  async function enroll(
+    payload: EnrollmentPayloadData,
+  ): Promise<EnrollmentResponseData<EnrollmentPayloadData>> {
+    // Start the submission state before making the API request
     setIsSubmitting(true);
 
     try {
-      const result = await submitEnrollment(payload);
-      setResponse(result);
-      return result;
+      const enrollmentResponseInfo = await submitEnrollmentRequest(payload);
+      setResponse(enrollmentResponseInfo);
+      return enrollmentResponseInfo;
     } finally {
       setIsSubmitting(false);
     }
   }
+
+  // Use Effects
 
   return {
     enroll,

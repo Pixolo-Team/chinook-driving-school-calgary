@@ -1,19 +1,20 @@
-import type { ChangeEvent, InputHTMLAttributes } from "react";
+// REACT //
+import React, { type ChangeEvent, type InputHTMLAttributes } from "react";
 
 const DEFAULT_ICON_SRC = "https://www.figma.com/api/mcp/asset/6108eefa-d366-4360-90ed-d66aca871df7";
 
-type CheckboxTabProps = Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "children"> & {
-  title?: string;
-  description?: string;
+type CheckboxTabPropsData = Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "children"> & {
+  title: string;
+  description: string;
   iconSrc?: string;
   containerClassName?: string;
 };
 
-function joinClasses(...classes: Array<string | false | null | undefined>) {
+function joinClasses(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(" ");
 }
 
-function CheckIndicator({ checked }: { checked: boolean }) {
+function renderCheckIndicator({ checked }: { checked: boolean }): React.JSX.Element {
   return (
     <span
       aria-hidden="true"
@@ -37,25 +38,39 @@ function CheckIndicator({ checked }: { checked: boolean }) {
   );
 }
 
+/**
+ * Renders a selectable payment-style tab with checkbox semantics.
+ */
 export default function CheckboxTab({
-  title = "Credit Card",
-  description = "Visa, Mastercard, Amex",
+  title,
+  description,
   iconSrc = DEFAULT_ICON_SRC,
-  checked = true,
+  checked,
   disabled = false,
   className,
   containerClassName,
   onChange,
   ...props
-}: CheckboxTabProps) {
-  function handleChange(event: ChangeEvent<HTMLInputElement>) {
+}: CheckboxTabPropsData) {
+  // Define Navigation
+
+  // Define Context
+
+  // Define Refs
+
+  // Define States
+
+  // Helper Functions
+  function handleChange(event: ChangeEvent<HTMLInputElement>): void {
     onChange?.(event);
   }
+
+  // Use Effects
 
   return (
     <label
       className={joinClasses(
-        "relative flex w-full max-w-[338px] cursor-pointer flex-col gap-3 rounded-xl border border-n-800)] bg-n-50)] p-5 text-left transition-shadow duration-200",
+        "border-n-800)] bg-n-50)] relative flex w-full max-w-[338px] cursor-pointer flex-col gap-3 rounded-xl border p-5 text-left transition-shadow duration-200",
         disabled
           ? "cursor-not-allowed opacity-60"
           : "hover:shadow-[0_10px_24px_rgba(14,23,43,0.08)]",
@@ -75,16 +90,14 @@ export default function CheckboxTab({
         <img src={iconSrc} alt="" className="block h-full w-full" />
       </div>
 
-      <div className="flex w-full flex-col gap-0.5pr-10">
-        <span className="text-lg leading-normal font-bold text-n-800)]">{title}</span>
-        <span className="text-sm leading-normal font-normal text-n-500)]">
-          {description}
-        </span>
+      <div className="gap-0.5pr-10 flex w-full flex-col">
+        <span className="text-n-800)] text-lg leading-normal font-bold">{title}</span>
+        <span className="text-n-500)] text-sm leading-normal font-normal">{description}</span>
       </div>
 
-      <CheckIndicator checked={Boolean(checked)} />
+      {renderCheckIndicator({ checked: Boolean(checked) })}
 
-      <span className="pointer-events-none absolute inset-0 rounded-xl ring-0 ring-transparent transition peer-focus-visible:ring-2 peer-focus-visible:ring-blue-500)] peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-n-50)]" />
+      <span className="peer-focus-visible:ring-blue-500)] peer-focus-visible:ring-offset-n-50)] pointer-events-none absolute inset-0 rounded-xl ring-0 ring-transparent transition peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2" />
     </label>
   );
 }

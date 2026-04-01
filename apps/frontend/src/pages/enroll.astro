@@ -1,11 +1,13 @@
 ---
 import Layout from "@/layouts/Layout.astro";
-import EnrollmentForm from "@/react/components/EnrollmentForm";
+import EnrollForm from "@/react/components/Enroll";
 ---
 
 <Layout
 title="Enroll | Chinook Driving School Calgary"
 description="Preview the enrollment form components for Chinook Driving School Calgary."
 >
-<EnrollmentForm client:load />
+
+<!-- React Island for Form -->
+<EnrollForm client:load />
 </Layout>
