@@ -1,0 +1,24 @@
+---
+import FeatureCard from "@/components/FeatureCard.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import { FeaturesSectionDetails } from "@/data/features";
+---
+
+<section class="bg-n-50">
+  <div class="container mx-auto flex w-full flex-col items-center gap-16 px-5 py-20 lg:px-0 lg:py-28">
+    
+    <!-- Section Header -->
+    <SectionHeader
+      eyebrow={FeaturesSectionDetails.content.eyebrow}
+      heading={FeaturesSectionDetails.content.title}
+      description={FeaturesSectionDetails.content.description}
+    />
+
+    <!-- Feature Cards -->
+    <div class="grid grid-cols-1 place-items-center gap-9 md:grid-cols-2 xl:grid-cols-3 xl:place-items-start 2xl:grid-cols-4">
+      {FeaturesSectionDetails.cards.map((cardItem) => (
+        <FeatureCard cardItem={cardItem} />
+      ))}
+    </div>
+  </div>
+</section>

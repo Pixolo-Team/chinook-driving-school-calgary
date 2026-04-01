@@ -1,0 +1,126 @@
+@import "tailwindcss";
+
+/* Dark mode variant */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ---------------------------------------
+   Base Global Styles
+---------------------------------------- */
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  font-family: "Poppins", sans-serif;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  scroll-behavior: smooth;
+  @apply transition-colors duration-300;
+}
+
+* {
+  @apply box-border;
+}
+
+/* Scrollbar style */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-blue-500);
+  border-radius: 12px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-blue-600);
+}
+
+/* Hide scrollbar for all browsers */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+@theme inline {
+  --color-n-50: var(--color-n-50);
+  --color-n-100: var(--color-n-100);
+  --color-n-200: var(--color-n-200);
+  --color-n-300: var(--color-n-300);
+  --color-n-400: var(--color-n-400);
+  --color-n-500: var(--color-n-500);
+  --color-n-600: var(--color-n-600);
+  --color-n-700: var(--color-n-700);
+  --color-n-800: var(--color-n-800);
+  --color-n-900: var(--color-n-900);
+  --color-n-950: var(--color-n-950);
+}
+
+:root {
+  /* ===== COLOR VARIABLES - LIGHT MODE (DEFAULT) ===== */
+  --color-n-50: #ffffff;
+  --color-n-100: #f1f5f9;
+  --color-n-200: #e2e8f1;
+  --color-n-300: #cad5e2;
+  --color-n-400: #90a2b9;
+  --color-n-500: #62748e;
+  --color-n-600: #45556c;
+  --color-n-700: #324158;
+  --color-n-800: #1d283d;
+  --color-n-900: #0e172b;
+  --color-n-950: #020617;
+
+  /* Blue Shades */
+  --color-blue-50: #EFF6FF;
+  --color-blue-100: #b4d6f9;
+  --color-blue-200: #8ec2f6;
+  --color-blue-300: #68adf3;
+  --color-blue-400: #4299f0;
+  --color-blue-500: #137fec;
+  --color-blue-600: #1170d0;
+  --color-blue-700: #0e5caa;
+  --color-blue-800: #0b4784;
+  --color-blue-900: #08335e;
+  --color-blue-950: #031426;
+}
+
+/* ===== COLOR VARIABLES - DARK MODE ===== */
+
+.dark {
+  --color-n-50: #020617;
+  --color-n-100: #0e172b;
+  --color-n-200: #1d283d;
+  --color-n-300: #324158;
+  --color-n-400: #45556c;
+  --color-n-500: #62748e;
+  --color-n-600: #90a2b9;
+  --color-n-700: #cad5e2;
+  --color-n-800: #e2e8f1;
+  --color-n-900: #f1f5f9;
+  --color-n-950: #ffffff;
+
+  /* Blue Shades Dark Mode */
+  --color-blue-50: #031426;
+  --color-blue-100: #08335e;
+  --color-blue-200: #0b4784;
+  --color-blue-300: #0e5caa;
+  --color-blue-400: #1170d0;
+  --color-blue-500: #137fec;
+  --color-blue-600: #4299f0;
+  --color-blue-700: #68adf3;
+  --color-blue-800: #8ec2f6;
+  --color-blue-900: #b4d6f9;
+  --color-blue-950: #ffffff;
+}

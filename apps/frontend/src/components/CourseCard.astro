@@ -1,0 +1,233 @@
+---
+// COMPONENTS //
+import { Icon } from "astro-icon/components";
+import { Image } from "astro:assets";
+import Button from "@/components/ui/Button.astro";
+import Chip from "@/components/ui/Chip.astro";
+import { URLS } from "@/infrastructure/constants/urls";
+
+// SVG's //
+import ellipseLight from "@/assets/ellipse-light.svg";
+import ellipseBlue from "@/assets/ellipse-blue.svg";
+import ellipseLightAlt from "@/assets/ellipse-light-alt.svg";
+
+const ellipseMap = {
+  light: ellipseLight,
+  blue: ellipseBlue,
+  "light-alt": ellipseLightAlt,
+};
+
+interface CourseCardProps {
+  title: string;
+  price: string;
+  duration: string;
+  practice: {
+    label: string;
+    value: string;
+  };
+  classroom: {
+    label: string;
+    value: string;
+  };
+  features: string[];
+  theme: "light" | "brand";
+  ellipse: keyof typeof ellipseMap;
+  badge?: string;
+}
+
+const card = Astro.props as CourseCardProps;
+---
+
+<div class="relative flex h-full w-full">
+  {card.badge && (
+    <div class="absolute hidden left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-1/2 md:block">
+      <div class="inline-flex min-h-8.75 items-center justify-center rounded-full border-2 border-blue-500 bg-n-50 px-5 py-2 text-center text-xs font-bold leading-none text-blue-500 whitespace-nowrap lg:px-6 lg:text-sm">
+        {card.badge}
+      </div>
+    </div>
+  )}
+
+  <div
+    class:list={[
+      "relative flex h-full w-full flex-col justify-between overflow-hidden rounded-4xl border p-5 lg:p-6 2xl:p-10",
+      card.theme === "brand"
+        ? "border-blue-500 bg-blue-500 text-n-50"
+        : "border-n-300 bg-n-50 text-n-800",
+    ]}
+  >
+    <Image
+      src={ellipseMap[card.ellipse]}
+      alt=""
+      width={353}
+      height={353}
+      class:list={[
+        "pointer-events-none absolute -bottom-22 -right-36 w-56 md:-right-22 md:-bottom-30 lg:w-60 2xl:-right-26 2xl:-bottom-36 2xl:w-72 opacity-100",
+        card.theme === "brand" ? "opacity-90" : "opacity-100",
+      ]}
+      aria-hidden="true"
+    />
+
+    <div class="relative z-10 flex flex-col gap-5 lg:gap-6">
+      <div class="flex items-start justify-between gap-3">
+        <div class="min-w-0 flex-1 flex flex-col gap-3">
+          <p
+            class:list={[
+              "text-sm font-bold uppercase tracking-[1.4px] leading-tight",
+              card.theme === "brand" ? "text-n-50" : "text-blue-500",
+            ]}
+          >
+            {card.title}
+          </p>
+          <div class="flex items-end gap-1">
+            <p
+              class:list={[
+                "text-3xl font-bold leading-none lg:text-4xl 2xl:text-5xl",
+                card.theme === "brand" ? "text-n-50" : "text-n-800",
+              ]}
+            >
+              {card.price}
+            </p>
+            <p
+              class:list={[
+                "text-sm font-semibold",
+                card.theme === "brand" ? "text-n-200" : "text-n-500",
+              ]}
+            >
+              +GST
+            </p>
+          </div>
+        </div>
+
+        <div class="shrink-0 self-start">
+          <Chip duration={card.duration} theme={card.theme} />
+        </div>
+      </div>
+
+      <div class="flex flex-col gap-4">
+        <div class="flex flex-col gap-4 2xl:flex-row 2xl:items-center 2xl:justify-between">
+          <div class="flex items-center gap-3">
+            <div
+              class:list={[
+                "flex size-8 items-center justify-center rounded-2xl",
+                card.theme === "brand" ? "bg-blue-400" : "bg-n-200",
+              ]}
+            >
+              <Icon
+                name={
+                  card.theme === "brand"
+                    ? "steering-wheel-inverse"
+                    : "steering-wheel"
+                }
+                class="size-4"
+                aria-hidden="true"
+              />
+            </div>
+            <div class="flex flex-col leading-tight">
+              <p
+                class:list={[
+                  "text-xs font-medium",
+                  card.theme === "brand" ? "text-n-200" : "text-n-500",
+                ]}
+              >
+                {card.practice.label}
+              </p>
+              <p
+                class:list={[
+                  "text-sm font-bold lg:text-base",
+                  card.theme === "brand" ? "text-n-50" : "text-n-800",
+                ]}
+              >
+                {card.practice.value}
+              </p>
+            </div>
+          </div>
+
+          <div
+            class:list={[
+              "hidden h-8 w-px 2xl:block",
+              card.theme === "brand" ? "bg-blue-200" : "bg-n-200",
+            ]}
+          >
+          </div>
+
+          <div
+            class:list={[
+              "block h-px w-full 2xl:hidden",
+              card.theme === "brand" ? "bg-blue-200" : "bg-n-200",
+            ]}
+          >
+          </div>
+
+          <div class="flex items-center gap-3">
+            <div
+              class:list={[
+                "flex size-8 items-center justify-center rounded-2xl",
+                card.theme === "brand" ? "bg-blue-400" : "bg-n-200",
+              ]}
+            >
+              <Icon
+                name={
+                  card.theme === "brand"
+                    ? "whiteboard-classroom-course-inverse"
+                    : "whiteboard-classroom-course"
+                }
+                class="size-4"
+                aria-hidden="true"
+              />
+            </div>
+            <div class="flex flex-col leading-tight">
+              <p
+                class:list={[
+                  "text-xs font-medium",
+                  card.theme === "brand" ? "text-n-200" : "text-n-500",
+                ]}
+              >
+                {card.classroom.label}
+              </p>
+              <p
+                class:list={[
+                  "text-sm font-bold lg:text-base",
+                  card.theme === "brand" ? "text-n-50" : "text-n-800",
+                ]}
+              >
+                {card.classroom.value}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2.5">
+          {
+            card.features.map((feature) => (
+              <div class="flex items-start gap-3">
+                <Icon
+                  name={
+                    card.theme === "brand"
+                      ? "check-circle-inverse"
+                      : "check-circle"
+                  }
+                  class="mt-0.5 size-4 shrink-0"
+                  aria-hidden="true"
+                />
+                <p
+                  class:list={[
+                    "text-sm leading-snug",
+                    card.theme === "brand"
+                      ? "text-n-50 font-semibold"
+                      : "text-n-800 font-normal",
+                  ]}
+                >
+                  {feature}
+                </p>
+              </div>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+
+    <div class="relative z-10">
+      <Button value="Select Package" theme={card.theme} href={URLS.ENROLL} />
+    </div>
+  </div>
+</div>

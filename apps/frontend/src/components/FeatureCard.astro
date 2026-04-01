@@ -1,0 +1,51 @@
+---
+import { Image } from "astro:assets";
+import ellipseBlue from "@/assets/ellipse-blue.svg";
+import ellipseLight from "@/assets/ellipse-light.svg";
+
+const { cardItem } = Astro.props;
+---
+
+<div class="w-[312px] overflow-hidden rounded-4xl border-2 border-n-100 pb-11 transition duration-300 ease-in-out hover:scale-105">
+  <div class="flex h-full flex-col gap-6">
+
+    <!-- Illustration -->
+    <div class="relative flex h-[171px] w-full items-start justify-start overflow-hidden px-6 pt-6">
+      <div class="relative flex h-[118px] w-[118px] items-center justify-center">
+        <Image
+          src={ellipseLight}
+          alt=""
+          width={118}
+          height={118}
+          class="absolute inset-0 h-full w-full"
+          aria-hidden="true"
+        />
+        <Image
+          src={ellipseBlue}
+          alt=""
+          width={88}
+          height={88}
+          class="absolute left-1/2 top-1/2 h-[88px] w-[88px] -translate-x-1/2 -translate-y-1/2 opacity-60"
+          aria-hidden="true"
+        />
+        <img
+          alt={cardItem.imageAlt}
+          class="relative z-10 h-[84px] w-[84px] object-contain"
+          height="84"
+          src="/icons/feature-illustration.svg"
+          width="84"
+        />
+      </div>
+    </div>
+
+    <!-- Card Content -->
+    <div class="flex flex-col gap-3.5 px-6">
+      <p class="text-2xl font-bold leading-[1.2] text-n-800">
+        {cardItem.title}
+      </p>
+      <p class="text-sm font-medium text-n-500">
+        {cardItem.description}
+      </p>
+    </div>
+  </div>
+</div>
