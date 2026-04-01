@@ -1,0 +1,62 @@
+---
+import { Image } from "astro:assets";
+
+import badgeImage from "@/assets/instructor-badge.png";
+import ellipseImage from "@/assets/instructor-ellipse.png";
+
+interface Props {
+  firstName: string;
+  lastName: string;
+  role: string;
+  description: string;
+}
+
+const { firstName, lastName, role, description } = Astro.props;
+---
+
+<div class="relative w-full overflow-hidden rounded-3xl border border-n-200 bg-n-50 px-9 py-7 lg:px-11 lg:py-9">
+  <div class="absolute bottom-[120px] right-[-171px] lg:bottom-[160px] lg:right-[-160px]">
+    <Image
+      src={ellipseImage}
+      alt=""
+      width={353}
+      height={353}
+      class="size-[353px]"
+      aria-hidden="true"
+    />
+  </div>
+
+  <div class="relative flex flex-col gap-6 lg:gap-8">
+    <div class="flex items-start justify-between gap-6">
+      <div class="flex flex-col gap-3 lg:gap-4">
+        <p class="text-2xl font-bold leading-tight text-n-800 lg:text-3xl">
+          <span class="block">{firstName}</span>
+          <span class="block">{lastName}</span>
+        </p>
+        <p class="text-xs font-semibold uppercase tracking-[1.4px] text-n-500 lg:text-sm">
+          {role}
+        </p>
+      </div>
+
+      <div class="relative shrink-0">
+        <Image
+          src={badgeImage}
+          alt=""
+          width={92}
+          height={111}
+          class="w-16 lg:w-[92px]"
+          aria-hidden="true"
+        />
+        <div class="absolute left-[11px] top-[11px] flex size-10 items-center justify-center rounded-full bg-n-50 lg:left-[16px] lg:top-[16px] lg:size-[60px]">
+          <span class="text-[6px] font-bold uppercase text-n-800 lg:text-[10px]">
+            CERTIFIED
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-xs leading-relaxed text-n-600 lg:text-sm">
+      {description}
+    </p>
+  </div>
+</div>

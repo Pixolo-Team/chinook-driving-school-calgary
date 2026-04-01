@@ -1,0 +1,46 @@
+---
+// COMPONENTS //
+import WhyUsCard from "@/components/WhyUsCard.astro";
+
+// DATA //
+import { whyusSectionDetails } from "@/data/home/why-us";
+
+---
+
+<section class="bg-n-50">
+  <div
+    class="container mx-auto flex w-full flex-col items-center gap-16 px-5 py-36 lg:px-0"
+  >
+    <div
+      class="flex w-full flex-col items-center gap-4 text-center lg:gap-2.5"
+    >
+      <p
+        class="text-sm font-bold uppercase tracking-[0.6px] text-blue-500"
+      >
+        {whyusSectionDetails.content.eyebrow}
+      </p>
+      <div class="flex w-full flex-col items-center gap-3 lg:gap-0">
+        <p
+          class="text-3xl font-bold leading-tight text-n-800 lg:text-5xl lg:leading-[1.2]"
+        >
+          {whyusSectionDetails.content.title}
+      </p>
+        <p
+          class="max-w-[221px] text-sm text-n-600 lg:max-w-[516px] lg:text-base"
+        >
+          {whyusSectionDetails.content.description}
+        </p>
+      </div>
+    </div>
+
+    <div
+      class="grid grid-cols-1 gap-9 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 place-items-center xl:place-items-start"
+    >
+      {
+        whyusSectionDetails.cards.map((cardItem) => (
+          <WhyUsCard cardItem={cardItem} />
+        ))
+      }
+    </div>
+  </div>
+</section>
