@@ -57,7 +57,7 @@ const fieldRows = [
                 <!-- Form Title -->
                 <p class="text-n-900 text-xl leading-7 font-bold md:text-2xl">Reach out to us!</p>
 
-                <form class="space-y-4 md:space-y-6">
+                <form method="post" action="" class="space-y-4 md:space-y-6">
                   {
                     fieldRows.map((fieldRow) => (
                       <div
@@ -118,13 +118,13 @@ const fieldRows = [
             class="bg-n-50 relative h-full overflow-hidden rounded-4xl px-4 py-4 md:px-7 md:py-6"
           >
             <div
-              class="absolute top-12 -right-16 size-64 rounded-full bg-blue-100/20 md:top-1/2 md:-left-44 md:size-70 md:right-auto md:-translate-y-1/2 xl:top-44 xl:-right-24 xl:left-auto xl:size-88 xl:translate-y-0"
+              class="absolute top-12 -right-16 size-64 rounded-full bg-blue-100/20 md:top-1/2 md:-left-44 md:size-70 md:right-auto md:-translate-y-1/2 xl:top-44 xl:-right-48 xl:left-auto xl:size-96 xl:translate-y-0"
             >
             </div>
 
 
             <div class="relative z-10 flex h-full flex-col gap-10 md:flex-row md:items-stretch md:gap-8 xl:flex-col xl:gap-24">
-              <div class="mx-auto max-w-sm md:-ml-4 md:mx-0 md:flex md:w-[15rem] md:max-w-none md:flex-none md:items-center xl:ml-0 xl:w-auto xl:max-w-sm">
+              <div class="mx-auto md:w-60 lg:w-72">
                 <Image
                   src={contactIllustration}
                   alt="Instructor illustration"
