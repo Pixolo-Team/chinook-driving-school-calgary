@@ -53,7 +53,7 @@ export const contactSectionData = {
       serviceArea: {
         icon: "web",
         label: "Service Area:",
-        value: "Okotoks bol • Highriver • De Winton",
+        value: "Okotoks bol • High River • De Winton",
       },
     },
   },
