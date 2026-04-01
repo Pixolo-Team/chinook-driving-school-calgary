@@ -1,5 +1,6 @@
 ---
 import InstructorCard from "@/components/InstructorCard.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
 import { instructorsSectionData } from "@/data/instructors-section-data";
 import SliderArrows from "@/components/SliderArrows.astro";
 
@@ -7,27 +8,21 @@ import SliderArrows from "@/components/SliderArrows.astro";
 
 <section class="bg-n-100">
   <div class="container mx-auto w-full px-6 py-20 md:px-12 lg:px-24 lg:py-28">
-    <div class="flex flex-col items-center gap-5 text-center lg:gap-7">
-      <div class="flex flex-col items-center gap-2 lg:gap-3">
-        <p class="text-sm font-bold uppercase tracking-[0.6px] text-blue-600">
-          {instructorsSectionData.eyebrow}
-        </p>
-        <p class="text-3xl font-bold leading-tight text-n-800 lg:text-5xl">
-          {instructorsSectionData.heading}
-        </p>
-      </div>
-      <p class="max-w-2xl text-xs text-n-600 lg:text-base">
-        {instructorsSectionData.description}
-      </p>
-    </div>
 
+    <!-- Section Header -->
+    <SectionHeader
+      eyebrow={instructorsSectionData.eyebrow}
+      heading={instructorsSectionData.heading}
+      description={instructorsSectionData.description}
+    />
+
+    <!-- Instructor Card Section -->
     <div class="carousel-wrapper relative mt-11 flex flex-col gap-5 lg:mt-16 lg:gap-16">
-      
       <div class="embla overflow-hidden cursor-grab active:cursor-grabbing">
-        
         <div class="embla__container flex -ml-3">
+
+          <!-- Instructor Cards -->
           {instructorsSectionData.instructors.map((instructor) => (
-            
             <div class="embla__slide pl-3 cursor-default min-w-0 flex-[0_0_100%] md:flex-[0_0_50%] lg:pl-5 xl:flex-[0_0_33.33%]">
               <InstructorCard
                 firstName={instructor.firstName}
@@ -39,16 +34,18 @@ import SliderArrows from "@/components/SliderArrows.astro";
           ))}
         </div>
       </div>
-
-      <SliderArrows/>
       
+      <!-- Slider Arrows -->
+      <SliderArrows />
     </div>
   </div>
 </section>
 
+<!-- Carousel Scripts -->
 <script>
   import EmblaCarousel from "embla-carousel";
 
+  // Initialize each instructor carousel on the page.
   const initCarousels = () => {
     const wrappers = document.querySelectorAll(".carousel-wrapper");
 
@@ -56,45 +53,58 @@ import SliderArrows from "@/components/SliderArrows.astro";
       const viewport = wrapper.querySelector(".embla") as HTMLElement;
       if (!viewport) return;
 
+      // Create the slider with responsive scroll groups.
       let emblaApi = EmblaCarousel(viewport, {
         loop: true,
         align: "start",
-        slidesToScroll: 1, 
+        duration: 32,
+        slidesToScroll: 1,
         breakpoints: {
-          '(min-width: 768px)': { slidesToScroll: 2 }, 
-          '(min-width: 1280px)': { slidesToScroll: 3 } 
-        }
+          "(min-width: 768px)": { slidesToScroll: 2 },
+          "(min-width: 1280px)": { slidesToScroll: 3 },
+        },
       });
 
-      wrapper.querySelectorAll("[data-embla-prev]")
-        .forEach(btn => btn.addEventListener("click", () => emblaApi.scrollPrev()));
+      wrapper.querySelectorAll("[data-embla-prev]").forEach((btn) => {
+        const handlePrevClick = () => emblaApi.scrollPrev();
+        btn.addEventListener("click", handlePrevClick);
+      });
 
-      wrapper.querySelectorAll("[data-embla-next]")
-        .forEach(btn => btn.addEventListener("click", () => emblaApi.scrollNext()));
+      wrapper.querySelectorAll("[data-embla-next]").forEach((btn) => {
+        const handleNextClick = () => emblaApi.scrollNext();
+        btn.addEventListener("click", handleNextClick);
+      });
 
       const dotsContainer = wrapper.querySelector(".embla__dots");
       let dotNodes: HTMLButtonElement[] = [];
 
       if (dotsContainer) {
         
+        // Build one dot per scroll snap.
         const createDots = () => {
           const snapList = emblaApi.scrollSnapList();
-          
-          dotsContainer.innerHTML = snapList.map((_, i) => `
+
+          dotsContainer.innerHTML = snapList
+            .map(
+              (_, i) => `
             <button 
               class="h-2 w-2 rounded-full bg-n-300 transition-all duration-300 cursor-pointer" 
               type="button"
               aria-label="Go to group ${i + 1}"
             ></button>
-          `).join("");
+          `,
+            )
+            .join("");
 
           dotNodes = Array.from(dotsContainer.querySelectorAll("button"));
 
           dotNodes.forEach((dot, i) => {
-            dot.addEventListener("click", () => emblaApi.scrollTo(i));
+            const handleDotClick = () => emblaApi.scrollTo(i);
+            dot.addEventListener("click", handleDotClick);
           });
         };
 
+        // Highlight the active dot.
         const updateDots = () => {
           const selectedIndex = emblaApi.selectedScrollSnap();
 
@@ -122,6 +132,7 @@ import SliderArrows from "@/components/SliderArrows.astro";
     });
   };
 
+  // Run on first load and Astro page navigation.
   document.addEventListener("DOMContentLoaded", initCarousels);
   document.addEventListener("astro:page-load", initCarousels);
 </script>
