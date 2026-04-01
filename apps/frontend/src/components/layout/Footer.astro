@@ -1,6 +1,6 @@
 ---
-// COMPONENTS //
 import { Image } from "astro:assets";
+import BrandLogo from "@/components/common/BrandLogo.astro";
 
 // DATA //
 import { footerSectionData } from "@/data/footer-section-data";
@@ -16,29 +16,11 @@ import { footerSectionData } from "@/data/footer-section-data";
     >
       <div class="flex w-full flex-col gap-3.5 lg:w-64 lg:gap-9">
         <!-- Chinook Logo -->
-        <div
-          class="relative h-14 w-36 lg:h-20 lg:w-52"
-          role="img"
-          aria-label={footerSectionData.logo.alt}
-        >
-          <Image
-            src={footerSectionData.logo.mark}
-            alt=""
-            width={65}
-            height={82}
-            class="absolute top-0 left-0 h-full w-12 object-contain lg:w-16"
-            loading="lazy"
-            aria-hidden="true"
-          />
-          <Image
-            src={footerSectionData.logo.text}
-            alt={footerSectionData.logo.alt}
-            width={144}
-            height={42}
-            class="absolute top-1/2 left-11 h-8 w-28 -translate-y-1/2 object-contain lg:left-16 lg:h-10 lg:w-36"
-            loading="lazy"
-          />
-        </div>
+        <BrandLogo
+          containerClass="relative h-14 w-36 lg:h-20 lg:w-52"
+          markClass="absolute top-0 left-0 h-full w-12 object-contain lg:w-16"
+          textClass="absolute top-1/2 left-11 h-8 w-28 -translate-y-1/2 object-contain lg:left-16 lg:h-10 lg:w-36"
+        />
 
         <!-- Certified by Alberta Transportation -->
         <p class="text-n-600 text-xs lg:text-sm">

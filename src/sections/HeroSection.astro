@@ -1,0 +1,40 @@
+---
+import { Image } from "astro:assets";
+
+const heroImage = "https://www.figma.com/api/mcp/asset/a43dd646-5d1f-4e3c-a550-47d7a2c37f44";
+---
+
+<section
+  class="bg-n-900 relative flex h-[100dvh] max-h-[945px] w-full flex-col justify-end overflow-hidden"
+>
+  <div class="absolute inset-0">
+    <Image
+      src={heroImage}
+      alt=""
+      width={1920}
+      height={945}
+      class="h-full w-full object-cover object-[60%_top] lg:object-top"
+      aria-hidden="true"
+    />
+  </div>
+
+  <div
+    class="from-n-900/90 via-n-900/60 absolute inset-x-0 bottom-0 h-[70%] max-h-[600px] bg-gradient-to-t to-transparent"
+  >
+  </div>
+
+  <div class="relative z-10 w-full pb-12 sm:pb-16 lg:pb-20">
+    <div class="container mx-auto w-full max-w-screen-2xl px-5">
+      <div class="text-n-50 flex max-w-3xl flex-col gap-1.5">
+        <p
+          class="text-base leading-[169%] font-normal tracking-normal tracking-wide uppercase lg:text-3xl"
+        >
+          WE LOVE TEACHING
+        </p>
+        <p class="text-2xl leading-tight font-semibold tracking-normal lg:text-5xl">
+          Proper guidance leads to Safer roads for our families.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
