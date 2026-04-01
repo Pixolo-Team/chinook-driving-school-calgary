@@ -7,12 +7,12 @@ It includes enum types, tables, relationships, and key field descriptions.
 
 The database is designed to handle:
 
-Course management
-Student records
-Enrollment lifecycle
-Payments & transactions
-Slot availability
-Contact requests
+1. Course management
+2. Student records
+3. Enrollment lifecycle
+4. Payments & transactions
+5. Slot availability
+6. Contact requests
 ---
 
 # 🔢 ENUM TYPES
