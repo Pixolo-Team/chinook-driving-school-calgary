@@ -15,12 +15,15 @@ const navigationItems = menuItems.filter((menuItem) => menuItem.url !== "/enroll
   class="fixed inset-0 z-50 hidden lg:hidden"
   aria-hidden="true"
 >
+  <!-- Soft backdrop behind the menu while the panel is open. -->
   <div id="mobile-menu-backdrop" class="absolute inset-0 bg-n-900/16 opacity-0"></div>
 
+  <!-- Full-height menu surface that drops in from the top. -->
   <div
     id="mobile-menu-drawer"
     class="bg-n-50 relative flex min-h-dvh w-full flex-col overflow-y-auto shadow-2xl"
   >
+    <!-- Top row: brand logo and close action. -->
     <div data-mobile-menu-section class="flex items-center justify-between px-6 py-4">
       <a href="/" aria-label="Chinook Driving Academy home" class="shrink-0">
         <BrandLogo
@@ -42,6 +45,8 @@ const navigationItems = menuItems.filter((menuItem) => menuItem.url !== "/enroll
     </div>
 
     <div class="flex flex-1 flex-col justify-between px-8 py-8">
+
+      <!-- Links -->
       <nav aria-label="Mobile navigation" class="flex flex-col">
         {
           navigationItems.map((menuItem, menuItemIndex) => (
@@ -61,10 +66,15 @@ const navigationItems = menuItems.filter((menuItem) => menuItem.url !== "/enroll
         }
       </nav>
 
+      <!-- CTA Enroll & Call Now Buttons-->
       <div data-mobile-menu-section class="flex flex-col gap-3 pt-8">
+
+        <!-- Enroll Now Button -->
         <Button href="/enroll" className="h-14 rounded-full px-6">
           <span class="text-lg leading-none font-bold">Enroll Now</span>
         </Button>
+
+        <!-- Call Us Button -->
         <Button
           variant="outline"
           href="/contact"

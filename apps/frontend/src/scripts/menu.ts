@@ -229,6 +229,8 @@ export const initializeMobileMenu = () => {
   const mobileMenuLinks = Array.from(
     document.querySelectorAll("[data-mobile-menu-link]"),
   ) as HTMLAnchorElement[];
+  
+  // Sections marked in the template are animated in sequence for the cascade effect.
   const mobileMenuSections = Array.from(
     mobileMenuPanel.querySelectorAll("[data-mobile-menu-section]"),
   ) as HTMLElement[];
@@ -347,6 +349,7 @@ export const initializeMobileMenu = () => {
       lockPageScroll();
       prepareDrawerVisibleState();
 
+      // Fade the backdrop in while the menu surface drops into place.
       backdropAnimation = animate(
         mobileMenuBackdrop,
         { opacity: [0, 1] },
@@ -359,6 +362,7 @@ export const initializeMobileMenu = () => {
         { duration: 0.34, ease: [0.22, 1, 0.36, 1] },
       ) as MotionAnimationData;
 
+      // Stagger each section slightly so the menu reads from top to bottom.
       sectionAnimations = mobileMenuSections.map((section, index) =>
         animate(
           section,
