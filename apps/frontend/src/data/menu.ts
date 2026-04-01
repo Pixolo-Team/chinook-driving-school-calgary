@@ -1,8 +1,9 @@
-// Data for the menu
+import { URLS } from "@/infrastructure/constants/urls";
+
 export const menuItems = [
-  { name: "Home", url: "/" },
-  { name: "About Us", url: "/about-us" },
-  { name: "Courses", url: "/courses" },
-  { name: "Contact Us", url: "/contact" },
-  { name: "Enroll", url: "/enroll" },
+  { name: "Home", url: URLS.HOME },
+  { name: "About Us", url: URLS.ABOUT },
+  { name: "Courses", url: URLS.COURSES },
+  { name: "Contact Us", url: URLS.CONTACT },
+  { name: "Enroll", url: URLS.ENROLL },
 ];

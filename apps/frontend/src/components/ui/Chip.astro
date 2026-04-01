@@ -1,0 +1,17 @@
+---
+interface ChipProps {
+  duration: string;
+  theme?: "light" | "brand";
+}
+
+const { duration, theme = "light" } = Astro.props as ChipProps;
+---
+
+<div
+  class:list={[
+    "rounded-full px-4 py-1.5 text-sm font-bold",
+    theme === "brand" ? "bg-blue-400 text-n-50" : "bg-n-200 text-n-800",
+  ]}
+>
+  {duration}
+</div>

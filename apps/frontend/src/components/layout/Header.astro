@@ -6,6 +6,7 @@ import Button from "@/components/ui/Button.astro";
 import FloatingMenu from "@/components/layout/FloatingMenu.astro";
 import MobileMenu from "@/components/layout/MobileMenu.astro";
 import MenuBar from "@/components/MenuBar.astro";
+import { URLS } from "@/infrastructure/constants/urls";
 
 // IMAGES //
 import menuLogo from "@/assets/menu-logo.png";
@@ -59,7 +60,7 @@ import { menuItems } from "@/data/menu";
       <!-- Menu CTAs -->
       <div class="flex items-center gap-2 lg:gap-2.5">
         <!-- Enroll Now Button -->
-        <Button buttonText="Enroll Now" className="w-26.75" href="/enroll" />
+        <Button buttonText="Enroll Now" className="w-26.75" href={URLS.ENROLL} />
 
         <!-- Contact Us Button -->
         <Button
@@ -67,7 +68,7 @@ import { menuItems } from "@/data/menu";
           rightIcon="phone-icon"
           variant="outline"
           className="border-n-50 text-n-50 hover:bg-n-50/10"
-          href="/contact"
+          href={URLS.CONTACT}
         />
       </div>
     </div>
