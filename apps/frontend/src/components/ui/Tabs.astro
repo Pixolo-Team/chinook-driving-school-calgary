@@ -1,0 +1,67 @@
+---
+interface TabsProps {
+  items: string[];
+  activeIndex?: number;
+}
+
+const { items, activeIndex = 0 } = Astro.props as TabsProps;
+---
+
+<div
+  data-tabs
+  class="flex w-full items-center rounded-full border border-n-200 bg-n-50 p-1"
+>
+  {
+    items.map((item, index) => (
+      <button
+        type="button"
+        data-tab-button
+        data-active={index === activeIndex ? "true" : "false"}
+        aria-pressed={index === activeIndex ? "true" : "false"}
+        class:list={[
+          "flex min-w-0 flex-1 cursor-pointer items-center justify-center rounded-full px-3 py-3 text-center text-xs font-semibold leading-tight whitespace-normal transition-colors sm:text-sm lg:text-base",
+          index === activeIndex ? "bg-blue-500 text-n-50" : "text-n-600",
+        ]}
+      >
+        {item}
+      </button>
+    ))
+  }
+</div>
+
+<script>
+  const activeClasses = ["bg-blue-500", "text-n-50"];
+  const inactiveClasses = ["text-n-600"];
+
+  document.querySelectorAll("[data-tabs]").forEach((tabs) => {
+    if (tabs.dataset.initialized === "true") {
+      return;
+    }
+
+    tabs.dataset.initialized = "true";
+
+    tabs.addEventListener("click", (event) => {
+      const button = event.target instanceof Element
+        ? event.target.closest("[data-tab-button]")
+        : null;
+
+      if (!(button instanceof HTMLButtonElement) || !tabs.contains(button)) {
+        return;
+      }
+
+      const buttons = tabs.querySelectorAll("[data-tab-button]");
+
+      buttons.forEach((tabButton) => {
+        tabButton.dataset.active = "false";
+        tabButton.setAttribute("aria-pressed", "false");
+        tabButton.classList.remove(...activeClasses);
+        tabButton.classList.add(...inactiveClasses);
+      });
+
+      button.dataset.active = "true";
+      button.setAttribute("aria-pressed", "true");
+      button.classList.remove(...inactiveClasses);
+      button.classList.add(...activeClasses);
+    });
+  });
+</script>

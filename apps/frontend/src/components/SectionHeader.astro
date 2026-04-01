@@ -1,0 +1,23 @@
+---
+interface SectionHeaderProps {
+  eyebrow: string;
+  heading: string;
+  description: string;
+}
+
+const { eyebrow, heading, description } = Astro.props as SectionHeaderProps;
+---
+
+<div class="flex w-full flex-col items-center gap-2.5 text-center">
+  <div class="flex flex-col items-center gap-1">
+    <p class="text-sm font-bold uppercase tracking-[0.6px] text-blue-500">
+      {eyebrow}
+    </p>
+    <p class="text-3xl font-bold leading-tight text-n-800 lg:text-5xl">
+      {heading}
+    </p>
+  </div>
+  <p class="max-w-2xl text-xs leading-relaxed text-n-600 lg:text-base">
+    {description}
+  </p>
+</div>
