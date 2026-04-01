@@ -30,24 +30,24 @@ const { cards } = contactSectionData;
       <div class="grid w-full gap-5 lg:grid-cols-2 lg:gap-6">
 
         <!-- Get In Touch Card -->
-        <div class="relative isolate flex items-stretch overflow-hidden rounded-4xl border border-n-200 bg-n-50 p-4 sm:p-5 lg:p-6">
+        <div class="relative isolate overflow-hidden rounded-4xl border border-n-200 bg-n-50 p-4 sm:p-5 md:h-[200px] lg:h-[220px] lg:p-6">
 
           <!-- Background Circle -->
           <div class="absolute -left-[84.5px] -top-[84.5px] -z-10 size-[169px] rounded-full bg-blue-100 opacity-30 md:-left-[138.5px] md:-top-[138.5px] md:size-[277px]"></div>
 
           <!-- Image Container -->
-          <div class="relative z-10 hidden shrink-0 self-stretch overflow-hidden md:flex md:w-36 lg:w-40">
+          <div class="absolute inset-y-0 left-4 -bottom-10 hidden md:block md:w-[118px] lg:left-6 lg:w-[128px]">
             <Image
               src={cards.getInTouch.image}
               alt="Instructor ready to help"
               width={126}
               height={193}
-              class="absolute inset-x-0 top-3 h-full w-full scale-200 object-contain object-top md:top-4 md:scale-140 lg:top-5 lg:scale-150"
+              class="absolute top-0 left-1/2 h-full w-auto max-w-none -translate-x-1/2 origin-top scale-[1.22]"
             />
           </div>
 
           <!-- Get In Touch Content -->
-          <div class="relative z-10 flex flex-1 flex-col gap-4 sm:gap-5">
+          <div class="relative z-10 flex flex-col gap-4 sm:gap-5 md:h-full md:pl-[150px] lg:pl-[170px]">
             <div class="flex w-fit flex-col gap-3">
               <p class="text-lg font-bold text-n-800 sm:text-xl">
                 {cards.getInTouch.title}
@@ -68,24 +68,24 @@ const { cards } = contactSectionData;
         </div>
 
         <!-- Opening Hours Card -->
-        <div class="relative isolate flex items-stretch overflow-hidden rounded-4xl border border-n-200 bg-n-50 p-4 sm:p-5 lg:p-6">
+        <div class="relative isolate overflow-hidden rounded-4xl border border-n-200 bg-n-50 p-4 sm:p-5 md:h-[200px] lg:h-[220px] lg:p-6">
 
           <!-- Background Circle -->
           <div class="absolute -left-[84.5px] -top-[84.5px] -z-10 size-[169px] rounded-full bg-blue-100 opacity-30 md:-left-[138.5px] md:-top-[138.5px] md:size-[277px]"></div>
 
           <!-- Image Container -->
-          <div class="relative z-10 hidden shrink-0 self-stretch overflow-hidden md:flex md:w-36 lg:w-40">
+          <div class="absolute inset-y-0 left-4 -bottom-10 hidden md:block md:w-[118px] lg:left-6 lg:w-[128px]">
             <Image
               src={cards.openingHours.image}
               alt="Instructor checking schedule"
               width={126}
               height={193}
-              class="absolute inset-x-0 top-3 h-full w-full scale-130 object-contain object-top md:top-4 md:scale-140 lg:top-5 lg:scale-150"
+              class="absolute top-0 left-1/2 h-full w-auto max-w-none -translate-x-1/2 origin-top scale-[1.16]"
             />
           </div>
 
           <!-- Opening Hours Content -->
-          <div class="relative z-10 flex flex-1 flex-col gap-4 sm:gap-5">
+          <div class="relative z-10 flex flex-col gap-4 sm:gap-5 md:h-full md:pl-[148px] lg:pl-[168px]">
             <div class="flex w-fit flex-col gap-3">
               <p class="text-lg font-bold text-n-800 sm:text-xl">
                 {cards.openingHours.title}
@@ -109,24 +109,24 @@ const { cards } = contactSectionData;
       </div>
 
       <!-- Office Details Card -->
-      <div class="relative isolate flex flex-col gap-6 overflow-hidden rounded-4xl border border-n-200 bg-n-50 p-5 sm:p-7 md:flex-row md:items-start md:gap-11 lg:p-10">
+      <div class="relative isolate flex flex-col gap-6 overflow-hidden rounded-4xl border border-n-200 bg-n-50 p-5 sm:p-7 lg:p-10">
 
         <!-- Background Circle -->
-        <div class="absolute -left-[84.5px] -top-[84.5px] -z-10 size-[169px] rounded-full bg-blue-100 opacity-30 md:-left-[138.5px] md:-top-[138.5px] md:size-[277px]"></div>
+        <div class="absolute -left-[84.5px] -top-[84.5px] -z-10 size-[169px] rounded-full bg-blue-100 opacity-30 md:-left-[210px] md:-top-[210px] md:size-[420px]"></div>
 
         <!-- Image Container -->
-        <div class="relative z-10 hidden w-40 shrink-0 items-end md:-bottom-6 md:flex lg:-bottom-8 lg:w-44">
+        <div class="pointer-events-none absolute inset-y-0 left-0 hidden -bottom-15 md:block md:w-[230px] lg:-bottom-32 lg:w-[255px]">
           <Image
             src={cards.officeDetails.image}
             alt="Student ready for a lesson"
             width={181}
             height={281}
-            class="h-auto w-full scale-125 object-contain md:origin-top lg:scale-135"
+            class="absolute top-0 left-1/2 h-full w-auto max-w-none -translate-x-1/2 origin-top scale-[1.12]"
           />
         </div>
 
         <!-- Office Details Content -->
-        <div class="relative z-10 flex flex-1 flex-col gap-4 sm:gap-5">
+        <div class="relative z-10 flex flex-1 flex-col gap-4 sm:gap-5 md:min-h-[370px] md:pl-[290px] lg:min-h-[395px] lg:pl-[330px]">
           <div class="flex w-fit flex-col gap-3">
             <p class="text-lg font-bold text-n-800 sm:text-xl">
               {cards.officeDetails.title}

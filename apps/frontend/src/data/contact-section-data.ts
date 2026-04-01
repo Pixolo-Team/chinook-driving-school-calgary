@@ -22,12 +22,12 @@ export const contactSectionData = {
       image: "/images/contact/contact-opening-hours.png",
       details: [
         {
-          icon: "mail-send-envelope",
+          icon: "clock",
           label: "Monday - Friday:",
           value: "9:00 AM - 5:00 PM",
         },
         {
-          icon: "phone",
+          icon: "clock",
           label: "Saturday - Sunday:",
           value: "Closed",
         },
