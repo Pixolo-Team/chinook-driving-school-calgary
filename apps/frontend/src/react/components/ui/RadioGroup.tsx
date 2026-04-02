@@ -2,7 +2,7 @@
 import React, { useEffect, useState, type ReactNode } from "react";
 
 // COMPONENTS //
-import Radio from "./Radio";
+import Radio from "@/react/components/ui/Radio";
 
 type RadioGroupItemData = {
   value: string;
@@ -64,16 +64,9 @@ export default function RadioGroup({
   return (
     <div className="flex w-full flex-col gap-5">
       {label ? (
-        <p
-          className="flex items-center gap-1 text-lg leading-normal font-semibold"
-          style={{ color: "var(--color-n-900)" }}
-        >
+        <p className="text-n-900 flex items-center gap-1 text-lg leading-normal font-semibold">
           <span>{label}</span>
-          {required ? (
-            <span aria-hidden="true" style={{ color: "var(--color-error-500, #ef4444)" }}>
-              *
-            </span>
-          ) : null}
+          {required ? <span aria-hidden="true" className="text-error-500">*</span> : null}
         </p>
       ) : null}
 

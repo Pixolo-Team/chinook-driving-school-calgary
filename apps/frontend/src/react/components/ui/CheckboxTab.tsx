@@ -20,9 +20,7 @@ function renderCheckIndicator({ checked }: { checked: boolean }): React.JSX.Elem
       aria-hidden="true"
       className={joinClasses(
         "absolute top-6 right-5 flex h-5 w-5 items-center justify-center rounded-full border transition-colors duration-200",
-        checked
-          ? "border-blue-600 bg-blue-600 text-white"
-          : "border-n-300)] bg-n-50)] text-transparent",
+        checked ? "border-blue-500 bg-blue-500 text-n-50" : "border-transparent bg-n-50 text-transparent",
       )}
     >
       <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none">
@@ -70,7 +68,7 @@ export default function CheckboxTab({
   return (
     <label
       className={joinClasses(
-        "border-n-800)] bg-n-50)] relative flex w-full max-w-[338px] cursor-pointer flex-col gap-3 rounded-xl border p-5 text-left transition-shadow duration-200",
+        "border-n-400 bg-n-50 relative flex w-full cursor-pointer flex-col gap-3 rounded-xl border p-5 text-left transition-[border-color,box-shadow] duration-200",
         disabled
           ? "cursor-not-allowed opacity-60"
           : "hover:shadow-[0_10px_24px_rgba(14,23,43,0.08)]",
@@ -90,14 +88,14 @@ export default function CheckboxTab({
         <img src={iconSrc} alt="" className="block h-full w-full" />
       </div>
 
-      <div className="gap-0.5pr-10 flex w-full flex-col">
-        <span className="text-n-800)] text-lg leading-normal font-bold">{title}</span>
-        <span className="text-n-500)] text-sm leading-normal font-normal">{description}</span>
+      <div className="flex w-full flex-col gap-0.5 pr-10">
+        <span className="text-n-800 text-lg leading-normal font-bold">{title}</span>
+        <span className="text-n-500 text-sm leading-normal font-normal">{description}</span>
       </div>
 
       {renderCheckIndicator({ checked: Boolean(checked) })}
 
-      <span className="peer-focus-visible:ring-blue-500)] peer-focus-visible:ring-offset-n-50)] pointer-events-none absolute inset-0 rounded-xl ring-0 ring-transparent transition peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2" />
+      <span className="peer-focus-visible:ring-blue-500 peer-focus-visible:ring-offset-n-50 pointer-events-none absolute inset-0 rounded-xl ring-0 ring-transparent transition peer-focus-visible:ring-2 peer-focus-visible:ring-offset-2" />
     </label>
   );
 }

@@ -5,9 +5,9 @@ import React, { useEffect } from "react";
 import type { StepStateData, UserInfoValueData } from "@/react/types/enrollment.type";
 
 // COMPONENTS //
-import Button from "../ui/Button";
-import Dropdown from "../ui/Dropdown";
-import Input from "../ui/Input";
+import Button from "@/react/components/ui/Button";
+import Dropdown from "@/react/components/ui/Dropdown";
+import Input from "@/react/components/ui/Input";
 
 // CONSTANTS //
 import { PROVINCES } from "@/react/constants/form-items";
@@ -81,8 +81,8 @@ export default function UserInfo({
   }, [registerValidator, value]);
 
   return (
-    <section className="bg-n-50 flex w-full flex-col gap-20">
-      <div className="grid w-full grid-cols-1 gap-x-11 gap-y-11 lg:grid-cols-2">
+    <section className="bg-n-50 flex w-full flex-col gap-9 md:gap-14">
+      <div className="grid w-full grid-cols-1 gap-x-7 gap-y-6 md:gap-y-8 lg:grid-cols-2 lg:gap-x-11 lg:gap-y-11">
         {/* First Name */}
         <Input
           type="text"
@@ -166,6 +166,17 @@ export default function UserInfo({
           containerClassName="w-full"
         />
 
+        {/* Postal Code */}
+        <Input
+          type="text"
+          label="Postal Code"
+          value={value.postal_code}
+          onChange={(event) => handleFieldChange("postal_code", event.target.value)}
+          placeholder="e.g. T2X 1A1"
+          caption="Enter a valid postal code for your area (used to assign nearby instructors)."
+          containerClassName="w-full"
+        />
+
         {/* Province */}
         <Dropdown
           label="Province"
@@ -178,27 +189,27 @@ export default function UserInfo({
             value: provinceItem.value,
           }))}
           containerClassName="w-full max-w-none lg:col-span-1"
-        />
-
-        {/* Postal Code */}
-        <Input
-          type="text"
-          label="Postal Code"
-          value={value.postal_code}
-          onChange={(event) => handleFieldChange("postal_code", event.target.value)}
-          placeholder="e.g. T2X 1A1"
-          caption="Enter a valid postal code for your area (used to assign nearby instructors)."
-          containerClassName="w-full"
+          labelClassName="text-n-700 text-base leading-5 font-normal"
+          showTriggerLabel={false}
+          styleVariant="minimal"
         />
       </div>
 
       {/* Previous & Next Buttons */}
-      <div className="flex w-full items-center justify-end gap-4">
-        <Button variant="unfilled" onClick={() => onPrevious?.(getStepState())}>
-          Previous
+      <div className="flex w-full flex-row items-center justify-end gap-3 md:gap-4">
+        <Button
+          variant="unfilled"
+          onClick={() => onPrevious?.(getStepState())}
+          className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
+        >
+          Back to Select Course
         </Button>
-        <Button variant="filled" onClick={() => onNext?.(getStepState())}>
-          Next
+        <Button
+          variant="filled"
+          onClick={() => onNext?.(getStepState())}
+          className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
+        >
+          Continue to Licence Info
         </Button>
       </div>
     </section>

@@ -3,7 +3,7 @@ import type {
   CourseCategoryData,
   ProvinceOptionData,
   SessionOptionData,
-} from "../types/enrollment.type";
+} from "@/react/types/enrollment.type";
 
 export const TOTAL_ENROLLMENT_STEPS = 6;
 
@@ -170,18 +170,18 @@ export const PAYMENT_METHOD_ITEMS = [
     name: "card",
   },
   {
-    title: "UPI",
-    description: "Pay instantly using your UPI app",
-    name: "upi",
+    title: "Debit Card",
+    description: "Visa Debit or Debit Mastercard",
+    name: "debit_card",
   },
   {
-    title: "Bank Transfer",
-    description: "Send payment from your online banking",
-    name: "bank_transfer",
+    title: "e-Transfer",
+    description: "Fast and secure bank transfer",
+    name: "e_transfer",
   },
   {
-    title: "Cash",
-    description: "Pay in person before your first lesson",
-    name: "cash",
+    title: "Pay in Person",
+    description: "Fast and secure bank transfer",
+    name: "pay_in_person",
   },
 ];

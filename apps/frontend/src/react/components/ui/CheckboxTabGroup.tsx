@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 
 // COMPONENTS //
-import CheckboxTab from "./CheckboxTab";
+import CheckboxTab from "@/react/components/ui/CheckboxTab";
 
 type CheckboxTabGroupItemData = {
   title: string;
@@ -16,6 +16,7 @@ type CheckboxTabGroupPropsData = {
   items: CheckboxTabGroupItemData[];
   selectedItem: string;
   containerClassName?: string;
+  itemsWrapperClassName?: string;
   itemContainerClassName?: string;
   onSelectionChange?: (selectedItem: string) => void;
 };
@@ -33,6 +34,7 @@ export default function CheckboxTabGroup({
   items,
   selectedItem,
   containerClassName,
+  itemsWrapperClassName,
   itemContainerClassName,
   onSelectionChange,
 }: CheckboxTabGroupPropsData) {
@@ -60,26 +62,24 @@ export default function CheckboxTabGroup({
   return (
     <div className={joinClasses("flex w-full flex-col gap-4", containerClassName)}>
       {label ? (
-        <p className="flex items-center gap-1 text-lg leading-normal font-semibold" style={{ color: "var(--color-n-900)" }}>
+        <p className="text-n-900 flex items-center gap-1 text-lg leading-normal font-semibold">
           <span>{label}</span>
-          {required ? (
-            <span aria-hidden="true" style={{ color: "var(--color-error-500, #ef4444)" }}>
-              *
-            </span>
-          ) : null}
+          {required ? <span aria-hidden="true" className="text-error-500">*</span> : null}
         </p>
       ) : null}
-      {items.map((itemItem) => (
-        <CheckboxTab
-          key={itemItem.name}
-          name={itemItem.name}
-          title={itemItem.title}
-          description={itemItem.description}
-          checked={activeItem === itemItem.name}
-          onChange={() => handleSelect(itemItem.name)}
-          containerClassName={itemContainerClassName}
-        />
-      ))}
+      <div className={joinClasses("grid w-full grid-cols-1 gap-4 lg:grid-cols-4", itemsWrapperClassName)}>
+        {items.map((itemItem) => (
+          <CheckboxTab
+            key={itemItem.name}
+            name={itemItem.name}
+            title={itemItem.title}
+            description={itemItem.description}
+            checked={activeItem === itemItem.name}
+            onChange={() => handleSelect(itemItem.name)}
+            containerClassName={itemContainerClassName}
+          />
+        ))}
+      </div>
     </div>
   );
 }

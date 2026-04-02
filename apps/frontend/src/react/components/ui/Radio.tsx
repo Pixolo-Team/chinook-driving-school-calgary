@@ -33,9 +33,7 @@ function renderSelectionControl({ checked }: { checked: boolean }): React.JSX.El
       aria-hidden="true"
       className={joinClasses(
         "flex h-5 w-5 shrink-0 items-center justify-center rounded-[4px] border transition-colors duration-200",
-        checked
-          ? "border-[var(--color-n-50)] bg-[var(--color-blue-500)] text-[var(--color-n-50)]"
-          : "border-[var(--color-n-300)] bg-[var(--color-n-50)] text-transparent",
+        checked ? "border-n-50 bg-blue-500 text-n-50" : "border-n-300 bg-n-50 text-transparent",
       )}
     >
       {renderCheckIcon()}
@@ -76,10 +74,8 @@ export default function Radio({
     <label
       className={joinClasses(
         "relative flex w-full items-center gap-6 rounded-[8px] border px-[21px] py-[17px] transition-colors duration-200",
-        checked
-          ? "border-[var(--color-blue-100)] bg-[var(--color-n-50)]"
-          : "border-[var(--color-n-300)] bg-[var(--color-n-50)]",
-        disabled ? "opacity-60" : "cursor-default",
+        checked ? "border-blue-100 bg-n-50" : "border-n-300 bg-n-50",
+        disabled ? "opacity-60" : "cursor-pointer",
         containerClassName,
       )}
     >
@@ -94,7 +90,7 @@ export default function Radio({
 
       {renderSelectionControl({ checked: Boolean(checked) })}
 
-      <span className="min-w-0 flex-1 text-base leading-5" style={{ color: "var(--color-n-950)" }}>
+      <span className="text-n-950 min-w-0 flex-1 text-base leading-5">
         {content ?? (
           <>
             <span className="font-semibold">{label}</span>

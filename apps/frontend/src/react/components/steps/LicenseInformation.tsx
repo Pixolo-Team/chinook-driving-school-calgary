@@ -5,19 +5,25 @@ import React, { useEffect } from "react";
 import type { LicenseInformationValueData, StepStateData } from "@/react/types/enrollment.type";
 
 // COMPONENTS //
-import Button from "../ui/Button";
-import Dropdown from "../ui/Dropdown";
-import Input from "../ui/Input";
-import RadioGroup from "../ui/RadioGroup";
-import RadioTab from "../ui/RadioTab";
+import Button from "@/react/components/ui/Button";
+import Dropdown from "@/react/components/ui/Dropdown";
+import Input from "@/react/components/ui/Input";
+import RadioGroup from "@/react/components/ui/RadioGroup";
+import RadioTab from "@/react/components/ui/RadioTab";
 
 // CONSTANTS //
 import {
   DRIVING_EXPERIENCE_ITEMS,
-  LICENSE_STATUS_ITEMS,
   LICENSE_TYPES,
   PROVINCES,
 } from "@/react/constants/form-items";
+
+const LICENSE_STATUS_OPTIONS = [
+  { value: "none", label: "No License Yet", description: "" },
+  { value: "learning", label: "Learner License", description: "" },
+  { value: "permanent", label: "Class 5", description: "" },
+  { value: "other", label: "Other", description: "" },
+];
 
 // COMPONENT PROPS //
 type LicenseInformationPropsData = Readonly<{
@@ -114,28 +120,34 @@ export default function LicenseInformation({
 
   // Use Effects
   useEffect(() => {
+    if (!value.experience && DRIVING_EXPERIENCE_ITEMS[0]) {
+      onChange("experience", DRIVING_EXPERIENCE_ITEMS[0].value);
+    }
+  }, [onChange, value.experience]);
+
+  useEffect(() => {
     // Register the Validation function
     registerValidator?.(3, getStepState);
   }, [registerValidator, value]);
 
   return (
-    <section className="bg-n-50 flex w-full flex-col gap-16">
-      <div className="flex w-full flex-col gap-10">
+    <section className="bg-n-50 flex w-full flex-col gap-9 md:gap-14">
+      <div className="flex w-full flex-col gap-8 md:gap-10">
         {/* License Status */}
         <RadioGroup
           label="License Status"
-          required
           name="license-status"
-          items={LICENSE_STATUS_ITEMS}
+          items={LICENSE_STATUS_OPTIONS}
           selectedItem={value.status}
           onChange={handleStatusChange}
-          containerClassName="gap-4"
+          containerClassName="grid w-full grid-cols-1 gap-[10px] md:grid-cols-4 md:gap-4"
+          itemContainerClassName="min-w-0"
         />
 
         {/* License Information */}
         {isLicenseDetailsVisible ? (
-          <div className="flex w-full flex-col gap-11">
-            <div className="grid w-full grid-cols-1 gap-x-11 gap-y-11 lg:grid-cols-2">
+          <div className="flex w-full flex-col gap-6 md:gap-11">
+            <div className="grid w-full grid-cols-1 gap-x-11 gap-y-6 md:gap-y-8 lg:grid-cols-2 lg:gap-y-11">
               {/* License Number */}
               <Input
                 type="text"
@@ -161,6 +173,9 @@ export default function LicenseInformation({
                   value: provinceItem.value,
                 }))}
                 containerClassName="w-full max-w-none"
+                labelClassName="text-n-700 text-base leading-5 font-normal"
+                showTriggerLabel={false}
+                styleVariant="minimal"
               />
 
               {/* License Type */}
@@ -173,6 +188,9 @@ export default function LicenseInformation({
                 helperText="Choose your current license category (e.g., learner, full license)."
                 options={LICENSE_TYPES}
                 containerClassName="w-full max-w-none lg:col-span-2"
+                labelClassName="text-n-700 text-base leading-5 font-normal"
+                showTriggerLabel={false}
+                styleVariant="minimal"
               />
 
               {/* Issue Date */}
@@ -203,7 +221,6 @@ export default function LicenseInformation({
         {/* Driving Experience */}
         <RadioTab
           label="Driving Experience"
-          required
           items={DRIVING_EXPERIENCE_ITEMS}
           selected={
             value.experience
@@ -217,16 +234,29 @@ export default function LicenseInformation({
             handleFieldChange("experience", selectedExperienceItems[0]?.value ?? "")
           }
           caption=""
+          labelClassName="text-n-800 text-base font-semibold md:text-lg"
+          itemsContainerClassName="border-n-200 w-full flex-col gap-0 rounded-[12px] border p-1.5 md:flex-row md:flex-nowrap md:p-2"
+          itemClassName="min-h-0 w-full rounded-[12px] border-0 px-4 py-[14px] text-sm font-semibold md:flex-1 md:text-base"
+          activeItemClassName="bg-blue-500 text-n-50"
+          inactiveItemClassName="bg-n-50 text-n-800"
         />
       </div>
 
       {/* Previous & Next buttons */}
-      <div className="flex w-full items-center justify-end gap-4">
-        <Button variant="unfilled" onClick={() => onPrevious?.(getStepState())}>
-          Previous
+      <div className="flex w-full flex-row items-center justify-end gap-3 md:gap-4">
+        <Button
+          variant="unfilled"
+          onClick={() => onPrevious?.(getStepState())}
+          className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
+        >
+          Back to User Info
         </Button>
-        <Button variant="filled" onClick={() => onNext?.(getStepState())}>
-          Next
+        <Button
+          variant="filled"
+          onClick={() => onNext?.(getStepState())}
+          className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
+        >
+          Continue to Availability
         </Button>
       </div>
     </section>

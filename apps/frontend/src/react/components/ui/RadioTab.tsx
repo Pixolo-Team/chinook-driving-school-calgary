@@ -17,6 +17,11 @@ type RadioTabPropsData = {
   allowMultiple?: boolean;
   onChange?: (selected: RadioTabItemData[]) => void;
   containerClassName?: string;
+  itemsContainerClassName?: string;
+  itemClassName?: string;
+  activeItemClassName?: string;
+  inactiveItemClassName?: string;
+  labelClassName?: string;
 };
 
 function joinClasses(...classes: Array<string | false | null | undefined>): string {
@@ -37,6 +42,11 @@ export default function RadioTab({
   allowMultiple = true,
   onChange,
   containerClassName,
+  itemsContainerClassName,
+  itemClassName,
+  activeItemClassName,
+  inactiveItemClassName,
+  labelClassName,
 }: RadioTabPropsData) {
   // Define Navigation
 
@@ -77,17 +87,13 @@ export default function RadioTab({
   return (
     <div className={joinClasses("flex w-full flex-col gap-4", containerClassName)}>
       {label ? (
-        <p className="text-base leading-5 font-normal" style={{ color: "var(--color-n-700)" }}>
+        <p className={joinClasses("text-n-700 text-base leading-5 font-normal", labelClassName)}>
           {label}
-          {required ? (
-            <span className="ml-1" style={{ color: "var(--color-error-500, #ef4444)" }}>
-              *
-            </span>
-          ) : null}
+          {required ? <span className="text-error-500 ml-1">*</span> : null}
         </p>
       ) : null}
 
-      <div className="flex w-full flex-wrap items-start gap-3">
+      <div className={joinClasses("flex w-full flex-wrap items-start gap-3", itemsContainerClassName)}>
         {items.map((itemItem) => {
           const active: boolean = isSelected(itemItem.value);
 
@@ -99,21 +105,13 @@ export default function RadioTab({
               aria-pressed={active}
               className={joinClasses(
                 "flex min-h-[52px] flex-1 items-center justify-center rounded-[12px] border px-8 py-[14px] text-base leading-normal font-semibold transition-[transform,background-color,border-color,color] duration-200 ease-out",
-                active && "bg-[var(--color-blue-500)] text-[var(--color-n-50)]",
-                !active && "border-[1.4px] bg-[var(--color-n-50)] text-[var(--color-n-600)]",
+                active && "border-blue-500 bg-blue-500 text-n-50",
+                !active &&
+                  (inactiveItemClassName ? "bg-n-50 text-n-600" : "border-transparent bg-n-50 text-n-600"),
+                isError && !active && "border-error-500 text-error-500",
+                active ? activeItemClassName : inactiveItemClassName,
+                itemClassName,
               )}
-              style={{
-                borderColor: active
-                  ? "var(--color-blue-500)"
-                  : isError
-                    ? "var(--color-error-500, #dc2626)"
-                    : "var(--color-n-400)",
-                color: active
-                  ? "var(--color-n-50)"
-                  : isError
-                    ? "var(--color-error-500, #dc2626)"
-                    : "var(--color-n-600)",
-              }}
             >
               {itemItem.label}
             </button>
@@ -122,12 +120,7 @@ export default function RadioTab({
       </div>
 
       {helperText ? (
-        <p
-          className="text-sm leading-5 font-normal"
-          style={{
-            color: isError ? "var(--color-error-500, #dc2626)" : "var(--color-n-500)",
-          }}
-        >
+        <p className={joinClasses("text-sm leading-5 font-normal", isError ? "text-error-500" : "text-n-500")}>
           {helperText}
         </p>
       ) : null}
