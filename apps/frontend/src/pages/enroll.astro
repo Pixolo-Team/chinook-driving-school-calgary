@@ -1,13 +1,11 @@
 ---
-// OTHERS //
 import Layout from "@/layouts/Layout.astro";
-import EnrollmentInfo from "@/react/components/steps/EnrollmentInfo";
-
+import EnrollForm from "@/react/components/Enroll";
 ---
 
 <Layout
   title="Enroll | Chinook Driving School Calgary"
   description="Start your enrollment with Chinook Driving School Calgary in just a few quick steps."
 >
-  <EnrollmentInfo />
+  <EnrollForm client:load />
 </Layout>

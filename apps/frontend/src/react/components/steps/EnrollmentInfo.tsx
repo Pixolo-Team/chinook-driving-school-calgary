@@ -1,7 +1,19 @@
+// REACT //
+import React from "react";
+
+// COMPONENTS //
+import Button from "../ui/Button";
+
+type EnrollmentInfoPropsData = Readonly<{
+  onStart?: () => void;
+}>;
+
 /**
  * Renders the enrollment info section before starting the enrollment flow.
  */
-export default function EnrollmentInfo() {
+export default function EnrollmentInfo({
+  onStart,
+}: EnrollmentInfoPropsData): React.JSX.Element {
   return (
     <section className="bg-n-50">
       <div className="container mx-auto flex w-full max-w-screen-2xl flex-col items-center gap-10 px-5 py-20 sm:px-6 lg:gap-16 lg:px-10 lg:py-20">
@@ -49,12 +61,9 @@ export default function EnrollmentInfo() {
           </div>
 
           <div className="flex w-full max-w-md flex-col items-center gap-4">
-            <button
-              type="button"
-              className="h-[59px] w-full rounded-full bg-blue-500 px-14 text-lg font-bold text-n-50 lg:h-[78px] lg:text-xl"
-            >
+            <Button className="w-full" onClick={onStart}>
               Start Enrollment
-            </button>
+            </Button>
             <a
               className="text-sm font-medium text-n-800 underline lg:text-base"
               href="/courses"

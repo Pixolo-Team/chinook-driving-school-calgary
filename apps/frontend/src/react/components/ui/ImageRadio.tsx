@@ -2,9 +2,9 @@
 import React from "react";
 
 /**
- * Placeholder component for enrollment success messaging that is not wired yet.
+ * Placeholder component for image-radio experiments that are not wired yet.
  */
-export default function EnrollSuccess(): null {
+export default function ImageRadio(): null {
   // Define Navigation
 
   // Define Context
