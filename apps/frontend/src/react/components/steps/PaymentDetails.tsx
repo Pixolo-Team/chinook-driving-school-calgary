@@ -2,10 +2,7 @@
 import React, { useEffect } from "react";
 
 // TYPES //
-import type {
-  PaymentDetailsValueData,
-  StepStateData,
-} from "@/react/types/enrollment.type";
+import type { PaymentDetailsValueData, StepStateData } from "@/react/types/enrollment.type";
 
 // COMPONENTS //
 import Button from "@/react/components/ui/Button";
@@ -14,6 +11,7 @@ import Input from "@/react/components/ui/Input";
 
 // CONSTANTS //
 import { PAYMENT_METHOD_ITEMS } from "@/react/constants/form-items";
+import { URLS } from "@/infrastructure/constants/urls";
 
 // COMPONENT PROPS //
 type PaymentDetailsPropsData = Readonly<{
@@ -168,17 +166,17 @@ export default function PaymentDetails({
       </div>
 
       <div className="flex w-full flex-col items-start gap-5">
-        <label className="flex items-start gap-3">
+        <label className="flex items-center gap-3">
           <input
             type="checkbox"
             checked={value.did_agree_conditions}
             onChange={(event) => handleFieldChange("did_agree_conditions", event.target.checked)}
-            className="mt-1 h-5 w-5 rounded border border-[var(--color-n-300)] text-[var(--color-blue-500)]"
+            className="border-n-300 h-5 w-5 rounded border text-blue-500"
           />
           <span className="text-sm leading-6" style={{ color: "var(--color-n-700)" }}>
             I agree to the{" "}
             <a
-              href="https://drive.google.com/uc?export=download&id=1lF3ghbzu1NLVCdZTlsgd9Srn31AkCyB8"
+              href={URLS.TERMS_OF_SERVICE}
               className="font-semibold underline underline-offset-2"
               style={{ color: "var(--color-blue-500)" }}
             >
@@ -188,20 +186,20 @@ export default function PaymentDetails({
         </label>
 
         <div className="flex w-full flex-row items-center justify-end gap-3 md:gap-4">
-        <Button
-          variant="unfilled"
-          onClick={() => onPrevious?.(getStepState())}
-          className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
-        >
-          Back to Parent Info
-        </Button>
-        <Button
-          variant="filled"
-          onClick={() => onNext?.(getStepState())}
-          className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
-        >
-          Complete Enrollment
-        </Button>
+          <Button
+            variant="unfilled"
+            onClick={() => onPrevious?.(getStepState())}
+            className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
+          >
+            Back to Parent Info
+          </Button>
+          <Button
+            variant="filled"
+            onClick={() => onNext?.(getStepState())}
+            className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
+          >
+            Complete Enrollment
+          </Button>
         </div>
       </div>
     </section>

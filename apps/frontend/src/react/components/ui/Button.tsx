@@ -44,9 +44,9 @@ export default function Button({
         "inline-flex min-h-16 items-center justify-center rounded-4xl px-8 py-4 text-center text-lg leading-normal font-semibold transition-[transform,background-color,color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] focus:ring-2 focus:ring-[var(--color-blue-500)] focus:ring-offset-2 focus:outline-none",
         !disabled && "cursor-pointer hover:scale-[1.02] active:scale-[0.99]",
         normalizedVariant === "filled" &&
-          "bg-[var(--color-blue-500)] text-[var(--color-n-50)] hover:bg-[var(--color-blue-400)]",
+          "bg-blue-500 text-n-50 hover:bg-blue-400",
         normalizedVariant === "unfilled" &&
-          "border-2 border-[var(--color-blue-500)] bg-transparent text-[var(--color-blue-500)] hover:bg-[var(--color-blue-50)]",
+          "border-2 border-blue-500 bg-transparent text-blue-500 hover:bg-blue-50",
         disabled && "cursor-not-allowed opacity-60",
         className,
       )}

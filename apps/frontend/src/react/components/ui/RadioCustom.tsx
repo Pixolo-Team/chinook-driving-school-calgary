@@ -23,12 +23,7 @@ function joinClasses(...classes: Array<string | false | null | undefined>): stri
 
 function renderCheckIcon(): React.JSX.Element {
   return (
-    <svg
-      aria-hidden="true"
-      className="h-5 w-5"
-      viewBox="0 0 20 20"
-      fill="none"
-    >
+    <svg aria-hidden="true" className="h-6 w-6" viewBox="0 0 20 20" fill="none">
       <circle cx="10" cy="10" r="10" fill="currentColor" />
       <path
         d="M6.2 10.2 8.6 12.6 13.8 7.4"
@@ -72,13 +67,11 @@ export default function RadioCustom({
   return (
     <label
       className={joinClasses(
-        "relative flex w-full flex-col gap-3 rounded-[12px] border-2 bg-[var(--color-n-50)] p-[14px] shadow-[6px_9px_17.8px_rgba(0,0,0,0.09)] transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
-        checked
-          ? "border-[var(--color-blue-500)]"
-          : "border-[var(--color-n-300)]",
+        "bg-n-50 relative flex w-full flex-col gap-3 rounded-2xl border-2 p-3.5 transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(1,1.05,0.94,1)]",
+        checked ? "border-blue-500" : "border-n-300",
         disabled
           ? "cursor-not-allowed opacity-60"
-          : "cursor-pointer hover:cursor-pointer hover:animate-[radio-tab-bounce_560ms_cubic-bezier(0.34,1.56,0.64,1)]",
+          : "cursor-pointer hover:animate-[radio-tab-bounce_300ms_cubic-bezier(1,1.05,0.94,1)] hover:cursor-pointer hover:shadow-[6px_9px_17.8px_rgba(0,0,0,0.09)]",
         containerClassName,
       )}
     >
@@ -92,7 +85,7 @@ export default function RadioCustom({
         className={joinClasses("peer sr-only", className)}
       />
 
-      <div className="relative h-[155px] w-full overflow-hidden rounded-[8px] bg-[var(--color-n-100)]">
+      <div className="bg-n-100 relative h-[155px] w-full overflow-hidden rounded-[8px]">
         <img
           src={data.imageSrc ?? DEFAULT_IMAGE_SRC}
           alt={data.imageAlt ?? data.title}
@@ -100,11 +93,11 @@ export default function RadioCustom({
         />
       </div>
 
-      <div className="flex w-full items-center justify-between px-2 pb-2">
+      <div className="flex w-full items-center justify-between px-2">
         <span
           className={joinClasses(
             "text-lg leading-normal",
-            checked ? "text-n-800 font-semibold" : "text-n-600 font-medium",
+            checked ? "font-semibold text-blue-500" : "text-n-600 font-medium",
           )}
         >
           {data.title}
@@ -113,7 +106,7 @@ export default function RadioCustom({
         <span
           className={joinClasses(
             "shrink-0 transition-colors duration-200",
-            checked ? "text-[var(--color-blue-500)]" : "text-[var(--color-n-300)]",
+            checked ? "text-blue-500" : "text-n-300",
           )}
           aria-hidden="true"
         >

@@ -1,12 +1,12 @@
 // REACT //
 import React, { type ChangeEvent, type InputHTMLAttributes } from "react";
 
-const DEFAULT_ICON_SRC = "https://www.figma.com/api/mcp/asset/6108eefa-d366-4360-90ed-d66aca871df7";
+export type CheckboxTabIconNameData = "card" | "online" | "bank_transfer" | "in_person";
 
 type CheckboxTabPropsData = Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "children"> & {
   title: string;
   description: string;
-  iconSrc?: string;
+  iconName?: CheckboxTabIconNameData;
   containerClassName?: string;
 };
 
@@ -36,13 +36,60 @@ function renderCheckIndicator({ checked }: { checked: boolean }): React.JSX.Elem
   );
 }
 
+function renderPaymentIcon(iconName: CheckboxTabIconNameData): React.JSX.Element {
+  if (iconName === "online") {
+    return (
+      <svg viewBox="0 0 28 28" className="h-7 w-7" fill="none" aria-hidden="true">
+        <path
+          d="M5 7.5A3.5 3.5 0 0 1 8.5 4h11A3.5 3.5 0 0 1 23 7.5v8A3.5 3.5 0 0 1 19.5 19h-11A3.5 3.5 0 0 1 5 15.5v-8Z"
+          stroke="#1D283D"
+          strokeWidth="1.8"
+        />
+        <path d="M2.5 21h23" stroke="#1D283D" strokeWidth="1.8" strokeLinecap="round" />
+        <path d="M11.5 24h5" stroke="#1D283D" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (iconName === "bank_transfer") {
+    return (
+      <svg viewBox="0 0 28 28" className="h-7 w-7" fill="none" aria-hidden="true">
+        <path
+          d="M14 3 3.5 8.5h21L14 3Z"
+          stroke="#00C950"
+          strokeWidth="1.8"
+          strokeLinejoin="round"
+        />
+        <path d="M6 10.5V20M11 10.5V20M17 10.5V20M22 10.5V20M4 23h20" stroke="#00C950" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  if (iconName === "in_person") {
+    return (
+      <svg viewBox="0 0 28 28" className="h-7 w-7" fill="none" aria-hidden="true">
+        <rect x="3.5" y="6.5" width="21" height="15" rx="3.5" stroke="#1D283D" strokeWidth="1.8" />
+        <path d="M3.5 11h21M8.5 16.5h5M15.5 16.5h4" stroke="#1D283D" strokeWidth="1.8" strokeLinecap="round" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg viewBox="0 0 28 28" className="h-7 w-7" fill="none" aria-hidden="true">
+      <rect x="2.5" y="4" width="23" height="20" rx="4" stroke="#1D283D" strokeWidth="1.8" />
+      <path d="M2.5 10h23" stroke="#1D283D" strokeWidth="1.8" />
+      <path d="M16.5 17h5" stroke="#1D283D" strokeWidth="1.8" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 /**
  * Renders a selectable payment-style tab with checkbox semantics.
  */
 export default function CheckboxTab({
   title,
   description,
-  iconSrc = DEFAULT_ICON_SRC,
+  iconName = "card",
   checked,
   disabled = false,
   className,
@@ -84,9 +131,7 @@ export default function CheckboxTab({
         className={joinClasses("peer sr-only", className)}
       />
 
-      <div className="h-7 w-7 shrink-0">
-        <img src={iconSrc} alt="" className="block h-full w-full" />
-      </div>
+      <div className="h-7 w-7 shrink-0">{renderPaymentIcon(iconName)}</div>
 
       <div className="flex w-full flex-col gap-0.5 pr-10">
         <span

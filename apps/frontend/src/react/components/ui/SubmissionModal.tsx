@@ -127,7 +127,8 @@ export default function SubmissionModal({
                   |
                 </span>{" "}
                 <span className="text-red-600 font-bold">
-                  {pendingCount + untouchedCount} Incomplete
+                  {pendingCount + untouchedCount} 
+                  Incomplete
                 </span>
               </p>
               {message ? <p className="text-amber-700 text-sm leading-6 font-medium">{message}</p> : null}

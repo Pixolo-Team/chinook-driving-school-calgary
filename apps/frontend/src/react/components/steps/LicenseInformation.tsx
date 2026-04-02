@@ -14,16 +14,10 @@ import RadioTab from "@/react/components/ui/RadioTab";
 // CONSTANTS //
 import {
   DRIVING_EXPERIENCE_ITEMS,
+  LICENSE_STATUS_ITEMS,
   LICENSE_TYPES,
   PROVINCES,
 } from "@/react/constants/form-items";
-
-const LICENSE_STATUS_OPTIONS = [
-  { value: "none", label: "No License Yet", description: "" },
-  { value: "learning", label: "Learner License", description: "" },
-  { value: "permanent", label: "Class 5", description: "" },
-  { value: "other", label: "Other", description: "" },
-];
 
 // COMPONENT PROPS //
 type LicenseInformationPropsData = Readonly<{
@@ -167,8 +161,7 @@ export default function LicenseInformation({
   const drivingExperienceError = getDrivingExperienceError();
   const shouldShowLicenseStatusError = touchedFields.status && Boolean(licenseStatusError);
   const shouldShowLicenseNumberError = touchedFields.number && Boolean(licenseNumberError);
-  const shouldShowIssuingRegionError =
-    touchedFields.issuing_region && Boolean(issuingRegionError);
+  const shouldShowIssuingRegionError = touchedFields.issuing_region && Boolean(issuingRegionError);
   const shouldShowLicenseTypeError = touchedFields.type && Boolean(licenseTypeError);
   const shouldShowDrivingExperienceError =
     touchedFields.experience && Boolean(drivingExperienceError);
@@ -195,7 +188,7 @@ export default function LicenseInformation({
           caption=""
           isError={shouldShowLicenseStatusError}
           errorMessage={licenseStatusError ?? undefined}
-          items={LICENSE_STATUS_OPTIONS}
+          items={LICENSE_STATUS_ITEMS}
           selectedItem={value.status}
           onChange={(selectedValue) => {
             markFieldAsTouched("status");

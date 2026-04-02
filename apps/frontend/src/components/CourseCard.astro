@@ -4,6 +4,8 @@ import { Icon } from "astro-icon/components";
 import { Image } from "astro:assets";
 import Button from "@/components/ui/Button.astro";
 import Chip from "@/components/ui/Chip.astro";
+
+// CONSTANTS //
 import { URLS } from "@/infrastructure/constants/urls";
 
 // SVG's //
@@ -39,19 +41,21 @@ const card = Astro.props as CourseCardProps;
 ---
 
 <div class="relative flex h-full w-full">
-  {card.badge && (
-    <div class="absolute hidden left-1/2 top-0 z-20 -translate-x-1/2 -translate-y-1/2 md:block">
-      <div class="inline-flex min-h-8.75 items-center justify-center rounded-full border-2 border-blue-500 bg-n-50 px-5 py-2 text-center text-xs font-bold leading-none text-blue-500 whitespace-nowrap lg:px-6 lg:text-sm">
-        {card.badge}
+  {
+    card.badge && (
+      <div class="absolute top-0 left-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 md:block">
+        <div class="bg-n-50 inline-flex min-h-8.75 items-center justify-center rounded-full border-2 border-blue-500 px-5 py-2 text-center text-xs leading-none font-bold whitespace-nowrap text-blue-500 lg:px-6 lg:text-sm">
+          {card.badge}
+        </div>
       </div>
-    </div>
-  )}
+    )
+  }
 
   <div
     class:list={[
       "relative flex h-full w-full flex-col justify-between overflow-hidden rounded-4xl border p-5 lg:p-6 2xl:p-10",
       card.theme === "brand"
-        ? "border-blue-500 bg-blue-500 text-n-50"
+        ? "text-n-50 border-blue-500 bg-blue-500"
         : "border-n-300 bg-n-50 text-n-800",
     ]}
   >
@@ -61,7 +65,7 @@ const card = Astro.props as CourseCardProps;
       width={353}
       height={353}
       class:list={[
-        "pointer-events-none absolute -bottom-22 -right-36 w-56 md:-right-22 md:-bottom-30 lg:w-60 2xl:-right-26 2xl:-bottom-36 2xl:w-72 opacity-100",
+        "pointer-events-none absolute -right-36 -bottom-22 w-56 opacity-100 md:-right-22 md:-bottom-30 lg:w-60 2xl:-right-26 2xl:-bottom-36 2xl:w-72",
         card.theme === "brand" ? "opacity-90" : "opacity-100",
       ]}
       aria-hidden="true"
@@ -69,10 +73,10 @@ const card = Astro.props as CourseCardProps;
 
     <div class="relative z-10 flex flex-col gap-5 lg:gap-6">
       <div class="flex items-start justify-between gap-3">
-        <div class="min-w-0 flex-1 flex flex-col gap-3">
+        <div class="flex min-w-0 flex-1 flex-col gap-3">
           <p
             class:list={[
-              "text-sm font-bold uppercase tracking-[1.4px] leading-tight",
+              "text-sm leading-tight font-bold tracking-[1.4px] uppercase",
               card.theme === "brand" ? "text-n-50" : "text-blue-500",
             ]}
           >
@@ -81,7 +85,7 @@ const card = Astro.props as CourseCardProps;
           <div class="flex items-end gap-1">
             <p
               class:list={[
-                "text-3xl font-bold leading-none lg:text-4xl 2xl:text-5xl",
+                "text-3xl leading-none font-bold lg:text-4xl 2xl:text-5xl",
                 card.theme === "brand" ? "text-n-50" : "text-n-800",
               ]}
             >
@@ -104,21 +108,17 @@ const card = Astro.props as CourseCardProps;
       </div>
 
       <div class="flex flex-col gap-4">
-        <div class="flex flex-col gap-4 2xl:flex-row 2xl:items-center 2xl:justify-between">
-          <div class="flex items-center gap-3">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          <div class="flex flex-1 items-center gap-3 2xl:flex-none">
             <div
               class:list={[
                 "flex size-8 items-center justify-center rounded-2xl",
-                card.theme === "brand" ? "bg-blue-400" : "bg-n-200",
+                card.theme === "brand" ? "bg-n-50/13" : "bg-blue-500/10 text-blue-500",
               ]}
             >
               <Icon
-                name={
-                  card.theme === "brand"
-                    ? "steering-wheel-inverse"
-                    : "steering-wheel"
-                }
-                class="size-4"
+                name={card.theme === "brand" ? "steering-wheel-inverse" : "steering-wheel"}
+                class:list={["size-4", card.theme === "brand" ? "text-n-50" : "text-n-800"]}
                 aria-hidden="true"
               />
             </div>
@@ -133,7 +133,7 @@ const card = Astro.props as CourseCardProps;
               </p>
               <p
                 class:list={[
-                  "text-sm font-bold lg:text-base",
+                  "text-lg leading-tight font-bold",
                   card.theme === "brand" ? "text-n-50" : "text-n-800",
                 ]}
               >
@@ -144,34 +144,32 @@ const card = Astro.props as CourseCardProps;
 
           <div
             class:list={[
-              "hidden h-8 w-px 2xl:block",
-              card.theme === "brand" ? "bg-blue-200" : "bg-n-200",
+              "hidden h-8 w-px md:block",
+              card.theme === "brand" ? "bg-n-50/30" : "bg-n-200",
             ]}
           >
           </div>
 
           <div
             class:list={[
-              "block h-px w-full 2xl:hidden",
+              "block h-px w-full md:hidden",
               card.theme === "brand" ? "bg-blue-200" : "bg-n-200",
             ]}
           >
           </div>
 
-          <div class="flex items-center gap-3">
+          <div class="flex flex-1 items-center gap-3">
             <div
               class:list={[
                 "flex size-8 items-center justify-center rounded-2xl",
-                card.theme === "brand" ? "bg-blue-400" : "bg-n-200",
+                card.theme === "brand" ? "bg-n-50/13" : "bg-blue-500/10 text-blue-500",
               ]}
             >
               <Icon
-                name={
-                  card.theme === "brand"
-                    ? "whiteboard-classroom-course-inverse"
-                    : "whiteboard-classroom-course"
-                }
-                class="size-4"
+                name={card.theme === "brand"
+                  ? "whiteboard-classroom-course-inverse"
+                  : "whiteboard-classroom-course"}
+                class:list={["size-4", card.theme === "brand" ? "text-n-50" : "text-n-800"]}
                 aria-hidden="true"
               />
             </div>
@@ -186,7 +184,7 @@ const card = Astro.props as CourseCardProps;
               </p>
               <p
                 class:list={[
-                  "text-sm font-bold lg:text-base",
+                  "text-lg leading-tight font-bold",
                   card.theme === "brand" ? "text-n-50" : "text-n-800",
                 ]}
               >
@@ -201,20 +199,17 @@ const card = Astro.props as CourseCardProps;
             card.features.map((feature) => (
               <div class="flex items-start gap-3">
                 <Icon
-                  name={
-                    card.theme === "brand"
-                      ? "check-circle-inverse"
-                      : "check-circle"
-                  }
-                  class="mt-0.5 size-4 shrink-0"
+                  name={card.theme === "brand" ? "check-circle-inverse" : "check-circle"}
+                  class:list={[
+                    "mt-0.5 size-4 shrink-0",
+                    card.theme === "brand" ? "text-n-50" : "text-green-500",
+                  ]}
                   aria-hidden="true"
                 />
                 <p
                   class:list={[
                     "text-sm leading-snug",
-                    card.theme === "brand"
-                      ? "text-n-50 font-semibold"
-                      : "text-n-800 font-normal",
+                    card.theme === "brand" ? "text-n-50 font-semibold" : "text-n-800 font-normal",
                   ]}
                 >
                   {feature}

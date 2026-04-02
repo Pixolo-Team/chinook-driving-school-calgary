@@ -168,20 +168,24 @@ export const PAYMENT_METHOD_ITEMS = [
     title: "Credit Card",
     description: "Visa, Mastercard, Amex",
     name: "card",
+    iconName: "card",
   },
   {
     title: "Online Transfer",
     description: "Visa Debit or Debit Mastercard",
     name: "online",
+    iconName: "online",
   },
   {
     title: "Bank Transfer",
     description: "Fast and secure bank transfer",
     name: "bank_transfer",
+    iconName: "bank_transfer",
   },
   {
     title: "Pay in Person",
     description: "Fast and secure bank transfer",
     name: "in_person",
+    iconName: "in_person",
   },
 ];

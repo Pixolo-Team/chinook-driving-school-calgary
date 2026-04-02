@@ -98,7 +98,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
             "block w-full border-0 bg-transparent px-4 pt-4 pb-[17.6px] text-xl leading-normal font-medium outline-none placeholder:opacity-100",
             isError
               ? "placeholder:text-[var(--color-error-500,_#dc2626)]"
-              : "placeholder:text-[var(--color-n-400)]",
+              : "placeholder:text-n-400",
             disabled && "cursor-not-allowed opacity-60",
             className,
           )}

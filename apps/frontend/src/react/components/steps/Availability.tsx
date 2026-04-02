@@ -114,10 +114,6 @@ export default function Availability({
     <section className="bg-n-50 flex w-full flex-col gap-9 md:gap-14">
       <div className="flex w-full flex-col gap-7 md:gap-10">
         <div className="flex w-full flex-col gap-7 md:gap-8">
-          <p className="text-base leading-5 font-semibold text-n-800 md:text-lg">
-            Preferred Schedule
-          </p>
-
           <div className="grid w-full grid-cols-1 gap-7 md:gap-8 lg:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] lg:gap-16">
             {/* Available From Date */}
             <Input
