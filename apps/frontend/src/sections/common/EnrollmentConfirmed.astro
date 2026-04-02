@@ -1,0 +1,61 @@
+---
+import { Image } from "astro:assets";
+
+import Button from "@/components/ui/Button.astro";
+import { enrollmentConfirmedSectionData } from "@/data/enrollment-confirmed-section-data";
+---
+
+<section class="bg-n-50">
+  <div class="container mx-auto w-full max-w-screen-2xl px-5 py-16 sm:py-20 lg:py-24">
+    <div class="flex w-full flex-col items-start gap-12 lg:flex-row lg:items-center lg:gap-20">
+      <div class="relative hidden h-[462px] w-[326px] shrink-0 lg:block">
+        <Image
+          src={enrollmentConfirmedSectionData.image}
+          alt=""
+          width={326}
+          height={462}
+          class="h-full w-full object-contain"
+          aria-hidden="true"
+        />
+      </div>
+
+      <div class="flex w-full flex-col items-start gap-9 md:gap-10 lg:gap-16">
+        <div class="flex w-full flex-col gap-6 md:gap-9 lg:gap-10">
+          <div class="flex w-full flex-col gap-2">
+            <p class="text-xs font-bold uppercase tracking-[0.6px] text-blue-500 md:text-sm">
+              {enrollmentConfirmedSectionData.eyebrow}
+            </p>
+            <p class="text-2xl font-bold leading-tight text-n-800 md:text-4xl lg:text-5xl">
+              {enrollmentConfirmedSectionData.heading}
+            </p>
+          </div>
+
+          <div class="flex w-full flex-col gap-2">
+            <p class="text-xs font-medium text-n-500">
+              {enrollmentConfirmedSectionData.nextTitle}
+            </p>
+            <ul class="ml-5 list-disc space-y-2 text-lg text-n-800 lg:text-xl">
+              {enrollmentConfirmedSectionData.steps.map((step) => (
+                <li>
+                  {step.text ?? (
+                    <>
+                      {step.prefix}
+                      <span class="font-bold">{step.emphasis}</span>
+                      {step.suffix}
+                    </>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <Button
+          href={enrollmentConfirmedSectionData.cta.href}
+          buttonText={enrollmentConfirmedSectionData.cta.label}
+          className="h-auto w-full justify-center rounded-full px-10 py-4 text-lg font-bold sm:w-auto md:px-16 md:py-5 lg:px-20 lg:py-6 lg:text-xl"
+        />
+      </div>
+    </div>
+  </div>
+</section>
