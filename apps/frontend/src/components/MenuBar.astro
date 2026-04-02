@@ -1,0 +1,76 @@
+---
+interface MenuItemData {
+  name: string;
+  url: string;
+}
+
+interface Props {
+  items: MenuItemData[];
+  variant?: "primary" | "floating";
+}
+
+const { items, variant = "primary" } = Astro.props as Props;
+const currentPath = Astro.url.pathname;
+
+// Keep the enrollment route as a dedicated CTA so the primary nav stays focused on page links.
+const navItems = items.filter((item) => item.url !== "/enroll");
+
+// Match the home page exactly while allowing nested routes like /courses/foo to stay active.
+const getIsActiveLink = (href: string) =>
+  href === "/" ? currentPath === href : currentPath.startsWith(href);
+
+const navClassName =
+  variant === "primary"
+    ? "text-n-50 flex items-center gap-5 text-sm leading-5 lg:gap-7"
+    : "flex items-center gap-5 text-sm leading-5 lg:gap-7";
+const navLabel = variant === "primary" ? "Primary" : "Floating navigation";
+---
+
+<nav aria-label={navLabel} class={navClassName}>
+  {
+    navItems.map((item) => {
+      // Determine if the current menu item is active based on the URL.
+      const isActiveLink = getIsActiveLink(item.url);
+
+      return (
+        // Menu links
+        <a
+          href={item.url}
+          aria-current={isActiveLink ? "page" : undefined}
+          class:list={[
+            "text-xs leading-5 whitespace-nowrap transition-colors duration-200 focus:outline-none lg:text-sm",
+            variant === "primary"
+              ? isActiveLink
+                ? "text-n-50 font-semibold"
+                : "text-n-50 hover:text-n-50/90 font-medium"
+              : isActiveLink
+                ? "font-semibold text-blue-500"
+                : "text-n-800 font-medium hover:text-blue-500",
+          ]}
+        >
+            <span
+              class:list={[
+                "relative inline-flex",
+                variant === "floating" && "px-1 lg:px-1.5",
+              ]}
+            >
+            {/* Menu item name */}
+            <span>{item.name}</span>
+
+            {/* Active link indicator */}
+            {isActiveLink && (
+              <span
+                class:list={[
+                  "absolute left-1/2 -translate-x-1/2 rounded-lg",
+                  variant === "primary"
+                    ? "bg-n-50 -bottom-3 h-0.5 w-full"
+                    : "bg-blue-500 inset-x-0 -bottom-4 h-1 lg:-bottom-6",
+                ]}
+              />
+            )}
+          </span>
+        </a>
+      );
+    })
+  }
+</nav>

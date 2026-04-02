@@ -1,0 +1,138 @@
+---
+import InstructorCard from "@/components/InstructorCard.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import { instructorsSectionData } from "@/data/instructors-section-data";
+import SliderArrows from "@/components/SliderArrows.astro";
+
+---
+
+<section class="bg-n-100">
+  <div class="container mx-auto w-full px-6 py-20 md:px-12 lg:px-24 lg:py-28">
+
+    <!-- Section Header -->
+    <SectionHeader
+      eyebrow={instructorsSectionData.eyebrow}
+      heading={instructorsSectionData.heading}
+      description={instructorsSectionData.description}
+    />
+
+    <!-- Instructor Card Section -->
+    <div class="carousel-wrapper relative mt-11 flex flex-col gap-5 lg:mt-16 lg:gap-16">
+      <div class="embla overflow-hidden cursor-grab active:cursor-grabbing">
+        <div class="embla__container flex -ml-3">
+
+          <!-- Instructor Cards -->
+          {instructorsSectionData.instructors.map((instructor) => (
+            <div class="embla__slide pl-3 cursor-default min-w-0 flex-[0_0_100%] md:flex-[0_0_50%] lg:pl-5 xl:flex-[0_0_33.33%]">
+              <InstructorCard
+                firstName={instructor.firstName}
+                lastName={instructor.lastName}
+                role={instructor.role}
+                description={instructor.description}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+      
+      <!-- Slider Arrows -->
+      <SliderArrows />
+    </div>
+  </div>
+</section>
+
+<!-- Carousel Scripts -->
+<script>
+  import EmblaCarousel from "embla-carousel";
+
+  // Initialize each instructor carousel on the page.
+  const initCarousels = () => {
+    const wrappers = document.querySelectorAll(".carousel-wrapper");
+
+    wrappers.forEach((wrapper) => {
+      const viewport = wrapper.querySelector(".embla") as HTMLElement;
+      if (!viewport) return;
+
+      // Create the slider with responsive scroll groups.
+      let emblaApi = EmblaCarousel(viewport, {
+        loop: true,
+        align: "start",
+        duration: 32,
+        slidesToScroll: 1,
+        breakpoints: {
+          "(min-width: 768px)": { slidesToScroll: 2 },
+          "(min-width: 1280px)": { slidesToScroll: 3 },
+        },
+      });
+
+      wrapper.querySelectorAll("[data-embla-prev]").forEach((btn) => {
+        const handlePrevClick = () => emblaApi.scrollPrev();
+        btn.addEventListener("click", handlePrevClick);
+      });
+
+      wrapper.querySelectorAll("[data-embla-next]").forEach((btn) => {
+        const handleNextClick = () => emblaApi.scrollNext();
+        btn.addEventListener("click", handleNextClick);
+      });
+
+      const dotsContainer = wrapper.querySelector(".embla__dots");
+      let dotNodes: HTMLButtonElement[] = [];
+
+      if (dotsContainer) {
+        
+        // Build one dot per scroll snap.
+        const createDots = () => {
+          const snapList = emblaApi.scrollSnapList();
+
+          dotsContainer.innerHTML = snapList
+            .map(
+              (_, i) => `
+            <button 
+              class="h-2 w-2 rounded-full bg-n-300 transition-all duration-300 cursor-pointer" 
+              type="button"
+              aria-label="Go to group ${i + 1}"
+            ></button>
+          `,
+            )
+            .join("");
+
+          dotNodes = Array.from(dotsContainer.querySelectorAll("button"));
+
+          dotNodes.forEach((dot, i) => {
+            const handleDotClick = () => emblaApi.scrollTo(i);
+            dot.addEventListener("click", handleDotClick);
+          });
+        };
+
+        // Highlight the active dot.
+        const updateDots = () => {
+          const selectedIndex = emblaApi.selectedScrollSnap();
+
+          dotNodes.forEach((dot, index) => {
+            if (index === selectedIndex) {
+              dot.classList.remove("w-2", "bg-n-300");
+              dot.classList.add("w-6", "bg-blue-600");
+            } else {
+              dot.classList.remove("w-6", "bg-blue-600");
+              dot.classList.add("w-2", "bg-n-300");
+            }
+          });
+        };
+
+        createDots();
+        updateDots();
+
+        emblaApi.on("select", updateDots);
+
+        emblaApi.on("reInit", () => {
+          createDots();
+          updateDots();
+        });
+      }
+    });
+  };
+
+  // Run on first load and Astro page navigation.
+  document.addEventListener("DOMContentLoaded", initCarousels);
+  document.addEventListener("astro:page-load", initCarousels);
+</script>
