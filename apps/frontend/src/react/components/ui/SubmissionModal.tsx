@@ -4,9 +4,10 @@ import React from "react";
 // COMPONENTS //
 import Button from "@/react/components/ui/Button";
 import StepStatus from "@/react/components/ui/StepStatus";
+import { StepGlyph } from "@/react/components/ui/Steps";
 
 // TYPES //
-import type { StepIconData, StepStatusData } from "@/react/types/steps.type";
+import type { StepStatusData } from "@/react/types/steps.type";
 
 // CONSTANTS //
 import { DEFAULT_STEPS } from "@/react/constants/steps";
@@ -38,90 +39,6 @@ function statusLabel(status: StepStatusData): string {
   }
 
   return "Untouched";
-}
-
-function renderStepIcon(icon: StepIconData): React.JSX.Element {
-  if (icon === "course") {
-    return (
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
-        <path
-          d="M7 16a3 3 0 1 1 0 6 3 3 0 0 1 0-6Zm10 0a3 3 0 1 1 0 6 3 3 0 0 1 0-6ZM4 11.5h16M12 4v7.5M5.6 7.2A8.5 8.5 0 0 1 12 4a8.5 8.5 0 0 1 6.4 3.2"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  if (icon === "user") {
-    return (
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
-        <path
-          d="M12 13a5 5 0 1 0 0-10 5 5 0 0 0 0 10ZM4 21a8 8 0 1 1 16 0"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  if (icon === "license") {
-    return (
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
-        <path
-          d="M4 6.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 6.5v11a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 4 17.5v-11ZM8 9h8M8 13h5"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  if (icon === "availability") {
-    return (
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
-        <path
-          d="M7 3.5V6M17 3.5V6M4 9h16M6.5 5h11A2.5 2.5 0 0 1 20 7.5v10A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5v-10A2.5 2.5 0 0 1 6.5 5Z"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  if (icon === "parent") {
-    return (
-      <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
-        <path
-          d="M9 13a4 4 0 1 0 0-8 4 4 0 0 0 0 8Zm7.5 1a3.5 3.5 0 1 0 0-7M3 20a6 6 0 1 1 12 0M14.5 20a4.5 4.5 0 0 1 4.5-4.5"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none">
-      <path
-        d="M4.5 7.5A2.5 2.5 0 0 1 7 5h10a2.5 2.5 0 0 1 2.5 2.5v9A2.5 2.5 0 0 1 17 19H7a2.5 2.5 0 0 1-2.5-2.5v-9ZM4.5 9.5h15M8 14.5h2.5"
-        stroke="currentColor"
-        strokeWidth="1.8"
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
 }
 
 /**
@@ -199,16 +116,26 @@ export default function SubmissionModal({
       >
         {isChecking ? (
           <>
-            <div className="flex w-full flex-col gap-2">
-              <h3 className="text-n-900 text-2xl leading-normal font-semibold">{title}</h3>
-              <p className="text-n-700 text-base leading-7">
-                Completed: {completedCount}/{DEFAULT_STEPS.length} • Pending: {pendingCount} • Untouched:{" "}
-                {untouchedCount}
+            <div className="flex w-full flex-col items-center gap-2 text-center">
+              <h3 className="text-n-900 text-4xl leading-normal font-bold">{title}</h3>
+              <p className="text-n-800 text-2xl leading-7">
+                <span className="font-bold">
+                  {completedCount} of {DEFAULT_STEPS.length}
+                </span>{" "}
+                Steps Completed{" "}
+                <span className="px-4" aria-hidden="true">
+                  |
+                </span>{" "}
+                <span className="text-red-600">
+                  <span className="font-bold">{pendingCount + untouchedCount}</span> 
+                  {" "} 
+                  Incomplete
+                </span>
               </p>
               {message ? <p className="text-amber-700 text-sm leading-6 font-medium">{message}</p> : null}
             </div>
 
-            <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+            <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
               {DEFAULT_STEPS.map((stepItem, stepIndex) => {
                 const stepId: number = stepIndex + 1;
                 const stepStatus: StepStatusData = stepStatuses[stepId] ?? "untouched";
@@ -219,7 +146,7 @@ export default function SubmissionModal({
                     status={stepStatus}
                     title={stepItem.label}
                     subTitle={statusLabel(stepStatus)}
-                    icon={renderStepIcon(stepItem.icon)}
+                    icon={<StepGlyph icon={stepItem.icon} status={stepStatus} />}
                     onClick={stepStatus === "pending" ? () => onSelectStep?.(stepId) : undefined}
                   />
                 );
@@ -267,7 +194,7 @@ export default function SubmissionModal({
         )}
 
         <div className="border-n-200 mt-2 w-full border-t pt-5">
-          <Button variant="unfilled" onClick={onClose} className="min-h-[48px] w-full px-6 py-3 text-base">
+          <Button variant="unfilled" onClick={onClose} className="min-h-12 w-full px-6 py-3 text-base">
             Cancel
           </Button>
         </div>

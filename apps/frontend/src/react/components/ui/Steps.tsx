@@ -229,7 +229,7 @@ const renderPaymentIcon = (): React.JSX.Element => {
   );
 };
 
-const StepGlyph = ({
+export const StepGlyph = ({
   icon,
   status,
 }: {
