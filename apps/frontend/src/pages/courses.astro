@@ -1,7 +1,17 @@
 ---
-// OTHERS //
 import Layout from "@/layouts/Layout.astro";
-
+import Courses from "@/sections/common/Courses.astro";
+import FaqSection from "@/sections/common/FaqSection.astro";
+import ContactInfo from "@/sections/common/ContactInfo.astro";
+import ContactForm from "@/sections/common/ContactForm.astro";
 ---
 
-<Layout />
+<Layout
+  title="Courses | Chinook Driving School Calgary"
+  description="Explore driving course packages, schedules, and support options from Chinook Driving School Calgary."
+>
+  <Courses />
+  <FaqSection />
+  <ContactInfo />
+  <ContactForm />
+</Layout>

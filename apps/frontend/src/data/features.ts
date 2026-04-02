@@ -1,10 +1,9 @@
-﻿import featureIllustration from "@/assets/feature-illustration.svg";
-
 export const FeaturesSectionDetails = {
   content: {
-    eyebrow: "Why LEARNERS Trust Us",
+    eyebrow: "Why Drivers Trust Us",
     title: "Why Choose Our Driving School",
-    description: "Learn from certified instructors with flexible lessons.",
+    description:
+      "Learn with certified instructors and flexible lessons to drive safely and confidently.",
   },
   cards: [
     {
@@ -12,28 +11,28 @@ export const FeaturesSectionDetails = {
       description:
         "Learn from professionally trained and certified instructors who guide you step-by-step with patience and expertise.",
       imageAlt: "Certified driving instructors",
-      imageSrc: featureIllustration,
+      imageSrc: "/images/features/certified-driving.png",
     },
     {
-      title: "Certified Driving Instructors",
+      title: "Flexible Lesson Scheduling",
       description:
-        "Learn from professionally trained and certified instructors who guide you step-by-step with patience and expertise.",
-      imageAlt: "Certified driving instructors",
-      imageSrc: featureIllustration,
+        "Book driving lessons at times that fit your routine, including weekend and evening sessions.",
+      imageAlt: "Flexible lesson scheduling",
+      imageSrc: "/images/features/flexible-lesson.png",
     },
     {
-      title: "Certified Driving Instructors",
+      title: "Modern & Safe Training Cars",
       description:
-        "Learn from professionally trained and certified instructors who guide you step-by-step with patience and expertise.",
-      imageAlt: "Certified driving instructors",
-      imageSrc: featureIllustration,
+        "Practice in well-maintained vehicles equipped with dual controls for a safe and comfortable learning experience.",
+      imageAlt: "Modern and safe training cars",
+      imageSrc: "/images/features/training-cars.png",
     },
     {
-      title: "Certified Driving Instructors",
+      title: "High First-Time Pass Rate",
       description:
-        "Learn from professionally trained and certified instructors who guide you step-by-step with patience and expertise.",
-      imageAlt: "Certified driving instructors",
-      imageSrc: featureIllustration,
+        "Our structured training program helps students build confidence and pass their driving test successfully.",
+      imageAlt: "High first-time pass rate",
+      imageSrc: "/images/features/pass-rate.png",
     },
   ],
 };

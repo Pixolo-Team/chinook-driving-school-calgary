@@ -40,20 +40,15 @@ const fieldRows = [
 ---
 
 <section class="bg-n-50">
-
   <!-- Contact Form -->
-  <div class="container mx-auto max-w-screen-2xl py-8 px-6 md:py-9 xl:px-44">
-
+  <div class="container mx-auto max-w-screen-2xl px-6 py-8 md:py-9 xl:px-44">
     <!-- Outer Box -->
     <div class="rounded-3xl bg-blue-50 p-3 md:p-6">
-      
-      
       <div class="grid gap-4 xl:grid-cols-12 xl:gap-6">
         <div class="xl:col-span-8">
           <div class="bg-n-50 rounded-3xl p-6 md:p-8">
             <div class="">
               <div class="space-y-5 md:space-y-6">
-
                 <!-- Form Title -->
                 <p class="text-n-900 text-xl leading-7 font-bold md:text-2xl">Reach out to us!</p>
 
@@ -66,7 +61,6 @@ const fieldRows = [
                           fieldRow.length === 2 ? "md:grid-cols-2 md:gap-6" : "",
                         ]}
                       >
-
                         {/* Iterating through Form Input fields */}
                         {fieldRow.map((field) => (
                           <label class="block space-y-1">
@@ -101,7 +95,7 @@ const fieldRows = [
                   <!-- Send Message Button -->
                   <button
                     type="submit"
-                    class="text-n-50 w-full rounded-full bg-blue-500 px-6 py-3 text-sm leading-6 font-bold transition-colors duration-300 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+                    class="animate-bouncy-hover text-n-50 w-full cursor-pointer rounded-full bg-blue-500 px-6 py-3 text-sm leading-6 font-bold transition-colors duration-300 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
                   >
                     Send Message
                   </button>
@@ -112,18 +106,18 @@ const fieldRows = [
         </div>
 
         <div class="xl:col-span-4">
-
           <!-- Contact Illustration Section -->
           <div
             class="bg-n-50 relative h-full overflow-hidden rounded-4xl px-4 py-4 md:px-7 md:py-6"
           >
             <div
-              class="absolute top-12 -right-16 size-64 rounded-full bg-blue-100/20 md:top-1/2 md:-left-44 md:size-70 md:right-auto md:-translate-y-1/2 xl:top-44 xl:-right-48 xl:left-auto xl:size-96 xl:translate-y-0"
+              class="absolute top-12 -right-16 size-64 rounded-full bg-blue-100/20 md:top-1/2 md:right-auto md:-left-44 md:size-70 md:-translate-y-1/2 xl:top-44 xl:-right-48 xl:left-auto xl:size-96 xl:translate-y-0"
             >
             </div>
 
-
-            <div class="relative z-10 flex h-full flex-col gap-10 md:flex-row md:items-stretch md:gap-8 xl:flex-col xl:gap-24">
+            <div
+              class="relative z-10 flex h-full flex-col gap-10 md:flex-row md:items-stretch md:gap-8 xl:flex-col xl:gap-24"
+            >
               <div class="mx-auto md:w-60 lg:w-72">
                 <Image
                   src={contactIllustration}
@@ -143,7 +137,9 @@ const fieldRows = [
 
                 <div class="space-y-3.5 md:space-y-6">
                   <div class="border-n-200 border-t"></div>
-                  <p class="text-n-600 max-w-[23rem] text-sm leading-tight md:text-base xl:max-w-none">
+                  <p
+                    class="text-n-600 max-w-[23rem] text-sm leading-tight md:text-base xl:max-w-none"
+                  >
                     Our team is here to help you every step of the way.
                   </p>
                 </div>

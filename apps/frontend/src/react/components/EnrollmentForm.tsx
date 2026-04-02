@@ -256,7 +256,6 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
       });
 
       if (enrollmentResponseInfo.status) {
-        console.log("OLA");
         clearEnrollmentFormStorage();
         onSuccess?.();
       }
@@ -443,8 +442,7 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
       setCurrentStep(parsedEnrollmentFormValue.currentStep ?? 1);
       setStepStates(parsedEnrollmentFormValue.stepStates ?? stepStates);
       setEnrollmentFormValue(parsedEnrollmentFormValue.enrollmentFormValue ?? enrollmentFormValue);
-    } catch (error) {
-      console.error("Failed to restore enrollment form draft", error);
+    } catch {
       clearEnrollmentFormStorage();
     } finally {
       hasHydratedFromStorageRef.current = true;
