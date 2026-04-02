@@ -42,7 +42,7 @@ export default function Button({
       disabled={disabled}
       className={joinClasses(
         "inline-flex min-h-16 items-center justify-center rounded-4xl px-8 py-4 text-center text-lg leading-normal font-semibold transition-[transform,background-color,color,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] focus:ring-2 focus:ring-[var(--color-blue-500)] focus:ring-offset-2 focus:outline-none",
-        !disabled && "cursor-default hover:scale-[1.02] active:scale-[0.99]",
+        !disabled && "cursor-pointer hover:scale-[1.02] active:scale-[0.99]",
         normalizedVariant === "filled" &&
           "bg-[var(--color-blue-500)] text-[var(--color-n-50)] hover:bg-[var(--color-blue-400)]",
         normalizedVariant === "unfilled" &&

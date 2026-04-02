@@ -68,10 +68,10 @@ export default function CheckboxTab({
   return (
     <label
       className={joinClasses(
-        "border-n-400 bg-n-50 relative flex w-full cursor-pointer flex-col gap-3 rounded-xl border p-5 text-left transition-[border-color,box-shadow] duration-200",
+        "border-n-400 bg-n-50 relative flex w-full flex-col gap-3 rounded-xl border p-5 text-left transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
         disabled
           ? "cursor-not-allowed opacity-60"
-          : "hover:shadow-[0_10px_24px_rgba(14,23,43,0.08)]",
+          : "cursor-pointer hover:scale-[1.01] hover:shadow-[0_10px_24px_rgba(14,23,43,0.08)]",
         containerClassName,
       )}
     >

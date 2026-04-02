@@ -44,14 +44,17 @@ export default function PaymentDetails({
   // Define Refs
 
   // Define States
-  const requiresCardDetails: boolean = value.method === "card" || value.method === "debit_card";
+  const requiresCardDetails: boolean = value.method === "card";
 
   // Helper Functions
   /**
    * Returns the current completion state for the Payment details step.
    */
   function getStepState(): StepStateData {
-    const requiredFieldValues: Array<string | number | null> = [value.method];
+    const requiredFieldValues: Array<string | number | boolean | null> = [
+      value.method,
+      value.did_agree_conditions,
+    ];
 
     if (requiresCardDetails) {
       requiredFieldValues.push(value.card_number, value.expiry_date, value.name_on_card);
@@ -64,6 +67,10 @@ export default function PaymentDetails({
 
       if (typeof requiredFieldValueItem === "number") {
         return true;
+      }
+
+      if (typeof requiredFieldValueItem === "boolean") {
+        return requiredFieldValueItem;
       }
 
       return requiredFieldValueItem !== null;
@@ -88,7 +95,7 @@ export default function PaymentDetails({
   function handlePaymentMethodChange(methodValue: string): void {
     handleFieldChange("method", methodValue);
 
-    if (methodValue !== "card" && methodValue !== "debit_card") {
+    if (methodValue !== "card") {
       handleFieldChange("card_number", null);
       handleFieldChange("expiry_date", null);
       handleFieldChange("name_on_card", null);
@@ -152,15 +159,35 @@ export default function PaymentDetails({
                 containerClassName="w-full lg:col-span-2"
               />
             </div>
+
+            <p className="text-n-600 text-base leading-5 font-semibold">
+              Your payment details are secure and encrypted
+            </p>
           </div>
         ) : null}
-
-        <p className="text-n-600 text-base leading-5 font-semibold">
-          Your payment details are secure and encrypted
-        </p>
       </div>
 
-      <div className="flex w-full flex-row items-center justify-end gap-3 md:gap-4">
+      <div className="flex w-full flex-col items-start gap-5">
+        <label className="flex items-start gap-3">
+          <input
+            type="checkbox"
+            checked={value.did_agree_conditions}
+            onChange={(event) => handleFieldChange("did_agree_conditions", event.target.checked)}
+            className="mt-1 h-5 w-5 rounded border border-[var(--color-n-300)] text-[var(--color-blue-500)]"
+          />
+          <span className="text-sm leading-6" style={{ color: "var(--color-n-700)" }}>
+            I agree to the{" "}
+            <a
+              href="https://drive.google.com/uc?export=download&id=1lF3ghbzu1NLVCdZTlsgd9Srn31AkCyB8"
+              className="font-semibold underline underline-offset-2"
+              style={{ color: "var(--color-blue-500)" }}
+            >
+              Terms and Conditions
+            </a>
+          </span>
+        </label>
+
+        <div className="flex w-full flex-row items-center justify-end gap-3 md:gap-4">
         <Button
           variant="unfilled"
           onClick={() => onPrevious?.(getStepState())}
@@ -175,6 +202,7 @@ export default function PaymentDetails({
         >
           Complete Enrollment
         </Button>
+        </div>
       </div>
     </section>
   );

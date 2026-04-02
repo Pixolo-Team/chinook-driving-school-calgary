@@ -4,6 +4,15 @@ import React from "react";
 // TYPES //
 import type { StepIconData, StepStatusData, StepsPropsData } from "@/react/types/steps.type";
 
+// ASSETS //
+import blankCalendarIcon from "@/assets/icons/BlankCalendar.svg";
+import checkIcon from "@/assets/icons/check.svg";
+import creditCardApprovedIcon from "@/assets/icons/CreditCardApproved.svg";
+import documentContractLicenseIcon from "@/assets/icons/DocumentContractLicense.svg";
+import steeringWheelIcon from "@/assets/icons/SteeringWheel.svg";
+import userCheckValidateIcon from "@/assets/icons/UserCheckValidate.svg";
+import userCircleAvatarHappyIcon from "@/assets/icons/UserCircleAvatarHappy.svg";
+
 // CONSTANTS //
 import { DEFAULT_STEPS } from "@/react/constants/steps";
 
@@ -85,142 +94,28 @@ const StepGlyph = ({
   icon: StepIconData;
   status: "current" | StepStatusData;
 }): React.JSX.Element => {
+  const stepIconMap: Record<StepIconData, string> = {
+    course: steeringWheelIcon,
+    user: userCircleAvatarHappyIcon,
+    license: documentContractLicenseIcon,
+    availability: blankCalendarIcon,
+    parent: userCheckValidateIcon,
+    payment: creditCardApprovedIcon,
+  };
+
   if (status === "completed") {
     return (
-      <svg aria-hidden="true" viewBox="0 0 20 20" className="h-5 w-5">
-        <path
-          d="M6.1 10.2 8.5 12.6 13.8 7.3"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  if (icon === "course") {
-    return (
-      <svg aria-hidden="true" viewBox="0 0 20 20" className="h-5 w-5">
-        <circle cx="10" cy="10" r="5.5" fill="none" stroke="currentColor" strokeWidth="1.8" />
-        <circle cx="10" cy="10" r="1.6" fill="currentColor" />
-        <path
-          d="M10 4.5v3.1M15.5 10h-3.1M10 15.5v-3.1M4.5 10h3.1"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  }
-
-  if (icon === "user") {
-    return (
-      <svg aria-hidden="true" viewBox="0 0 20 20" className="h-5 w-5">
-        <circle cx="10" cy="7" r="2.8" fill="none" stroke="currentColor" strokeWidth="1.8" />
-        <path
-          d="M5.2 15.3c1-2 2.8-3 4.8-3s3.8 1 4.8 3"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  }
-
-  if (icon === "license") {
-    return (
-      <svg aria-hidden="true" viewBox="0 0 20 20" className="h-5 w-5">
-        <rect
-          x="3.8"
-          y="5"
-          width="12.4"
-          height="9.8"
-          rx="2"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        />
-        <path
-          d="M7 9h5.8M7 12h3.8"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  }
-
-  if (icon === "availability") {
-    return (
-      <svg aria-hidden="true" viewBox="0 0 20 20" className="h-5 w-5">
-        <rect
-          x="3.8"
-          y="5.2"
-          width="12.4"
-          height="10.8"
-          rx="2"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-        />
-        <path
-          d="M6.5 3.8v2.4M13.5 3.8v2.4M3.8 8h12.4"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
-      </svg>
-    );
-  }
-
-  if (icon === "parent") {
-    return (
-      <svg aria-hidden="true" viewBox="0 0 20 20" className="h-5 w-5">
-        <circle cx="8" cy="7" r="2.4" fill="none" stroke="currentColor" strokeWidth="1.8" />
-        <path
-          d="M3.8 14.7c.8-1.8 2.3-2.8 4.2-2.8 1.4 0 2.6.5 3.5 1.5"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-        />
-        <path
-          d="m12.7 13.7 1.4 1.4 2.6-3"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      <img src={checkIcon} alt="" aria-hidden="true" className="h-5 w-5 object-contain" />
     );
   }
 
   return (
-    <svg aria-hidden="true" viewBox="0 0 20 20" className="h-5 w-5">
-      <rect
-        x="3.6"
-        y="5"
-        width="12.8"
-        height="10"
-        rx="2"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.8"
-      />
-      <path
-        d="M3.8 8.4h12.4M7 12.2h2.4"
-        fill="none"
-        stroke="currentColor"
-        strokeWidth="1.6"
-        strokeLinecap="round"
-      />
-    </svg>
+    <img
+      src={stepIconMap[icon]}
+      alt=""
+      aria-hidden="true"
+      className="h-5 w-5 object-contain"
+    />
   );
 };
 
