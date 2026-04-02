@@ -30,7 +30,7 @@ export default function EnrollSuccess(): React.JSX.Element {
   // Use Effects
   return (
     <section className="bg-n-50 pt-24 md:pt-28 lg:pt-32">
-      <div className="mx-auto w-full max-w-screen-2xl px-5 py-16 sm:py-20 lg:py-24">
+      <div className="mx-auto w-full max-w-screen-2xl px-6 py-20 lg:py-24 xl:px-60">
         <div className="flex w-full flex-col items-start gap-12 lg:flex-row lg:items-center lg:gap-20">
           <div className="relative hidden h-[462px] w-[326px] shrink-0 lg:block">
             <img
@@ -77,7 +77,7 @@ export default function EnrollSuccess(): React.JSX.Element {
             <Button
               variant="filled"
               onClick={handleCtaClick}
-              className="h-auto w-full justify-center rounded-full px-10 py-4 text-lg font-bold sm:w-auto md:px-16 md:py-5 lg:px-20 lg:py-6 lg:text-xl"
+              className="h-auto w-full justify-center rounded-full px-10 py-4 text-lg font-bold md:px-16 md:py-5 lg:px-20 lg:py-6 lg:text-xl"
             >
               {enrollmentConfirmedSectionData.cta.label}
             </Button>
