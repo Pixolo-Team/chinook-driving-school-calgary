@@ -2,8 +2,14 @@
 import React, { useState } from "react";
 
 // COMPONENTS //
+<<<<<<< HEAD
 import EnrollmentForm from "@/react/components/EnrollmentForm";
 import Button from "@/react/components/ui/Button";
+=======
+import EnrollmentForm from "./EnrollmentForm";
+import EnrollmentInfo from "./steps/EnrollmentInfo";
+import Button from "./ui/Button";
+>>>>>>> development
 
 type EnrollViewData = "start" | "form" | "success";
 
@@ -24,6 +30,7 @@ export default function EnrollForm(): React.JSX.Element {
   /**
    * Renders the start screen before the user opens the form.
    */
+<<<<<<< HEAD
   const renderFormStart = () => {
     return (
       <section className="mx-auto flex min-h-screen w-full max-w-4xl items-center justify-center px-6 py-16">
@@ -56,6 +63,11 @@ export default function EnrollForm(): React.JSX.Element {
       </section>
     );
   };
+=======
+  function renderFormStart(): React.JSX.Element {
+    return <EnrollmentInfo onStart={() => setActiveView("form")} />;
+  }
+>>>>>>> development
 
   /**
    * Renders the success screen after a completed API submission.
