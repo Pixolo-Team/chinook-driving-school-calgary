@@ -120,7 +120,12 @@ export default function RadioTab({
       </div>
 
       {helperText ? (
-        <p className={joinClasses("text-sm leading-5 font-normal", isError ? "text-error-500" : "text-n-500")}>
+        <p
+          className="text-sm leading-5 font-normal"
+          style={{
+            color: isError ? "var(--color-error-500, #dc2626)" : "var(--color-n-500)",
+          }}
+        >
           {helperText}
         </p>
       ) : null}

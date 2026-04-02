@@ -1,5 +1,5 @@
 // REACT //
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 // TYPES //
 import type { StepStateData, UserInfoValueData } from "@/react/types/enrollment.type";
@@ -24,6 +24,17 @@ type UserInfoPropsData = Readonly<{
   onPrevious?: (state: StepStateData) => void;
 }>;
 
+type UserInfoTouchedFieldsData = {
+  first_name: boolean;
+  last_name: boolean;
+  date_of_birth: boolean;
+  email: boolean;
+  phone: boolean;
+};
+
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const PHONE_DIGIT_PATTERN = /\d/g;
+
 /**
  * Renders the User information step and reports field changes to the parent.
  */
@@ -41,26 +52,72 @@ export default function UserInfo({
   // Define Refs
 
   // Define States
+  const [touchedFields, setTouchedFields] = useState<UserInfoTouchedFieldsData>({
+    first_name: false,
+    last_name: false,
+    date_of_birth: false,
+    email: false,
+    phone: false,
+  });
   const todayDateValue: string = new Date().toISOString().split("T")[0] ?? "";
 
   // Helper Functions
+  const markFieldAsTouched = (fieldKey: keyof UserInfoTouchedFieldsData): void => {
+    setTouchedFields((currentTouchedFields) => ({
+      ...currentTouchedFields,
+      [fieldKey]: true,
+    }));
+  };
+
+  const revealValidationErrors = (): void => {
+    setTouchedFields({
+      first_name: true,
+      last_name: true,
+      date_of_birth: true,
+      email: true,
+      phone: true,
+    });
+  };
+
+  const getFirstNameError = (): string | null =>
+    value.first_name.trim().length > 0 ? null : "Please enter your first name.";
+
+  const getLastNameError = (): string | null =>
+    value.last_name.trim().length > 0 ? null : "Please enter your last name.";
+
+  const getDateOfBirthError = (): string | null =>
+    value.date_of_birth.trim().length > 0 ? null : "Please enter your date of birth.";
+
+  const getEmailError = (): string | null => {
+    const emailValue = value.email.trim();
+
+    if (emailValue.length === 0) {
+      return "Enter a valid email address.";
+    }
+
+    return EMAIL_PATTERN.test(emailValue) ? null : "Enter a valid email address.";
+  };
+
+  const getPhoneError = (): string | null => {
+    const phoneValue = value.phone.trim();
+    const phoneDigits = phoneValue.match(PHONE_DIGIT_PATTERN) ?? [];
+
+    if (phoneValue.length === 0 || phoneDigits.length < 10) {
+      return "Enter a valid phone number.";
+    }
+
+    return null;
+  };
+
   /**
    * Returns the current completion state for the User information step.
    */
   const getStepState = (): StepStateData => {
-    // Required Fields
-    const requiredFieldValues: string[] = [
-      value.first_name,
-      value.last_name,
-      value.date_of_birth,
-      value.email,
-      value.phone,
-    ];
-
-    // Check if all fields are required
-    return requiredFieldValues.every(
-      (requiredFieldValueItem) => requiredFieldValueItem.trim().length > 0,
-    )
+    return !getFirstNameError() &&
+      !getLastNameError() &&
+      !getDateOfBirthError() &&
+      !getEmailError() &&
+      !getPhoneError()
       ? "completed"
       : "pending";
   };
@@ -74,6 +131,17 @@ export default function UserInfo({
   ): void => {
     onChange(fieldKey, fieldValue);
   };
+
+  const firstNameError = getFirstNameError();
+  const lastNameError = getLastNameError();
+  const dateOfBirthError = getDateOfBirthError();
+  const emailError = getEmailError();
+  const phoneError = getPhoneError();
+  const shouldShowFirstNameError = touchedFields.first_name && Boolean(firstNameError);
+  const shouldShowLastNameError = touchedFields.last_name && Boolean(lastNameError);
+  const shouldShowDateOfBirthError = touchedFields.date_of_birth && Boolean(dateOfBirthError);
+  const shouldShowEmailError = touchedFields.email && Boolean(emailError);
+  const shouldShowPhoneError = touchedFields.phone && Boolean(phoneError);
 
   // Use Effects
   useEffect(() => {
@@ -90,8 +158,11 @@ export default function UserInfo({
           required
           value={value.first_name}
           onChange={(event) => handleFieldChange("first_name", event.target.value)}
+          onBlur={() => markFieldAsTouched("first_name")}
           placeholder="Type First Name"
           caption="Enter your first name exactly as it appears on your ID or license."
+          isError={shouldShowFirstNameError}
+          errorMessage={firstNameError ?? undefined}
           containerClassName="w-full"
         />
 
@@ -102,8 +173,11 @@ export default function UserInfo({
           required
           value={value.last_name}
           onChange={(event) => handleFieldChange("last_name", event.target.value)}
+          onBlur={() => markFieldAsTouched("last_name")}
           placeholder="Type Last Name"
           caption="Enter your last name exactly as it appears on your ID or license."
+          isError={shouldShowLastNameError}
+          errorMessage={lastNameError ?? undefined}
           containerClassName="w-full"
         />
 
@@ -114,8 +188,11 @@ export default function UserInfo({
           required
           value={value.date_of_birth}
           onChange={(event) => handleFieldChange("date_of_birth", event.target.value)}
+          onBlur={() => markFieldAsTouched("date_of_birth")}
           placeholder={todayDateValue}
           caption="Example: 01/04/2026"
+          isError={shouldShowDateOfBirthError}
+          errorMessage={dateOfBirthError ?? undefined}
           containerClassName="w-full"
         />
 
@@ -126,8 +203,11 @@ export default function UserInfo({
           required
           value={value.email}
           onChange={(event) => handleFieldChange("email", event.target.value)}
+          onBlur={() => markFieldAsTouched("email")}
           placeholder="you@example.com"
           caption="We’ll send booking details and updates to this email."
+          isError={shouldShowEmailError}
+          errorMessage={emailError ?? undefined}
           containerClassName="w-full"
         />
 
@@ -138,8 +218,11 @@ export default function UserInfo({
           required
           value={value.phone}
           onChange={(event) => handleFieldChange("phone", event.target.value)}
+          onBlur={() => markFieldAsTouched("phone")}
           placeholder="+1 403 XXX XXXX"
           caption="Your Mobile Phone Number"
+          isError={shouldShowPhoneError}
+          errorMessage={phoneError ?? undefined}
           containerClassName="w-full"
           inputMode="tel"
         />
@@ -206,7 +289,10 @@ export default function UserInfo({
         </Button>
         <Button
           variant="filled"
-          onClick={() => onNext?.(getStepState())}
+          onClick={() => {
+            revealValidationErrors();
+            onNext?.(getStepState());
+          }}
           className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
         >
           Continue to Licence Info

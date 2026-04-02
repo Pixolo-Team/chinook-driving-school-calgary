@@ -18,6 +18,8 @@ type DropdownPropsData = Readonly<
     label?: string;
     required?: boolean;
     helperText?: string;
+    isError?: boolean;
+    errorMessage?: string;
     placeholder?: string;
     options?: DropdownOptionData[];
     containerClassName?: string;
@@ -34,6 +36,8 @@ export default function Dropdown({
   label = "License Type",
   required = false,
   helperText = "Choose your current license category (e.g., learner, full license).",
+  isError = false,
+  errorMessage,
   placeholder = "Select license type",
   options = [],
   value,
@@ -68,6 +72,7 @@ export default function Dropdown({
   const selectedOptionInfo: DropdownOptionData | undefined = options.find(
     (optionItem) => optionItem.value === activeValue,
   );
+  const helperMessage: string = isError ? (errorMessage ?? helperText) : helperText;
 
   // Helper Functions
   /**
@@ -220,12 +225,14 @@ export default function Dropdown({
           onKeyDown={handleTriggerKeyDown}
           className={joinClasses(
             styleVariant === "minimal"
-              ? "bg-n-100 border-n-700 flex w-full items-center justify-between border-x-0 border-t-0 border-b-[0.8px] px-3 py-3 text-left opacity-70 transition-[border-color,background-color,box-shadow] duration-200 outline-none md:px-4 md:py-4"
+              ? "bg-n-100 flex w-full items-center justify-between border-x-0 border-t-0 border-b-[0.8px] px-3 py-3 text-left opacity-70 transition-[border-color,background-color,box-shadow] duration-200 outline-none md:px-4 md:py-4"
               : isDropdownOpen
                 ? "bg-n-50 border-blue-500 shadow-[0_18px_44px_rgba(14,23,43,0.08)]"
                 : "bg-n-100 border-n-300",
             styleVariant === "card" &&
               "flex min-h-[76px] w-full items-center justify-between rounded-[18px] border px-4 py-4 text-left transition-[border-color,background-color,box-shadow,transform] duration-200 outline-none",
+            styleVariant === "minimal" &&
+              (isError ? "border-b-[var(--color-error-500,_#dc2626)]" : "border-n-700"),
             "focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-100",
             disabled && "cursor-not-allowed opacity-60",
             className,
@@ -315,7 +322,16 @@ export default function Dropdown({
         ) : null}
       </div>
 
-      <p className="text-n-500 text-sm leading-5 font-normal">{helperText}</p>
+      {helperMessage ? (
+        <p
+          className="text-sm leading-5 font-normal"
+          style={{
+            color: isError ? "var(--color-error-500, #dc2626)" : "var(--color-n-500)",
+          }}
+        >
+          {helperMessage}
+        </p>
+      ) : null}
     </div>
   );
 }

@@ -1,5 +1,5 @@
 // REACT //
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 // TYPES //
 import type { AvailabilityValueData, StepStateData } from "@/react/types/enrollment.type";
@@ -24,6 +24,12 @@ type AvailabilityPropsData = Readonly<{
   onPrevious?: (state: StepStateData) => void;
 }>;
 
+type AvailabilityTouchedFieldsData = {
+  date: boolean;
+  days: boolean;
+  time_slots: boolean;
+};
+
 /**
  * Renders the Availability step and reports changes back to the parent form.
  */
@@ -41,6 +47,11 @@ export default function Availability({
   // Define Refs
 
   // Define States
+  const [touchedFields, setTouchedFields] = useState<AvailabilityTouchedFieldsData>({
+    date: false,
+    days: false,
+    time_slots: false,
+  });
 
   // Helper Functions
   /**
@@ -53,27 +64,45 @@ export default function Availability({
     onChange(fieldKey, fieldValue);
   };
 
+  const markFieldAsTouched = (fieldKey: keyof AvailabilityTouchedFieldsData): void => {
+    setTouchedFields((currentTouchedFields) => ({
+      ...currentTouchedFields,
+      [fieldKey]: true,
+    }));
+  };
+
+  const revealValidationErrors = (): void => {
+    setTouchedFields({
+      date: true,
+      days: true,
+      time_slots: true,
+    });
+  };
+
+  const getDateError = (): string | null =>
+    value.date.trim().length > 0 ? null : "Please select an available from date.";
+
+  const getPreferredDaysError = (): string | null =>
+    value.days.length > 0 ? null : "Please select at least one preferred day.";
+
+  const getTimeSlotsError = (): string | null =>
+    value.time_slots.length > 0 ? null : "Please select at least one time slot.";
+
   /**
    * Returns the completion state for the Availability step.
    */
   const getStepState = (): StepStateData => {
-    // Required Fields
-    const requiredFieldValues: Array<string | string[]> = [value.date, value.days, value.time_slots];
-
-    // Check if Required Fields are fileld
-    const hasAllRequiredFields: boolean =
-      requiredFieldValues.length > 0
-        ? requiredFieldValues.every((requiredFieldValueItem) => {
-            if (Array.isArray(requiredFieldValueItem)) {
-              return requiredFieldValueItem.length > 0;
-            }
-
-            return requiredFieldValueItem.trim().length > 0;
-          })
-        : true;
-
-    return hasAllRequiredFields ? "completed" : "pending";
+    return !getDateError() && !getPreferredDaysError() && !getTimeSlotsError()
+      ? "completed"
+      : "pending";
   };
+
+  const dateError = getDateError();
+  const preferredDaysError = getPreferredDaysError();
+  const timeSlotsError = getTimeSlotsError();
+  const shouldShowDateError = touchedFields.date && Boolean(dateError);
+  const shouldShowPreferredDaysError = touchedFields.days && Boolean(preferredDaysError);
+  const shouldShowTimeSlotsError = touchedFields.time_slots && Boolean(timeSlotsError);
 
   // Use Effects
   useEffect(() => {
@@ -96,8 +125,11 @@ export default function Availability({
               label="Available From"
               value={value.date}
               onChange={(event) => handleFieldChange("date", event.target.value)}
+              onBlur={() => markFieldAsTouched("date")}
               placeholder="Select date"
               caption="Choose when you'd like your lessons to begin."
+              isError={shouldShowDateError}
+              errorMessage={dateError ?? undefined}
               containerClassName="w-full"
             />
 
@@ -105,20 +137,23 @@ export default function Availability({
             <RadioTab
               label="Preferred Days"
               caption="Select the days you're available."
+              isError={shouldShowPreferredDaysError}
+              errorMessage={preferredDaysError ?? undefined}
               items={PREFERRED_DAYS_ITEMS}
               selected={PREFERRED_DAYS_ITEMS.filter((preferredDayItem) =>
                 value.days.includes(preferredDayItem.value),
               )}
               allowMultiple
-              onChange={(selectedDayItems) =>
+              onChange={(selectedDayItems) => {
+                markFieldAsTouched("days");
                 handleFieldChange(
                   "days",
                   selectedDayItems.map((selectedDayItem) => selectedDayItem.value),
-                )
-              }
+                );
+              }}
               containerClassName="gap-4"
-              itemsContainerClassName="gap-2 md:gap-3 md:flex-nowrap"
-              itemClassName="min-h-0 rounded-[12px] px-6 py-[14px] text-sm font-semibold md:flex-1 md:px-8 md:text-base"
+              itemsContainerClassName="gap-2 md:gap-3"
+              itemClassName="min-h-0 rounded-[12px] px-6 py-[14px] text-sm font-semibold md:flex-none md:px-8 md:text-base"
               activeItemClassName="border-blue-500 bg-blue-500 text-n-50"
               inactiveItemClassName="border-n-400 bg-n-50 text-n-600"
             />
@@ -128,6 +163,8 @@ export default function Availability({
           <RadioTab
             label="Time slots"
             caption=""
+            isError={shouldShowTimeSlotsError}
+            errorMessage={timeSlotsError ?? undefined}
             items={TIME_SLOT_ITEMS.map((timeSlotItem) => ({
               ...timeSlotItem,
               label:
@@ -149,12 +186,13 @@ export default function Availability({
                     : "Evening (2PM-5PM)",
             }))}
             allowMultiple
-            onChange={(selectedTimeSlotItems) =>
+            onChange={(selectedTimeSlotItems) => {
+              markFieldAsTouched("time_slots");
               handleFieldChange(
                 "time_slots",
                 selectedTimeSlotItems.map((selectedTimeSlotItem) => selectedTimeSlotItem.value),
-              )
-            }
+              );
+            }}
             containerClassName="gap-4"
             itemsContainerClassName="gap-2 md:gap-4"
             itemClassName="min-h-0 rounded-[12px] px-5 py-[14px] text-sm font-medium md:flex-none md:text-base"
@@ -175,7 +213,10 @@ export default function Availability({
         </Button>
         <Button
           variant="filled"
-          onClick={() => onNext?.(getStepState())}
+          onClick={() => {
+            revealValidationErrors();
+            onNext?.(getStepState());
+          }}
           className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
         >
           Continue to Parent Info.

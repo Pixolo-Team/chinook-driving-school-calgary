@@ -27,6 +27,11 @@ type SelectCoursePropsData = Readonly<{
   onNext?: (state: StepStateData) => void;
 }>;
 
+type SelectCourseTouchedFieldsData = {
+  session_type: boolean;
+  course: boolean;
+};
+
 /**
  * Renders the Course selection step and validates selections before proceeding.
  */
@@ -46,7 +51,10 @@ export default function SelectCourse({
   const [selectedCourseTypeValue, setSelectedCourseTypeValue] = useState<string>(
     COURSES[0]?.id ?? "",
   );
-  const [isSelectionErrorVisible, setIsSelectionErrorVisible] = useState<boolean>(false);
+  const [touchedFields, setTouchedFields] = useState<SelectCourseTouchedFieldsData>({
+    session_type: false,
+    course: false,
+  });
 
   const activeSessionValue: string = value.session_type ?? "";
   const activeCourseTypeValue: string = selectedCourseTypeValue || (COURSES[0]?.id ?? "");
@@ -85,13 +93,32 @@ export default function SelectCourse({
   );
 
   // Helper Functions
+  const markFieldAsTouched = (fieldKey: keyof SelectCourseTouchedFieldsData): void => {
+    setTouchedFields((currentTouchedFields) => ({
+      ...currentTouchedFields,
+      [fieldKey]: true,
+    }));
+  };
+
+  const revealValidationErrors = (): void => {
+    setTouchedFields({
+      session_type: true,
+      course: true,
+    });
+  };
+
+  const getSessionTypeError = (): string | null =>
+    activeSessionValue ? null : "Please select a session type.";
+
+  const getCourseError = (): string | null =>
+    activeCourseValue ? null : "Please select a course before continuing.";
+
   /**
    * Updates the selected Course Type and clears the selected Course.
    */
   const handleCourseTypeChange = (value: string): void => {
     // Reset the selected Course whenever the Course Type changes
     setSelectedCourseTypeValue(value);
-    setIsSelectionErrorVisible(false);
 
     // Update the Parent State
     onChange("course", {
@@ -106,12 +133,9 @@ export default function SelectCourse({
    * Updates the selected Course value.
    */
   const handleCourseChange = (value: string): void => {
-    // Clear the validation error after a valid Course selection change
     const selectedCourseInfo = selectedCourseCategoryInfo?.courses.find(
       (courseItem) => courseItem.id === value,
     );
-
-    setIsSelectionErrorVisible(false);
 
     // Update the Parent State
     onChange("course", {
@@ -126,9 +150,6 @@ export default function SelectCourse({
    * Updates the selected Session Type value.
    */
   const handleSessionChange = (value: string): void => {
-    // Session Type is optional, but changing it should clear any stale validation message
-    setIsSelectionErrorVisible(false);
-
     // Update the Parent State
     onChange("session_type", value || null);
   };
@@ -137,30 +158,30 @@ export default function SelectCourse({
    * Evaluates the completion state for the Select Course step.
    */
   const getStepState = (): StepStateData => {
-    // Course Type and Course are required to move forward
-    if (!activeCourseTypeValue || !activeCourseValue) {
+    if (!activeCourseTypeValue || getCourseError() || getSessionTypeError()) {
       return "pending";
     }
 
-    // Session Type upgrades the step from pending to completed
-    if (activeSessionValue) {
-      return "completed";
-    }
-
-    return "pending";
+    return "completed";
   };
 
   /**
    * Validates the step before asking the parent to move forward.
    */
   const handleNext = (): void => {
-    if (!activeCourseTypeValue || !activeCourseValue) {
-      setIsSelectionErrorVisible(true);
+    revealValidationErrors();
+
+    if (getStepState() !== "completed") {
       return;
     }
 
     onNext?.(getStepState());
   };
+
+  const sessionTypeError = getSessionTypeError();
+  const courseError = getCourseError();
+  const shouldShowSessionTypeError = touchedFields.session_type && Boolean(sessionTypeError);
+  const shouldShowCourseError = touchedFields.course && Boolean(courseError);
 
   // Use Effects
   useEffect(() => {
@@ -182,9 +203,15 @@ export default function SelectCourse({
           label="Select Session Type:"
           name="session-type"
           value={activeSessionValue}
-          onChange={(event) => handleSessionChange(event.target.value)}
+          onChange={(event) => {
+            markFieldAsTouched("session_type");
+            handleSessionChange(event.target.value);
+          }}
           placeholder="Select Session"
           options={SESSION_TYPE_OPTIONS}
+          helperText=""
+          isError={shouldShowSessionTypeError}
+          errorMessage={sessionTypeError ?? undefined}
           containerClassName="max-w-none gap-[10px]"
           labelClassName="text-n-800 text-base leading-5 font-semibold md:text-lg"
           showTriggerLabel={false}
@@ -208,20 +235,19 @@ export default function SelectCourse({
           <RadioGroup
             label="Enroll me in"
             name="enrollment-course"
+            caption=""
+            isError={shouldShowCourseError}
+            errorMessage={courseError ?? undefined}
             items={availableCourseOptions}
             selectedItem={activeCourseValue}
-            onChange={handleCourseChange}
+            onChange={(value) => {
+              markFieldAsTouched("course");
+              handleCourseChange(value);
+            }}
             containerClassName="grid w-full grid-cols-1 gap-[10px] md:grid-cols-3 md:gap-4"
             itemContainerClassName="min-w-0"
           />
         </div>
-
-        {/* Error Message */}
-        {isSelectionErrorVisible ? (
-          <p className="text-error-500 text-sm leading-6">
-            Select both a course type and a course before continuing.
-          </p>
-        ) : null}
       </div>
 
       {/* Next Button */}

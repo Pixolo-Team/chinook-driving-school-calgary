@@ -15,6 +15,9 @@ type RadioGroupItemData = {
 type RadioGroupPropsData = {
   label?: string;
   required?: boolean;
+  caption?: string;
+  isError?: boolean;
+  errorMessage?: string;
   items: RadioGroupItemData[];
   selectedItem: string;
   onChange?: (value: string) => void;
@@ -33,6 +36,9 @@ function joinClasses(...classes: Array<string | false | null | undefined>): stri
 export default function RadioGroup({
   label,
   required = false,
+  caption,
+  isError = false,
+  errorMessage,
   items,
   selectedItem,
   onChange,
@@ -60,6 +66,7 @@ export default function RadioGroup({
   }
 
   // Use Effects
+  const helperText = isError ? (errorMessage ?? caption) : caption;
 
   return (
     <div className="flex w-full flex-col gap-5">
@@ -89,6 +96,17 @@ export default function RadioGroup({
           />
         ))}
       </div>
+
+      {helperText ? (
+        <p
+          className="text-sm leading-5 font-normal"
+          style={{
+            color: isError ? "var(--color-error-500, #dc2626)" : "var(--color-n-500)",
+          }}
+        >
+          {helperText}
+        </p>
+      ) : null}
     </div>
   );
 }
