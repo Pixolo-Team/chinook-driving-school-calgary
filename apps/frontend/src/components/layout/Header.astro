@@ -1,0 +1,100 @@
+---
+import { Icon } from "astro-icon/components";
+import BrandLogo from "@/components/common/BrandLogo.astro";
+import Button from "@/components/ui/Button.astro";
+import FloatingMenu from "@/components/layout/FloatingMenu.astro";
+import MobileMenu from "@/components/layout/MobileMenu.astro";
+import MenuBar from "@/components/MenuBar.astro";
+import { URLS } from "@/infrastructure/constants/urls";
+
+// DATA //
+import { menuItems } from "@/data/menu";
+---
+
+<!-- Keep the mobile header in the main header component so breakpoint-specific chrome lives in one place. -->
+<header
+  id="mobile-header-shell"
+  class="fixed inset-x-0 top-0 z-40 flex items-center justify-between px-6 py-4 transition-[background-color,border-radius] duration-300 lg:hidden"
+>
+  <a
+    id="mobile-header-logo"
+    href="/"
+    aria-label="Chinook Driving Academy home"
+    class="shrink-0"
+  >
+    <BrandLogo
+      containerClass="relative h-14 w-36"
+      markClass="absolute top-0 left-0 h-full w-12 object-contain"
+      textClass="absolute top-1/2 left-11 h-8 w-28 -translate-y-1/2 object-contain"
+      textAlt="Chinook Driving Academy"
+    />
+  </a>
+
+  <button
+    id="mobile-menu-open-button"
+    type="button"
+    class="animate-bouncy-hover border-n-100 inline-flex size-10 items-center justify-center rounded-full border bg-transparent"
+    aria-controls="mobile-menu-panel"
+    aria-expanded="false"
+    aria-label="Open mobile menu"
+  >
+    <Icon id="mobile-menu-open-icon" name="menu-open" class="text-n-100 size-6" />
+  </button>
+</header>
+
+<MobileMenu />
+
+<!-- Menu component -->
+<header
+  class="relative hidden w-full lg:block"
+>
+  <div class="container mx-auto flex w-full items-center justify-between px-4 py-3 lg:px-5 lg:py-4">
+    
+    <!-- Brand Header Logo -->
+    <a href="/" aria-label="Chinook Driving Academy home" class="shrink-0">
+      <BrandLogo
+        containerClass="relative h-14 w-36"
+        markClass="absolute top-0 left-0 h-full w-12 object-contain"
+        textClass="absolute top-1/2 left-11 h-8 w-28 -translate-y-1/2 object-contain"
+        textAlt="Chinook Driving Academy"
+      />
+    </a>
+
+    <div class="flex items-center gap-8 lg:gap-11">
+      <!-- Menu links -->
+      <MenuBar items={menuItems} />
+
+      <!-- Menu CTAs -->
+      <div class="flex items-center gap-2 lg:gap-2.5">
+        <!-- Enroll Now Button -->
+        <Button buttonText="Enroll Now" className="w-26.75" href={URLS.ENROLL} />
+
+        <!-- Contact Us Button -->
+        <Button
+          buttonText="Call Us"
+          rightIcon="phone-icon"
+          variant="outline"
+          className="border-n-50 text-n-50 hover:bg-n-50/10"
+          href={URLS.CONTACT}
+        />
+      </div>
+    </div>
+  </div>
+</header>
+
+<FloatingMenu />
+
+<script>
+  import { initializeFloatingMenu, initializeMobileHeader } from "@/scripts/menu";
+
+  // Keep the mobile header readable over changing sections while preserving its fixed layout.
+  initializeMobileHeader({
+    scrollThreshold: 24,
+  });
+
+  // Delay the floating header until the hero has started to clear the viewport.
+  initializeFloatingMenu({
+    menuId: "floating-menu",
+    scrollThreshold: 180,
+  });
+</script>

@@ -1,0 +1,114 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface ButtonProps {
+  value?: string;
+  buttonText?: string;
+  leftIcon?: string;
+  rightIcon?: string;
+  id?: string;
+  onClick?: string;
+  type?: "button" | "submit" | "reset";
+  variant?: "primary" | "outline" | "default";
+  theme?: "light" | "brand";
+  href?: string;
+  target?: "_self" | "_blank" | "_parent" | "_top";
+  rel?: string;
+  openInNewTab?: boolean;
+  className?: string;
+}
+
+const {
+  value,
+  buttonText,
+  leftIcon = "",
+  rightIcon = "",
+  id,
+  onClick = "",
+  type = "button",
+  variant,
+  theme,
+  href,
+  target,
+  rel,
+  openInNewTab = false,
+  className = "",
+} = Astro.props as ButtonProps;
+
+const label = buttonText ?? value ?? "";
+const hasDefaultSlot = Astro.slots.has("default");
+const isCourseButton = typeof theme !== "undefined";
+const resolvedTarget = target ?? (openInNewTab ? "_blank" : undefined);
+
+const anchorRel =
+  resolvedTarget === "_blank"
+    ? Array.from(
+        new Set(["noopener", "noreferrer", ...(rel?.split(/\s+/).filter(Boolean) ?? [])]),
+      ).join(" ")
+    : rel;
+
+const variantClassNames = {
+  primary:
+    "bg-blue-500 text-n-50 hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-200",
+  outline:
+    "border-2 border-blue-500 bg-transparent text-blue-500 hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-200",
+  default:
+    "bg-blue-500 text-n-50 hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-200",
+} as const;
+
+const menuButtonClasses = [
+  "cursor-pointer animate-bouncy-hover flex h-9 items-center justify-center gap-1.5 rounded-3xl px-3.5 text-sm font-semibold leading-[1.69] whitespace-nowrap focus:outline-none lg:h-10",
+  variantClassNames[variant ?? "primary"],
+  className,
+];
+
+const courseButtonClasses = [
+  "cursor-pointer animate-bouncy-hover mt-8 block w-full rounded-full border py-3 text-center text-sm font-bold lg:text-base",
+  theme === "brand" ? "border-n-50 bg-n-50 text-blue-500" : "border-blue-500 bg-n-50 text-blue-500",
+  className,
+];
+---
+
+{
+  href ? (
+    <a
+      href={href}
+      id={id}
+      target={resolvedTarget}
+      rel={anchorRel}
+      onclick={onClick || undefined}
+      class:list={isCourseButton ? courseButtonClasses : menuButtonClasses}
+    >
+      {hasDefaultSlot ? (
+        <slot />
+      ) : isCourseButton ? (
+        label
+      ) : (
+        <div class="flex items-center gap-2">
+          {leftIcon && <Icon name={leftIcon} class="size-4" />}
+          <span>{label}</span>
+          {rightIcon && <Icon name={rightIcon} class="size-4" />}
+        </div>
+      )}
+    </a>
+  ) : (
+    <button
+      id={id}
+      type={type}
+      onclick={onClick || undefined}
+      class:list={isCourseButton ? courseButtonClasses : menuButtonClasses}
+    >
+      {hasDefaultSlot ? (
+        <slot />
+      ) : isCourseButton ? (
+        label
+      ) : (
+        <div class="flex items-center gap-2">
+          {leftIcon && <Icon name={leftIcon} class="size-4" />}
+          <span>{label}</span>
+          {rightIcon && <Icon name={rightIcon} class="size-4.5" />}
+        </div>
+      )}
+    </button>
+  )
+}

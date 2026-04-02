@@ -1,0 +1,102 @@
+---
+import { Image } from "astro:assets";
+import BrandLogo from "@/components/common/BrandLogo.astro";
+
+// DATA //
+import { footerSectionData } from "@/data/footer-section-data";
+---
+
+<section class="bg-n-50">
+  <div
+    class="container mx-auto w-full max-w-screen-2xl px-4 py-9 sm:px-6 sm:py-10 md:px-7 lg:px-8 lg:py-12 xl:px-10"
+  >
+    <!-- Chinook Logo & Links  -->
+    <div
+      class="relative flex flex-col gap-9 md:gap-10 lg:flex-row lg:items-start lg:justify-between"
+    >
+      <div class="flex w-full flex-col gap-3.5 lg:w-64 lg:gap-9">
+        <!-- Chinook Logo -->
+        <BrandLogo
+          containerClass="relative h-14 w-36 lg:h-20 lg:w-52"
+          markClass="absolute top-0 left-0 h-full w-12 object-contain lg:w-16"
+          textClass="absolute top-1/2 left-11 h-8 w-28 -translate-y-1/2 object-contain lg:left-16 lg:h-10 lg:w-36"
+        />
+
+        <!-- Certified by Alberta Transportation -->
+        <p class="text-n-600 text-xs lg:text-sm">
+          {footerSectionData.certification.prefix}
+          <span class="font-semibold">{footerSectionData.certification.emphasis}</span>
+        </p>
+      </div>
+
+      <!-- Nav Links -->
+      <div class="flex flex-col gap-6 lg:items-center lg:self-center">
+        <div class="text-n-600 flex flex-col gap-2.5 text-sm md:text-base lg:flex-row lg:gap-10">
+          {
+            footerSectionData.navLinks.map((link) => (
+              <a href={link.href} class="leading-6 hover:underline hover:underline-offset-4">
+                {link.label}
+              </a>
+            ))
+          }
+        </div>
+
+        <div class="flex items-center gap-3">
+          {
+            footerSectionData.socialLinks.map((link) => (
+              <a
+                href={link.href}
+                aria-label={link.label}
+                target="_blank"
+                rel="noreferrer"
+                class="block size-11"
+              >
+                <Image
+                  src={link.icon}
+                  alt=""
+                  width={44}
+                  height={44}
+                  class="size-full"
+                  loading="lazy"
+                  aria-hidden="true"
+                />
+              </a>
+            ))
+          }
+        </div>
+      </div>
+
+      <!-- Privacy Policy & T&C Links -->
+      <div class="text-n-600 flex flex-col gap-3 text-sm md:text-base lg:items-end lg:self-center">
+        {
+          footerSectionData.legalLinks.map((link) => (
+            <a href={link.href} class="leading-4 hover:underline hover:underline-offset-4">
+              {link.label}
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Copyright & Crafter by Pixolo -->
+    <div class="border-n-200 mt-9 border-t pt-5 lg:mt-12">
+      <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <p class="text-n-400 text-sm">{footerSectionData.copyright}</p>
+
+        <div class="flex flex-col gap-1 lg:items-center">
+          <p class="text-n-700 text-sm">{footerSectionData.craftedBy.label}</p>
+          <div class="h-9 w-32">
+            <Image
+              src={footerSectionData.craftedBy.logo}
+              alt={footerSectionData.craftedBy.alt}
+              width={144}
+              height={41}
+              class="size-full object-contain"
+              loading="lazy"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

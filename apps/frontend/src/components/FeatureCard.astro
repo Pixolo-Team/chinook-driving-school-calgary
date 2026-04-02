@@ -1,0 +1,36 @@
+---
+import { Image } from "astro:assets";
+
+const { cardItem } = Astro.props;
+---
+
+<div
+  class="border-n-100 relative h-96 w-78 overflow-hidden rounded-4xl border-2 bg-transparent transition-transform duration-300 ease-out hover:scale-105"
+>
+  <!-- Background Circle -->
+  <div class="absolute -top-1/2 -left-1/2 size-87.5 rounded-full bg-blue-100 opacity-30"></div>
+
+  <!-- Card Content -->
+  <div class="relative z-10 flex h-full flex-col gap-6">
+    <!-- Illustration -->
+    <div class="px-6 pt-6">
+      <Image
+        alt={cardItem.imageAlt}
+        class="object-contain"
+        height={150}
+        src={cardItem.imageSrc}
+        width={150}
+      />
+    </div>
+
+    <!-- Text Content -->
+    <div class="flex flex-1 flex-col gap-3.5 px-6 pb-11">
+      <p class="text-n-800 text-2xl leading-[1.2] font-bold">
+        {cardItem.title}
+      </p>
+      <p class="text-n-500 text-sm font-medium">
+        {cardItem.description}
+      </p>
+    </div>
+  </div>
+</div>
