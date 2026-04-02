@@ -5,17 +5,15 @@ import { contactSectionData } from "@/data/contact-section-data";
 // COMPONENTS //
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
-import Button from "@/components/ui/Button.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 
 const { cards } = contactSectionData;
 ---
 
-<section class="bg-n-50">
+<section class="bg-n-100">
   <div
     class="container mx-auto flex w-full max-w-screen-2xl flex-col items-center gap-10 px-5 py-16 sm:px-6 md:py-20 lg:gap-11 lg:px-10 lg:py-28"
   >
-
     <!-- Section Header -->
     <div class="max-w-3xl">
       <SectionHeader
@@ -28,146 +26,183 @@ const { cards } = contactSectionData;
     <!-- Contact Cards -->
     <div class="flex w-full flex-col gap-5 lg:gap-6">
       <div class="grid w-full gap-5 lg:grid-cols-2 lg:gap-6">
-
         <!-- Get In Touch Card -->
-        <div class="relative isolate overflow-hidden rounded-4xl border border-n-200 bg-n-50 p-4 sm:p-5 md:h-[200px] lg:h-[220px] lg:p-6">
-
+        <div
+          class="border-n-200 bg-n-50 relative isolate overflow-hidden rounded-4xl border p-4 sm:p-5 md:h-[200px] lg:h-[220px] lg:p-6"
+        >
           <!-- Background Circle -->
-          <div class="absolute -left-[84.5px] -top-[84.5px] -z-10 size-[169px] rounded-full bg-blue-100 opacity-30 md:-left-[138.5px] md:-top-[138.5px] md:size-[277px]"></div>
+          <div
+            class="absolute -top-[84.5px] -left-[84.5px] -z-10 size-[169px] rounded-full bg-blue-100 opacity-30 md:-top-[138.5px] md:-left-[138.5px] md:size-[277px]"
+          >
+          </div>
 
           <!-- Image Container -->
-          <div class="absolute inset-y-0 left-4 -bottom-10 hidden md:block md:w-[118px] lg:left-6 lg:w-[128px]">
+          <div
+            class="absolute inset-y-0 -bottom-10 left-4 hidden md:block md:w-[118px] lg:left-6 lg:w-[128px]"
+          >
             <Image
               src={cards.getInTouch.image}
               alt="Instructor ready to help"
               width={126}
               height={193}
-              class="absolute top-0 left-1/2 h-full w-auto max-w-none -translate-x-1/2 origin-top scale-[1.22]"
+              class="absolute top-0 left-1/2 h-full w-auto max-w-none origin-top -translate-x-1/2 scale-[1.22]"
             />
           </div>
 
           <!-- Get In Touch Content -->
-          <div class="relative z-10 flex flex-col gap-4 sm:gap-5 md:h-full md:pl-[150px] lg:pl-[170px]">
+          <div
+            class="relative z-10 flex flex-col gap-4 sm:gap-5 md:h-full md:pl-[150px] lg:pl-[170px]"
+          >
             <div class="flex w-fit flex-col gap-3">
-              <p class="text-lg font-bold text-n-800 sm:text-xl">
+              <p class="text-n-800 text-lg font-bold sm:text-xl">
                 {cards.getInTouch.title}
               </p>
               <span class="h-1 w-full bg-blue-500"></span>
             </div>
             <div class="flex flex-col gap-3">
-              {cards.getInTouch.details.map((detail) => (
-                <div class="flex items-center gap-4">
-                  <div class="flex size-8 items-center justify-center rounded-full bg-n-100 sm:size-9">
-                    <Icon name={detail.icon} class="size-4 text-n-800" aria-hidden="true" />
+              {
+                cards.getInTouch.details.map((detail) => (
+                  <div class="flex items-center gap-4">
+                    <div class="bg-n-100 flex size-8 items-center justify-center rounded-full sm:size-9">
+                      <Icon name={detail.icon} class="text-n-800 size-4" aria-hidden="true" />
+                    </div>
+                    <a
+                      href={detail.href}
+                      class="text-n-800 text-sm font-medium transition-colors hover:text-blue-500 sm:text-base"
+                    >
+                      {detail.value}
+                    </a>
                   </div>
-                  <p class="text-sm font-medium text-n-800 sm:text-base">{detail.value}</p>
-                </div>
-              ))}
+                ))
+              }
             </div>
           </div>
         </div>
 
         <!-- Opening Hours Card -->
-        <div class="relative isolate overflow-hidden rounded-4xl border border-n-200 bg-n-50 p-4 sm:p-5 md:h-[200px] lg:h-[220px] lg:p-6">
-
+        <div
+          class="border-n-200 bg-n-50 relative isolate overflow-hidden rounded-4xl border p-4 sm:p-5 md:h-[200px] lg:h-[220px] lg:p-6"
+        >
           <!-- Background Circle -->
-          <div class="absolute -left-[84.5px] -top-[84.5px] -z-10 size-[169px] rounded-full bg-blue-100 opacity-30 md:-left-[138.5px] md:-top-[138.5px] md:size-[277px]"></div>
+          <div
+            class="absolute -top-[84.5px] -left-[84.5px] -z-10 size-[169px] rounded-full bg-blue-100 opacity-30 md:-top-[138.5px] md:-left-[138.5px] md:size-[277px]"
+          >
+          </div>
 
           <!-- Image Container -->
-          <div class="absolute inset-y-0 left-4 -bottom-10 hidden md:block md:w-[118px] lg:left-6 lg:w-[128px]">
+          <div
+            class="absolute inset-y-0 -bottom-10 left-4 hidden md:block md:w-[118px] lg:left-6 lg:w-[128px]"
+          >
             <Image
               src={cards.openingHours.image}
               alt="Instructor checking schedule"
               width={126}
               height={193}
-              class="absolute top-0 left-1/2 h-full w-auto max-w-none -translate-x-1/2 origin-top scale-[1.16]"
+              class="absolute top-0 left-1/2 h-full w-auto max-w-none origin-top -translate-x-1/2 scale-[1.16]"
             />
           </div>
 
           <!-- Opening Hours Content -->
-          <div class="relative z-10 flex flex-col gap-4 sm:gap-5 md:h-full md:pl-[148px] lg:pl-[168px]">
+          <div
+            class="relative z-10 flex flex-col gap-4 sm:gap-5 md:h-full md:pl-[148px] lg:pl-[168px]"
+          >
             <div class="flex w-fit flex-col gap-3">
-              <p class="text-lg font-bold text-n-800 sm:text-xl">
+              <p class="text-n-800 text-lg font-bold sm:text-xl">
                 {cards.openingHours.title}
               </p>
               <span class="h-1 w-full bg-blue-500"></span>
             </div>
             <div class="flex flex-col gap-3">
-              {cards.openingHours.details.map((detail) => (
-                <div class="flex items-center gap-4">
-                  <div class="flex size-8 items-center justify-center rounded-full bg-n-100 sm:size-9">
-                    <Icon name={detail.icon} class="size-4 text-n-800" aria-hidden="true" />
+              {
+                cards.openingHours.details.map((detail) => (
+                  <div class="flex items-center gap-4">
+                    <div class="bg-n-100 flex size-8 items-center justify-center rounded-full sm:size-9">
+                      <Icon name={detail.icon} class="text-n-800 size-4" aria-hidden="true" />
+                    </div>
+                    <p class="text-n-800 text-sm sm:text-base">
+                      <span class="font-semibold">{detail.label}</span> {detail.value}
+                    </p>
                   </div>
-                  <p class="text-sm text-n-800 sm:text-base">
-                    <span class="font-semibold">{detail.label}</span> {detail.value}
-                  </p>
-                </div>
-              ))}
+                ))
+              }
             </div>
           </div>
         </div>
       </div>
 
       <!-- Office Details Card -->
-      <div class="relative isolate flex flex-col gap-6 overflow-hidden rounded-4xl border border-n-200 bg-n-50 p-5 sm:p-7 lg:p-10">
-
+      <div
+        class="border-n-200 bg-n-50 relative isolate flex flex-col gap-6 overflow-hidden rounded-4xl border p-5 sm:p-7 lg:p-10"
+      >
         <!-- Background Circle -->
-        <div class="absolute -left-[84.5px] -top-[84.5px] -z-10 size-[169px] rounded-full bg-blue-100 opacity-30 md:-left-[210px] md:-top-[210px] md:size-[420px]"></div>
+        <div
+          class="absolute -top-[84.5px] -left-[84.5px] -z-10 size-[169px] rounded-full bg-blue-100 opacity-30 md:-top-[210px] md:-left-[210px] md:size-[420px]"
+        >
+        </div>
 
         <!-- Image Container -->
-        <div class="pointer-events-none absolute inset-y-0 left-0 hidden -bottom-15 md:block md:w-[230px] lg:-bottom-32 lg:w-[255px]">
+        <div
+          class="pointer-events-none absolute inset-y-0 -bottom-15 left-0 hidden md:block md:w-[230px] lg:-bottom-32 lg:w-[255px]"
+        >
           <Image
             src={cards.officeDetails.image}
             alt="Student ready for a lesson"
             width={181}
             height={281}
-            class="absolute top-0 left-1/2 h-full w-auto max-w-none -translate-x-1/2 origin-top scale-[1.12]"
+            class="absolute top-0 left-1/2 h-full w-auto max-w-none origin-top -translate-x-1/2 scale-[1.12]"
           />
         </div>
 
         <!-- Office Details Content -->
-        <div class="relative z-10 flex flex-1 flex-col gap-4 sm:gap-5 md:min-h-[370px] md:pl-[290px] lg:min-h-[395px] lg:pl-[330px]">
+        <div
+          class="relative z-10 flex flex-1 flex-col gap-4 sm:gap-5 md:min-h-[370px] md:pl-[290px] lg:min-h-[395px] lg:pl-[330px]"
+        >
           <div class="flex w-fit flex-col gap-3">
-            <p class="text-lg font-bold text-n-800 sm:text-xl">
+            <p class="text-n-800 text-lg font-bold sm:text-xl">
               {cards.officeDetails.title}
             </p>
             <span class="h-1 w-full bg-blue-500"></span>
           </div>
           <div class="flex flex-col gap-4 sm:gap-5">
-            {cards.officeDetails.locations.map((location, index) => (
-              <div class="flex flex-col gap-4">
-                <div class="flex items-start gap-4">
-                  <div class="flex size-9 items-center justify-center rounded-full bg-n-100">
-                    <Icon name={location.icon} class="size-4 text-n-800" aria-hidden="true" />
-                  </div>
-                  <div class="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-                    <div class="flex flex-col gap-1 text-sm text-n-900 sm:text-base">
-                      <p class="font-semibold">{location.name}</p>
-                      <p class="text-n-950">{location.address}</p>
+            {
+              cards.officeDetails.locations.map((location, index) => (
+                <div class="flex flex-col gap-4">
+                  <div class="flex items-start gap-4">
+                    <div class="bg-n-100 flex size-9 items-center justify-center rounded-full">
+                      <Icon name={location.icon} class="text-n-800 size-4" aria-hidden="true" />
                     </div>
-                    <Button
-                      buttonText={location.actionLabel}
-                      rightIcon="diagonal-line-arrow-upper-right"
-                      variant="primary"
-                      className="h-auto w-fit rounded-full px-4 py-1.5 text-sm font-semibold"
-                    />
+                    <div class="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
+                      <div class="text-n-900 flex flex-col gap-1 text-sm sm:text-base">
+                        <p class="font-semibold">{location.name}</p>
+                        <p class="text-n-950">{location.address}</p>
+                      </div>
+                      <a
+                        href={location.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-n-50 inline-flex h-auto w-fit items-center gap-2 rounded-full bg-blue-500 px-4 py-1.5 text-sm font-semibold transition-all duration-200 hover:scale-[1.04] hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-200"
+                      >
+                        <span>{location.actionLabel}</span>
+                        <Icon name="diagonal-line-arrow-upper-right" class="size-4" />
+                      </a>
+                    </div>
                   </div>
+                  {index < cards.officeDetails.locations.length - 1 && (
+                    <div class="bg-n-200 h-px w-full" />
+                  )}
                 </div>
-                {index < cards.officeDetails.locations.length - 1 && (
-                  <div class="h-px w-full bg-n-200"></div>
-                )}
-              </div>
-            ))}
-            <div class="h-px w-full bg-n-200"></div>
+              ))
+            }
+            <div class="bg-n-200 h-px w-full"></div>
             <div class="flex items-start gap-4">
-              <div class="flex size-9 items-center justify-center rounded-full bg-n-100">
+              <div class="bg-n-100 flex size-9 items-center justify-center rounded-full">
                 <Icon
                   name={cards.officeDetails.serviceArea.icon}
-                  class="size-4 text-n-800"
+                  class="text-n-800 size-4"
                   aria-hidden="true"
                 />
               </div>
-              <div class="flex flex-col gap-1 text-sm text-n-900 sm:text-base">
+              <div class="text-n-900 flex flex-col gap-1 text-sm sm:text-base">
                 <p class="font-semibold">{cards.officeDetails.serviceArea.label}</p>
                 <p class="text-n-950">{cards.officeDetails.serviceArea.value}</p>
               </div>

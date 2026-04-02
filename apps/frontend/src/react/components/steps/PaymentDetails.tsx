@@ -14,6 +14,7 @@ import Input from "../ui/Input";
 
 // CONSTANTS //
 import { PAYMENT_METHOD_ITEMS } from "@/react/constants/form-items";
+import { URLS } from "@/infrastructure/constants/urls";
 
 // COMPONENT PROPS //
 type PaymentDetailsPropsData = Readonly<{
@@ -166,7 +167,7 @@ export default function PaymentDetails({
           <span className="text-sm leading-6" style={{ color: "var(--color-n-700)" }}>
             I have read and agree to the{" "}
             <a
-              href="#"
+              href={URLS.TERMS_OF_SERVICE}
               className="font-semibold underline underline-offset-2"
               style={{ color: "var(--color-blue-500)" }}
             >
