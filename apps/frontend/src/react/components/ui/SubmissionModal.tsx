@@ -118,7 +118,7 @@ export default function SubmissionModal({
           <>
             <div className="flex w-full flex-col items-center gap-2 text-center">
               <h3 className="text-n-900 text-4xl leading-normal font-bold">{title}</h3>
-              <p className="text-n-700 text-2xl leading-7">
+              <p className="text-n-800 text-2xl leading-7">
                 <span className="font-bold">
                   {completedCount} of {DEFAULT_STEPS.length}
                 </span>{" "}
@@ -126,8 +126,9 @@ export default function SubmissionModal({
                 <span className="px-4" aria-hidden="true">
                   |
                 </span>{" "}
-                <span className="text-red-600 font-bold">
-                  {pendingCount + untouchedCount} 
+                <span className="text-red-600">
+                  <span className="font-bold">{pendingCount + untouchedCount}</span> 
+                  {" "} 
                   Incomplete
                 </span>
               </p>
