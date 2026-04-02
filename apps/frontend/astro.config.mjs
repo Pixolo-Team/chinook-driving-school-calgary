@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from "astro/config";
+import { defineConfig } from 'astro/config';
 import react from "@astrojs/react";
 import icon from "astro-icon";
 import { fileURLToPath } from "node:url";
@@ -17,6 +17,9 @@ export default defineConfig({
   ],
   vite: {
     plugins: [tailwindcss()],
+    optimizeDeps: {
+      include: ["axios"],
+    },
     resolve: {
       alias: {
         "@": srcDir,
