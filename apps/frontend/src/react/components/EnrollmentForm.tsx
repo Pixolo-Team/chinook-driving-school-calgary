@@ -19,7 +19,6 @@ import Availability from "@/react/components/steps/Availability";
 import LicenseInformation from "@/react/components/steps/LicenseInformation";
 import ParentInformation from "@/react/components/steps/ParentInformation";
 import PaymentDetails from "@/react/components/steps/PaymentDetails";
-import ReviewResponse from "@/react/components/steps/ReviewResponse";
 import SelectCourse from "@/react/components/steps/SelectCourse";
 import SubmissionModal from "@/react/components/ui/SubmissionModal";
 import UserInfo from "@/react/components/steps/UserInfo";
@@ -30,7 +29,6 @@ import { submitEnrollmentRequest } from "@/react/services/api/enrollment.api.ser
 
 // CONSTANTS //
 import { TOTAL_ENROLLMENT_STEPS } from "@/react/constants/form-items";
-import { REVIEW_STEPS } from "@/react/constants/steps";
 
 // UTILS //
 import { transformEnrollmentPayload } from "@/react/utils/api.util";
@@ -53,7 +51,6 @@ type EnrollmentFormPropsData = Readonly<{
 }>;
 
 const ENROLLMENT_FORM_STORAGE_KEY = "chinook-enrollment-form";
-const REVIEW_ENROLLMENT_STEP = TOTAL_ENROLLMENT_STEPS + 1;
 
 /**
  * Coordinates the multi-step enrollment flow and stores the shared form state.
@@ -134,8 +131,6 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
   });
 
   // Helper Functions
-  const activeRenderableStep: number = Math.min(currentStep, TOTAL_ENROLLMENT_STEPS);
-
   /**
    * Registers a validator function for a step.
    */
@@ -283,49 +278,58 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
    * Stores the state returned by the current step and advances to the next step.
    */
   const goToNextStep = (stepState?: StepStateData): void => {
-    const currentStepState: StepStateData = stepState ?? findStepState(activeRenderableStep);
+    const currentStepState: StepStateData = stepState ?? findStepState(currentStep);
 
     // Set the State of the current Step (as told by the Step Section)
     setStepStates((currentStates) => ({
       ...currentStates,
-      [activeRenderableStep]: currentStepState,
+      [currentStep]: currentStepState,
     }));
 
-    if (currentStep === TOTAL_ENROLLMENT_STEPS) {
-      setCurrentStep(REVIEW_ENROLLMENT_STEP);
-      return;
-    }
-
     // Go to Next Step
-    setCurrentStep((step) => Math.min(step + 1, REVIEW_ENROLLMENT_STEP));
+    setCurrentStep((step) => Math.min(step + 1, TOTAL_ENROLLMENT_STEPS));
   };
 
   /**
    * Stores the state returned by the current step and moves back one step.
    */
   const goToPreviousStep = (stepState?: StepStateData): void => {
-    const currentStepState: StepStateData = stepState ?? findStepState(activeRenderableStep);
+    const currentStepState: StepStateData = stepState ?? findStepState(currentStep);
 
     // Set the State of the current Step (as told by the Step Section)
     setStepStates((currentStates) => ({
       ...currentStates,
-      [activeRenderableStep]: currentStepState,
+      [currentStep]: currentStepState,
     }));
     // Go to Previous Step
     setCurrentStep((step) => Math.max(step - 1, 1));
   };
 
   /**
-   * Validates the current step before changing steps from the stepper.
+   * Stores the payment step state and submits the enrollment directly.
    */
-  const handleStepChange = (stepId: number): void => {
-    const currentStepState: StepStateData = findStepState(activeRenderableStep);
+  const handlePaymentSubmission = (stepState?: StepStateData): void => {
+    const currentStepState: StepStateData = stepState ?? findStepState(currentStep);
 
     setStepStates((currentStates) => ({
       ...currentStates,
-      [activeRenderableStep]: currentStepState,
+      [currentStep]: currentStepState,
     }));
-    setCurrentStep(stepId);
+
+    void handleEnrollmentCompletion();
+  };
+
+  /**
+   * Validates the current step before changing steps from the stepper.
+   */
+  const handleStepChange = (stepId: number): void => {
+    const currentStepState: StepStateData = findStepState(currentStep);
+
+    setStepStates((currentStates) => ({
+      ...currentStates,
+      [currentStep]: currentStepState,
+    }));
+    setCurrentStep(Math.min(stepId, TOTAL_ENROLLMENT_STEPS));
   };
 
   /**
@@ -409,16 +413,8 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
               )
             }
             registerValidator={registerValidator}
-            onNext={goToNextStep}
+            onNext={handlePaymentSubmission}
             onPrevious={goToPreviousStep}
-          />
-        );
-      case REVIEW_ENROLLMENT_STEP:
-        return (
-          <ReviewResponse
-            value={enrollmentFormValue}
-            onEditStep={handleStepChange}
-            onSubmit={() => void handleEnrollmentCompletion()}
           />
         );
       case 1:
@@ -452,7 +448,9 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
         storedEnrollmentFormValue,
       ) as EnrollmentFormStorageData;
 
-      setCurrentStep(parsedEnrollmentFormValue.currentStep ?? 1);
+      setCurrentStep(
+        Math.min(parsedEnrollmentFormValue.currentStep ?? 1, TOTAL_ENROLLMENT_STEPS),
+      );
       setStepStates(parsedEnrollmentFormValue.stepStates ?? stepStates);
       setEnrollmentFormValue(parsedEnrollmentFormValue.enrollmentFormValue ?? enrollmentFormValue);
     } catch {
@@ -482,12 +480,7 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
   return (
     <section className="container mx-auto flex min-h-screen w-full flex-col gap-5 px-4 py-9 sm:px-6 md:gap-8 md:px-7 lg:px-8 lg:py-12 xl:px-10">
       {/* Steps Component */}
-      <Steps
-        currentStep={currentStep}
-        stepStates={stepStates}
-        steps={currentStep === REVIEW_ENROLLMENT_STEP ? REVIEW_STEPS : undefined}
-        onStepChange={handleStepChange}
-      />
+      <Steps currentStep={currentStep} stepStates={stepStates} onStepChange={handleStepChange} />
 
       {/* Step Section (Renders based on Step) */}
       {renderCurrentStep()}
