@@ -1,0 +1,96 @@
+---
+import { Icon } from "astro-icon/components";
+import BrandLogo from "@/components/common/BrandLogo.astro";
+import Button from "@/components/ui/Button.astro";
+
+// DATA //
+import { menuItems } from "@/data/menu";
+
+const navigationItems = menuItems.filter((menuItem) => menuItem.url !== "/enroll");
+---
+
+<!-- Keep the opened panel isolated here so the header owns the trigger while this component owns the overlay content. -->
+<div
+  id="mobile-menu-panel"
+  class="fixed inset-0 z-50 hidden lg:hidden"
+  aria-hidden="true"
+>
+  <!-- Soft backdrop behind the menu -->
+  <div id="mobile-menu-backdrop" class="absolute inset-0 bg-n-900/16 opacity-0"></div>
+
+  <!-- Full-height menu surface that drops in from the top. -->
+  <div
+    id="mobile-menu-drawer"
+    class="bg-n-50 relative flex min-h-dvh w-full flex-col overflow-y-auto shadow-2xl"
+  >
+    <!-- Top row: brand logo and close action. -->
+    <div data-mobile-menu-section class="flex items-center justify-between px-6 py-4">
+      <a href="/" aria-label="Chinook Driving Academy home" class="shrink-0">
+        <BrandLogo
+          containerClass="relative h-14 w-36"
+          markClass="absolute top-0 left-0 h-full w-12 object-contain"
+          textClass="absolute top-1/2 left-11 h-8 w-28 -translate-y-1/2 object-contain"
+          textAlt="Chinook Driving Academy"
+        />
+      </a>
+
+      <button
+        id="mobile-menu-close-button"
+        type="button"
+        class="border-n-300 bg-n-100 text-n-600 inline-flex size-10 items-center justify-center rounded-full border"
+        aria-label="Close mobile menu"
+      >
+        <Icon name="menu-close" class="size-3" />
+      </button>
+    </div>
+
+    <div class="flex flex-1 flex-col justify-between px-8 py-8">
+
+      <!-- Links -->
+      <nav aria-label="Mobile navigation" class="flex flex-col">
+        {
+          navigationItems.map((menuItem, menuItemIndex) => (
+            <a
+              href={menuItem.url}
+              data-mobile-menu-section
+              data-mobile-menu-link
+              class:list={[
+                "text-n-800 flex items-center justify-between py-6 text-2xl leading-none",
+                menuItemIndex < navigationItems.length - 1 && "border-n-200 border-b",
+              ]}
+            >
+              <span>{menuItem.name}</span>
+              <Icon name="arrow-right" class="size-5 shrink-0" />
+            </a>
+          ))
+        }
+      </nav>
+
+      <!-- CTA Enroll & Call Now Buttons-->
+      <div data-mobile-menu-section class="flex flex-col gap-3 pt-8">
+
+        <!-- Enroll Now Button -->
+        <Button href="/enroll" className="h-14 rounded-full px-6">
+          <span class="text-lg leading-none font-bold">Enroll Now</span>
+        </Button>
+
+        <!-- Call Us Button -->
+        <Button
+          variant="outline"
+          href="/contact"
+          className="bg-n-100 border-n-300 text-n-700 h-14 rounded-full px-6"
+        >
+          <span class="flex items-center gap-2">
+            <Icon name="phone-icon" class="size-4.5" />
+            <span class="text-lg leading-none font-semibold">Call Us</span>
+          </span>
+        </Button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+import { initializeMobileMenu } from "@/scripts/menu";
+  initializeMobileMenu();
+</script>

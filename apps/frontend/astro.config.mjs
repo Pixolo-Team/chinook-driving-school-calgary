@@ -2,17 +2,17 @@
 import { defineConfig } from 'astro/config';
 import react from "@astrojs/react";
 import icon from "astro-icon";
-import tailwindcss from '@tailwindcss/vite';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath } from "node:url";
+import tailwindcss from "@tailwindcss/vite";
 
-const srcDir = fileURLToPath(new URL('./src', import.meta.url));
+const srcDir = fileURLToPath(new URL("./src", import.meta.url));
 
 // https://astro.build/config
 export default defineConfig({
   integrations: [
     react(),
     icon({
-      iconDir: "src/assets",
+      iconDir: "public/icons",
     }),
   ],
   vite: {
@@ -22,8 +22,8 @@ export default defineConfig({
     },
     resolve: {
       alias: {
-        '@': srcDir,
+        "@": srcDir,
       },
     },
-  }
+  },
 });

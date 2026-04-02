@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 // REACT //
 import React, { useEffect, useRef, useState } from "react";
 
@@ -486,3 +487,5 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
     </section>
   );
 }
+=======
+>>>>>>> development

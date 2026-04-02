@@ -1,7 +1,12 @@
+
 ---
 // STYLES //
 import "@/styles/animation.css";
 import "@/styles/global.css";
+
+// COMPONENTS //
+import Header from "@/components/layout/Header.astro";
+import Footer from "@/components/layout/Footer.astro";
 
 interface Props {
   title?: string;
@@ -17,6 +22,7 @@ const {
 <html lang="en">
   <head>
     <meta charset="utf-8" />
+
     <link rel="icon" href="/favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
@@ -29,9 +35,18 @@ const {
       rel="stylesheet"
     />
   </head>
-  <body>
+  <body class="relative">
+    <!-- Header -->
+    <div class="absolute inset-x-0 top-0 z-30">
+      <Header />
+    </div>
+
+    <!-- Main -->
     <main class="relative">
       <slot />
     </main>
+
+    <!-- Footer -->
+    <Footer />
   </body>
 </html>

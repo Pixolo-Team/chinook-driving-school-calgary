@@ -1,9 +1,14 @@
 ---
 // OTHERS //
 import Layout from "@/layouts/Layout.astro";
+import ContactForm from "@/sections/common/ContactForm.astro";
 import FaqSection from "@/sections/common/FaqSection.astro";
 import Hero from "@/sections/home/Hero.astro";
-import Testimonials from "@/sections/home/Testimonials.astro";
+import Courses from "@/sections/common/Courses.astro";
+import Features from "@/sections/home/Features.astro";
+import Stats from "@/sections/home/Stats.astro";
+import ContactInfo from "@/sections/common/ContactInfo.astro";
+import Instructors from "@/sections/home/Instructors.astro";
 
 ---
 
@@ -12,6 +17,11 @@ import Testimonials from "@/sections/home/Testimonials.astro";
   description="Chinook Driving School Calgary - new website coming soon."
 >
   <Hero />
-  <Testimonials />
+  <Courses />
+  <Features />
+  <Instructors />
+  <Stats />
   <FaqSection />
+  <ContactInfo />
+  <ContactForm />
 </Layout>
