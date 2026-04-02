@@ -173,7 +173,7 @@ export default function PaymentDetails({
             type="checkbox"
             checked={value.did_agree_conditions}
             onChange={(event) => handleFieldChange("did_agree_conditions", event.target.checked)}
-            className="mt-1 h-5 w-5 rounded border border-[var(--color-n-300)] text-[var(--color-blue-500)]"
+            className="mt-1 h-5 w-5 rounded border border-n-300 text-blue-500"
           />
           <span className="text-sm leading-6" style={{ color: "var(--color-n-700)" }}>
             I agree to the{" "}

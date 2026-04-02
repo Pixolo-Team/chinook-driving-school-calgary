@@ -296,8 +296,8 @@ export default function Dropdown({
                   className={joinClasses(
                     "flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition-colors duration-200",
                     isActive
-                      ? "bg-[var(--color-blue-500)] text-[var(--color-n-50)]"
-                      : "bg-transparent text-[var(--color-n-800)] hover:bg-[var(--color-n-100)] hover:text-[var(--color-blue-500)]",
+                      ? "bg-blue-500 text-n-50"
+                      : "bg-transparent text-n-800 hover:bg-n-100 hover:text-blue-500",
                   )}
                 >
                   <span className="text-base leading-normal font-medium">{optionItem.label}</span>

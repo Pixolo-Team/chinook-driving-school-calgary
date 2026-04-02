@@ -72,10 +72,10 @@ export default function RadioCustom({
   return (
     <label
       className={joinClasses(
-        "relative flex w-full flex-col gap-3 rounded-[12px] border-2 bg-[var(--color-n-50)] p-[14px] shadow-[6px_9px_17.8px_rgba(0,0,0,0.09)] transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        "relative flex w-full flex-col gap-3 rounded-[12px] border-2 bg-n-50 p-[14px] shadow-[6px_9px_17.8px_rgba(0,0,0,0.09)] transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
         checked
-          ? "border-[var(--color-blue-500)]"
-          : "border-[var(--color-n-300)]",
+          ? "border-blue-500"
+          : "border-n-300",
         disabled
           ? "cursor-not-allowed opacity-60"
           : "cursor-pointer hover:cursor-pointer hover:animate-[radio-tab-bounce_560ms_cubic-bezier(0.34,1.56,0.64,1)]",
@@ -92,7 +92,7 @@ export default function RadioCustom({
         className={joinClasses("peer sr-only", className)}
       />
 
-      <div className="relative h-[155px] w-full overflow-hidden rounded-[8px] bg-[var(--color-n-100)]">
+      <div className="relative h-[155px] w-full overflow-hidden rounded-[8px] bg-n-100">
         <img
           src={data.imageSrc ?? DEFAULT_IMAGE_SRC}
           alt={data.imageAlt ?? data.title}
@@ -113,7 +113,7 @@ export default function RadioCustom({
         <span
           className={joinClasses(
             "shrink-0 transition-colors duration-200",
-            checked ? "text-[var(--color-blue-500)]" : "text-[var(--color-n-300)]",
+            checked ? "text-blue-500" : "text-n-300",
           )}
           aria-hidden="true"
         >

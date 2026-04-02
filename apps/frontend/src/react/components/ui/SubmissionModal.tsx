@@ -193,7 +193,7 @@ export default function SubmissionModal({
 
       <div
         className={joinClasses(
-          "relative z-10 flex w-full flex-col rounded-[28px] bg-[var(--color-n-50)] shadow-[0_28px_80px_rgba(2,6,23,0.22)]",
+          "relative z-10 flex w-full flex-col rounded-[28px] bg-n-50 shadow-[0_28px_80px_rgba(2,6,23,0.22)]",
           isChecking ? "max-w-5xl gap-6 px-6 py-8 text-left md:px-8 md:py-9" : "max-w-md items-center gap-6 px-8 py-10 text-center",
         )}
       >
@@ -228,7 +228,7 @@ export default function SubmissionModal({
           </>
         ) : isSending ? (
           <div className="flex w-full flex-col items-center gap-3 py-4 text-center">
-            <span className="h-14 w-14 animate-spin rounded-full border-4 border-[var(--color-n-200)] border-t-[var(--color-blue-500)]" />
+            <span className="h-14 w-14 animate-spin rounded-full border-4 border-n-200 border-t-blue-500" />
             <p className="text-n-700 text-base leading-7 font-medium">Securely sending your details</p>
           </div>
         ) : (
