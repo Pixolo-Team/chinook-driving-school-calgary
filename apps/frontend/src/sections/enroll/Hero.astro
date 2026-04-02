@@ -3,32 +3,29 @@
 import { Image } from "astro:assets";
 
 // IMAGES //
-import heroImage from "@/assets/enroll-hero.png";
+import heroIllustration from "@/assets/enroll-hero.png";
+
+// DATA //
+import { enrollHeroData } from "@/data/enroll-hero-data";
 ---
 
-<section class="bg-n-100">
-  <div class="container mx-auto max-w-screen-2xl px-6 pt-24 pb-14 md:pt-28 md:pb-16 lg:px-5 lg:pt-32 lg:pb-32">
-    <div class="flex flex-col gap-10 lg:flex-row lg:items-end lg:justify-between lg:gap-12">
-      <div class="max-w-2xl space-y-6 lg:pb-32">
-        <p class="text-n-900 text-3xl leading-tight font-bold md:text-5xl lg:text-6xl">
-          Start Your Driving Journey with Chinook
-        </p>
-        <p class="text-n-700 text-sm leading-5 font-medium md:text-lg md:leading-7 lg:text-xl lg:leading-7">
-          Learn from certified instructors and get road-ready with expert guidance every step of the way.
-        </p>
-      </div>
+<section class="bg-n-100 overflow-hidden">
+  <div class="container mx-auto flex flex-col gap-9 px-6 pt-22 md:gap-10 md:px-2 lg:flex-row lg:justify-between lg:pt-24">
+    <div class="flex flex-col gap-6 md:gap-7 lg:gap-8 lg:self-end lg:pb-32">
+      <p class="text-3xl font-bold leading-tight text-n-900 md:text-5xl lg:text-6xl">
+        {enrollHeroData.title}
+      </p>
+      <p class="text-sm font-medium leading-6 text-n-700 md:text-lg md:leading-7 lg:text-xl">
+        {enrollHeroData.description}
+      </p>
+    </div>
 
-      <div class="flex w-full items-center justify-center">
-        <div class="w-full max-w-2xl lg:max-w-3xl">
-          <Image
-            src={heroImage}
-            alt="Instructor and learner shaking hands"
-            width={700}
-            height={500}
-            class="h-auto w-full object-contain grayscale opacity-50"
-          />
-        </div>
-      </div>
+    <div class="flex h-[233px] w-full overflow-hidden opacity-50 md:h-[550px] lg:w-auto">
+      <Image
+        src={heroIllustration}
+        alt="Instructor and learner shaking hands"
+        class="h-[156%] w-full object-cover object-top grayscale"
+      />
     </div>
   </div>
 </section>
