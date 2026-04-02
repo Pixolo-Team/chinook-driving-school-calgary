@@ -3,11 +3,13 @@ import React, { useEffect, useState } from "react";
 
 // COMPONENTS //
 import CheckboxTab from "@/react/components/ui/CheckboxTab";
+import type { CheckboxTabIconNameData } from "@/react/components/ui/CheckboxTab";
 
 type CheckboxTabGroupItemData = {
   title: string;
   description: string;
   name: string;
+  iconName?: CheckboxTabIconNameData;
 };
 
 type CheckboxTabGroupPropsData = {
@@ -74,6 +76,7 @@ export default function CheckboxTabGroup({
             name={itemItem.name}
             title={itemItem.title}
             description={itemItem.description}
+            iconName={itemItem.iconName}
             checked={activeItem === itemItem.name}
             onChange={() => handleSelect(itemItem.name)}
             containerClassName={itemContainerClassName}

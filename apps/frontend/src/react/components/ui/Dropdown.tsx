@@ -234,6 +234,7 @@ export default function Dropdown({
             styleVariant === "minimal" &&
               (isError ? "border-b-[var(--color-error-500,_#dc2626)]" : "border-n-700"),
             "focus-visible:border-blue-500 focus-visible:ring-2 focus-visible:ring-blue-100",
+            !disabled && "cursor-pointer hover:cursor-pointer",
             disabled && "cursor-not-allowed opacity-60",
             className,
           )}
@@ -294,7 +295,7 @@ export default function Dropdown({
                   aria-selected={isActive}
                   onClick={() => handleOptionSelect(optionItem.value)}
                   className={joinClasses(
-                    "flex w-full items-center justify-between rounded-2xl px-4 py-3 text-left transition-colors duration-200",
+                    "flex w-full cursor-pointer items-center justify-between rounded-2xl px-4 py-3 text-left transition-colors duration-200",
                     isActive
                       ? "bg-blue-500 text-n-50"
                       : "bg-transparent text-n-800 hover:bg-n-100 hover:text-blue-500",

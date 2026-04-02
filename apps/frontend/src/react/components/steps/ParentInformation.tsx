@@ -130,10 +130,6 @@ export default function ParentInformation({
   return (
     <section className="bg-n-50 flex w-full flex-col gap-9 md:gap-14">
       <div className="flex w-full flex-col gap-7 md:gap-10">
-        <p className="text-n-800 text-base leading-5 font-semibold md:text-lg">
-          Parent / Guardian Details
-        </p>
-
         <div className="grid w-full grid-cols-1 gap-x-8 gap-y-6 md:gap-y-8 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-10">
           <Input
             type="text"

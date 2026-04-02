@@ -73,9 +73,11 @@ export default function Radio({
   return (
     <label
       className={joinClasses(
-        "relative flex w-full items-center gap-6 rounded-[8px] border px-[21px] py-[17px] transition-colors duration-200",
-        checked ? "border-blue-100 bg-n-50" : "border-n-300 bg-n-50",
-        disabled ? "opacity-60" : "cursor-pointer",
+        "relative flex w-full items-center gap-6 rounded-[8px] border px-[21px] py-[17px] transition-[transform,background-color,border-color,color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        checked ? "border-blue-500 bg-blue-500 text-n-50" : "border-n-300 bg-n-50 text-n-600",
+        disabled
+          ? "cursor-not-allowed opacity-60"
+          : "cursor-pointer hover:scale-[1.01] hover:shadow-[0_10px_24px_rgba(14,23,43,0.08)]",
         containerClassName,
       )}
     >
@@ -90,7 +92,7 @@ export default function Radio({
 
       {renderSelectionControl({ checked: Boolean(checked) })}
 
-      <span className="text-n-950 min-w-0 flex-1 text-base leading-5">
+      <span className={joinClasses("min-w-0 flex-1 text-base leading-5", checked ? "text-n-50" : "text-n-600")}>
         {content ?? (
           <>
             <span className="font-semibold">{label}</span>
