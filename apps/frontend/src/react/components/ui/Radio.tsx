@@ -1,7 +1,7 @@
 // REACT //
 import React, { type ChangeEvent, type InputHTMLAttributes, type ReactNode } from "react";
 
-type RadioPropsData = Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "children"> & {
+type RadioPropsData = Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "children" | "content"> & {
   label: string;
   description?: string;
   content?: ReactNode;

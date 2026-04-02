@@ -12,7 +12,7 @@ type RadioGroupItemData = {
   disabled?: boolean;
 };
 
-type RadioGroupPropsData = {
+type RadioGroupPropsData = Readonly<{
   label?: string;
   required?: boolean;
   caption?: string;
@@ -24,7 +24,7 @@ type RadioGroupPropsData = {
   name?: string;
   containerClassName?: string;
   itemContainerClassName?: string;
-};
+}>;
 
 function joinClasses(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(" ");
