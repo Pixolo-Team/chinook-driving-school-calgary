@@ -76,7 +76,9 @@ export default function RadioCustom({
         checked
           ? "border-[var(--color-blue-500)]"
           : "border-[var(--color-n-300)]",
-        disabled ? "opacity-60" : "cursor-default hover:scale-[1.01]",
+        disabled
+          ? "cursor-not-allowed opacity-60"
+          : "cursor-pointer hover:cursor-pointer hover:animate-[radio-tab-bounce_560ms_cubic-bezier(0.34,1.56,0.64,1)]",
         containerClassName,
       )}
     >
@@ -100,16 +102,18 @@ export default function RadioCustom({
 
       <div className="flex w-full items-center justify-between px-2 pb-2">
         <span
-          className="text-lg font-bold leading-normal"
-          style={{ color: "var(--color-blue-500)" }}
+          className={joinClasses(
+            "text-lg leading-normal",
+            checked ? "text-n-800 font-semibold" : "text-n-600 font-medium",
+          )}
         >
           {data.title}
         </span>
 
         <span
           className={joinClasses(
-            "shrink-0 transition-opacity duration-200",
-            checked ? "opacity-100 text-[var(--color-blue-500)]" : "opacity-0",
+            "shrink-0 transition-colors duration-200",
+            checked ? "text-[var(--color-blue-500)]" : "text-[var(--color-n-300)]",
           )}
           aria-hidden="true"
         >

@@ -19,8 +19,8 @@ function renderCheckIndicator({ checked }: { checked: boolean }): React.JSX.Elem
     <span
       aria-hidden="true"
       className={joinClasses(
-        "absolute top-6 right-5 flex h-5 w-5 items-center justify-center rounded-full border transition-colors duration-200",
-        checked ? "border-blue-500 bg-blue-500 text-n-50" : "border-transparent bg-n-50 text-transparent",
+        "absolute top-4 right-4 flex h-5 w-5 items-center justify-center rounded-full border border-[1px] transition-colors duration-200",
+        checked ? "border-blue-500 bg-blue-500 text-n-50" : "border-n-300 bg-n-300 text-n-50",
       )}
     >
       <svg className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="none">
@@ -68,10 +68,10 @@ export default function CheckboxTab({
   return (
     <label
       className={joinClasses(
-        "border-n-400 bg-n-50 relative flex w-full flex-col gap-3 rounded-xl border p-5 text-left transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        "border-n-400 bg-n-50 relative flex w-full flex-col gap-3 rounded-xl border border-[1px] p-3 text-left transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
         disabled
           ? "cursor-not-allowed opacity-60"
-          : "cursor-pointer hover:scale-[1.01] hover:shadow-[0_10px_24px_rgba(14,23,43,0.08)]",
+          : "cursor-pointer hover:cursor-pointer hover:scale-[1.01] hover:shadow-[0_10px_24px_rgba(14,23,43,0.08)]",
         containerClassName,
       )}
     >
@@ -89,8 +89,22 @@ export default function CheckboxTab({
       </div>
 
       <div className="flex w-full flex-col gap-0.5 pr-10">
-        <span className="text-n-800 text-lg leading-normal font-bold">{title}</span>
-        <span className="text-n-500 text-sm leading-normal font-normal">{description}</span>
+        <span
+          className={joinClasses(
+            "text-lg leading-normal",
+            checked ? "text-n-800 font-semibold" : "text-n-600 font-medium",
+          )}
+        >
+          {title}
+        </span>
+        <span
+          className={joinClasses(
+            "text-sm leading-normal",
+            checked ? "text-n-500 font-normal" : "text-n-600 font-normal",
+          )}
+        >
+          {description}
+        </span>
       </div>
 
       {renderCheckIndicator({ checked: Boolean(checked) })}

@@ -104,13 +104,13 @@ export default function ReviewResponse({
 
   const renderEditButton = (stepId: number): React.JSX.Element => {
     return (
-      <button
-        type="button"
+      <Button
+        variant="filled"
         onClick={() => onEditStep?.(stepId)}
-        className="bg-blue-100 text-n-800 rounded-full px-4 py-2 text-sm leading-5 font-medium"
+        className="min-h-[32px] rounded-full bg-blue-100 px-4 py-2 text-sm leading-5 font-medium text-n-800 hover:bg-blue-200"
       >
         Edit
-      </button>
+      </Button>
     );
   };
 

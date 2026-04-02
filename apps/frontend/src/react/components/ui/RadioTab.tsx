@@ -104,7 +104,7 @@ export default function RadioTab({
               onClick={() => handleToggle(itemItem)}
               aria-pressed={active}
               className={joinClasses(
-                "flex min-h-[52px] flex-1 items-center justify-center rounded-[12px] border px-8 py-[14px] text-base leading-normal font-semibold transition-[transform,background-color,border-color,color] duration-200 ease-out",
+                "flex min-h-[52px] flex-1 cursor-pointer items-center justify-center rounded-[12px] border px-8 py-[14px] text-base leading-normal font-semibold transition-[transform,background-color,border-color,color] duration-200 ease-out hover:animate-[radio-tab-bounce_560ms_cubic-bezier(0.34,1.56,0.64,1)]",
                 active && "border-blue-500 bg-blue-500 text-n-50",
                 !active &&
                   (inactiveItemClassName ? "bg-n-50 text-n-600" : "border-transparent bg-n-50 text-n-600"),
