@@ -3,6 +3,7 @@ import React, { useState } from "react";
 
 // COMPONENTS //
 import EnrollmentForm from "./EnrollmentForm";
+import EnrollSuccess from "./steps/EnrollSuccess";
 import EnrollmentInfo from "./steps/EnrollmentInfo";
 import Button from "./ui/Button";
 
@@ -32,6 +33,7 @@ export default function EnrollForm(): React.JSX.Element {
   /**
    * Renders the success screen after a completed API submission.
    */
+<<<<<<< HEAD
   const renderSuccessScreen = () => {
     return (
       <section className="mx-auto flex min-h-screen w-full max-w-4xl items-center justify-center px-6 py-16">
@@ -74,6 +76,11 @@ export default function EnrollForm(): React.JSX.Element {
       </section>
     );
   };
+=======
+  function renderSuccessScreen(): React.JSX.Element {
+    return <EnrollSuccess />;
+  }
+>>>>>>> development
 
   /**
    * Renders the active enrollment view.
