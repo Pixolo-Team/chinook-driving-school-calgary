@@ -315,8 +315,8 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
       setSubmissionModalState({
         isOpen: true,
         mode: "checking",
-        title: "Form Incomplete",
-        message: "You have not completed all the steps in the Form",
+        title: "Checking Your Details",
+        message: "Please complete the highlighted sections to continue.",
       });
       return;
     }
