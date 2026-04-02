@@ -14,7 +14,7 @@ interface Props {
 const { firstName, lastName, role, description } = Astro.props;
 ---
 
-<div class="relative w-full overflow-hidden rounded-3xl border border-n-200 bg-n-50 px-9 py-7 lg:px-11 lg:py-9">
+<div class="relative h-64 w-full overflow-hidden rounded-3xl border border-n-200 bg-n-50 px-9 py-7 lg:h-96 lg:px-11 lg:py-9">
   <div class="absolute bottom-[120px] right-[-171px] lg:bottom-[160px] lg:right-[-160px]">
     <Image
       src={ellipseImage}
@@ -26,7 +26,7 @@ const { firstName, lastName, role, description } = Astro.props;
     />
   </div>
 
-  <div class="relative flex flex-col gap-6 lg:gap-8">
+  <div class="relative flex h-full flex-col gap-6 lg:gap-8">
     <div class="flex items-start justify-between gap-6">
       <div class="flex flex-col gap-3 lg:gap-4">
         <p class="text-2xl font-bold leading-tight text-n-800 lg:text-3xl">

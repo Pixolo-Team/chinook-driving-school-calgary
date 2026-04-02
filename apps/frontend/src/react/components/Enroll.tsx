@@ -5,7 +5,6 @@ import React, { useState } from "react";
 import EnrollmentForm from "./EnrollmentForm";
 import EnrollSuccess from "./steps/EnrollSuccess";
 import EnrollmentInfo from "./steps/EnrollmentInfo";
-import Button from "./ui/Button";
 
 type EnrollViewData = "start" | "form" | "success";
 
@@ -40,7 +39,7 @@ export default function EnrollForm(): React.JSX.Element {
   /**
    * Renders the active enrollment view.
    */
-  function renderActiveView(): React.JSX.Element {
+  const renderActiveView = () => {
     if (activeView === "start") {
       return renderFormStart();
     }
@@ -50,7 +49,7 @@ export default function EnrollForm(): React.JSX.Element {
     }
 
     return <EnrollmentForm onSuccess={() => setActiveView("success")} />;
-  }
+  };
 
   // Use Effects
   return renderActiveView();

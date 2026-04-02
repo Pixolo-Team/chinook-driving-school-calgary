@@ -5,7 +5,7 @@ const { cardItem } = Astro.props;
 ---
 
 <div
-  class="border-n-100 relative w-78 overflow-hidden rounded-4xl border-2 bg-transparent pb-11 transition-transform duration-300 ease-out hover:scale-105"
+  class="border-n-100 relative h-96 w-78 overflow-hidden rounded-4xl border-2 bg-transparent transition-transform duration-300 ease-out hover:scale-105"
 >
   <!-- Background Circle -->
   <div class="absolute -top-1/2 -left-1/2 size-87.5 rounded-full bg-blue-100 opacity-30"></div>
@@ -24,7 +24,7 @@ const { cardItem } = Astro.props;
     </div>
 
     <!-- Text Content -->
-    <div class="flex flex-col gap-3.5 px-6">
+    <div class="flex flex-1 flex-col gap-3.5 px-6 pb-11">
       <p class="text-n-800 text-2xl leading-[1.2] font-bold">
         {cardItem.title}
       </p>

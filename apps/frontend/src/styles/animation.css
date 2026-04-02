@@ -13,6 +13,21 @@
   animation: fade-in 0.6s ease-out both;
 }
 
+@keyframes radio-tab-bounce {
+  0% {
+    transform: scale(1);
+  }
+  45% {
+    transform: scale(1.01);
+  }
+  75% {
+    transform: scale(0.99);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .animate-bouncy-hover {
   transform-origin: center;
   will-change: transform, filter;
