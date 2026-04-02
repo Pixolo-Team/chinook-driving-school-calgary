@@ -2,9 +2,9 @@
 import React from "react";
 
 /**
- * Placeholder component for enrollment summary content that is not wired yet.
+ * Placeholder component for enrollment tab navigation that is not wired yet.
  */
-export default function EnrollmentInfo(): null {
+export default function EnrollmentTabs(): null {
   // Define Navigation
 
   // Define Context
