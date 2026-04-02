@@ -10,8 +10,8 @@ const { question, answer } = Astro.props;
 <div class="faq-item flex w-full flex-col overflow-hidden rounded-3xl border border-n-200">
 
   <button
-    class="faq-trigger flex w-full items-center justify-between px-6 py-6">
-    <p class="text-lg font-semibold leading-6 text-n-900">
+    class="faq-trigger flex w-full items-center justify-between gap-5 px-10 py-10 text-left">
+    <p class="text-2xl font-bold leading-tight text-n-800">
       {question}
     </p>
     {/* Dropdown Logo */}
@@ -27,8 +27,8 @@ const { question, answer } = Astro.props;
     style="max-height: 0px; opacity: 0;">
 
     {/* FAQ Answer */}
-    <div class="px-6 pb-5">
-      <p class="text-base leading-5 text-n-800">
+    <div class="px-10 pb-8">
+      <p class="text-base leading-7 text-n-600">
         {answer}
       </p>
     </div>

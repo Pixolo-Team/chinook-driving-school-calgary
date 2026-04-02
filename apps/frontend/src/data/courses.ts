@@ -18,9 +18,9 @@ export const courseSectionData = {
         value: "15 Hours",
       },
       features: [
-        "10 Hours In-Car Training",
         "15 Hours Online Theory",
         "Insurance Certificate",
+        "Road Test Support",
       ],
       theme: "light",
       ellipse: "light",
@@ -49,7 +49,7 @@ export const courseSectionData = {
     },
     {
       title: "Ultimate Course",
-      price: "$999",
+      price: "$870",
       duration: "14 Weeks",
       practice: {
         label: "Car Practice",
@@ -60,9 +60,9 @@ export const courseSectionData = {
         value: "15 Hours",
       },
       features: [
-        "20 Hours In-Car Training",
-        "Car for Road Test Included",
-        "Unlimited Access to Resources",
+        "15 Hours Online Theory",
+        "Insurance Certificate",
+        "Road Test Support",
       ],
       theme: "light",
       ellipse: "light-alt",
