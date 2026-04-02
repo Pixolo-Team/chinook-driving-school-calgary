@@ -17,6 +17,8 @@ export default function EnrollmentInfo({
   return (
     <section className="bg-n-50">
       <div className="container mx-auto flex w-full max-w-screen-2xl flex-col items-center gap-10 px-5 py-20 sm:px-6 lg:gap-16 lg:px-10 lg:py-20">
+        
+        {/* Section Header */}
         <div className="flex w-full flex-col items-center gap-2.5 text-center">
           <p className="text-xs font-bold uppercase tracking-[0.6px] text-blue-500 sm:text-sm">
             Before You Start
@@ -26,6 +28,7 @@ export default function EnrollmentInfo({
           </p>
         </div>
 
+        {/* Time Required Section */}
         <div className="flex w-full flex-col items-center gap-9 lg:gap-16">
           <div className="flex w-full flex-col divide-y divide-n-200 lg:flex-row lg:divide-y-0 lg:divide-x">
             <div className="flex w-full flex-col gap-2 py-6 lg:px-6 lg:py-0">
@@ -36,6 +39,7 @@ export default function EnrollmentInfo({
               </p>
             </div>
 
+            {/* Middle Section */}
             <div className="flex w-full flex-col gap-2 py-6 lg:px-6 lg:py-0">
               <p className="text-xs font-medium text-n-500">What You’ll Need</p>
               <ul className="list-disc space-y-1 pl-4 text-base text-n-800 sm:text-lg">
@@ -47,6 +51,7 @@ export default function EnrollmentInfo({
               </ul>
             </div>
 
+            {/* Required Fields Text */}
             <div className="flex w-full flex-col gap-2 py-6 lg:px-6 lg:py-0">
               <p className="text-xs font-medium text-n-500">What You’ll Need</p>
               <p className="text-base text-n-800 sm:text-lg">
@@ -60,6 +65,8 @@ export default function EnrollmentInfo({
             </div>
           </div>
 
+
+          {/* Start Enrollment Button */}
           <div className="flex w-full max-w-md flex-col items-center gap-4">
             <Button className="w-full" onClick={onStart}>
               Start Enrollment
