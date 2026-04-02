@@ -38,10 +38,6 @@ const getLabelColorClassName = (status: "current" | StepStatusData): string => {
     return "text-n-950";
   }
 
-  if (status === "pending") {
-    return "text-n-700";
-  }
-
   return "text-n-400";
 };
 
@@ -49,7 +45,7 @@ const getLabelColorClassName = (status: "current" | StepStatusData): string => {
  * Returns the font weight token for a step label.
  */
 const getLabelWeightClassName = (status: "current" | StepStatusData): string => {
-  if (status === "pending") {
+  if (status === "current") {
     return "font-bold";
   }
 
