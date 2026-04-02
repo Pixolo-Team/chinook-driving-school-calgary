@@ -1,5 +1,5 @@
 export const enrollmentConfirmedSectionData = {
-  image: "https://www.figma.com/api/mcp/asset/ff87601e-87ca-429d-9356-66e52b9af856",
+  image: "/icons/enrollment-confirmed.png",
   eyebrow: "Enrollment Complete",
   heading: "Enrollment Confirmed 🎉",
   nextTitle: "What Happens Next",
