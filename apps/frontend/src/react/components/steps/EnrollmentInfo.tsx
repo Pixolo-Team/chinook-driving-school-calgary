@@ -68,7 +68,10 @@ export default function EnrollmentInfo({
 
           {/* Start Enrollment Button */}
           <div className="flex w-full max-w-md flex-col items-center gap-4">
-            <Button className="w-full" onClick={onStart}>
+            <Button
+              className="h-[78px] w-full max-w-[296px] gap-2.5 rounded-[30px] px-16 py-6"
+              onClick={onStart}
+            >
               Start Enrollment
             </Button>
             <a
