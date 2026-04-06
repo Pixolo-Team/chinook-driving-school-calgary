@@ -5,13 +5,27 @@ import { Image } from "astro:assets";
 // IMAGES //
 import contactIllustration from "@/assets/contact-illustration.png";
 
-const fieldRows = [
+type FormField = {
+  label: string;
+  name: string;
+  type: "text" | "email" | "tel";
+  placeholder: string;
+  required?: boolean;
+  minLength?: number;
+  pattern?: string;
+  title?: string;
+};
+
+const fieldRows: FormField[][] = [
   [
     {
       label: "Name",
       name: "name",
       type: "text",
       placeholder: "Enter your Name",
+      required: true,
+      minLength: 2,
+      title: "Name must be at least 2 characters long.",
     },
   ],
   [
@@ -20,12 +34,16 @@ const fieldRows = [
       name: "email",
       type: "email",
       placeholder: "you@email.com",
+      required: true,
     },
     {
       label: "Phone Number",
       name: "phone",
       type: "tel",
       placeholder: "+1 XXXX XXXX XX",
+      required: true,
+      pattern: "^\\+?[0-9\\s\\-\\(\\)]{7,15}$",
+      title: "Please enter a valid phone number between 7 and 15 digits.",
     },
   ],
   [
@@ -34,9 +52,10 @@ const fieldRows = [
       name: "reason",
       type: "text",
       placeholder: "Reason for Contact",
+      required: false
     },
   ],
-] as const;
+];
 ---
 
 <section class="bg-n-50">
@@ -47,12 +66,12 @@ const fieldRows = [
       <div class="grid gap-4 xl:grid-cols-12 xl:items-stretch xl:gap-6">
         <div class="xl:col-span-8">
           <div class="bg-n-50 h-full rounded-3xl p-6 md:p-8">
-            <div class="h-full">
-              <div class="flex h-full flex-col space-y-5 md:space-y-6">
+            <div class="h-full relative">
+              <div id="form-container" class="flex h-full flex-col space-y-5 md:space-y-6 transition-opacity duration-300">
                 <!-- Form Title -->
                 <p class="text-n-900 text-xl leading-7 font-bold md:text-2xl">Reach out to us!</p>
 
-                <form method="post" action="" class="flex flex-1 flex-col space-y-4 md:space-y-6">
+                <form id="contact-form" method="post" action="" class="flex flex-1 flex-col space-y-4 md:space-y-6">
                   {
                     fieldRows.map((fieldRow) => (
                       <div
@@ -65,13 +84,17 @@ const fieldRows = [
                         {fieldRow.map((field) => (
                           <label class="block space-y-1">
                             <span class="text-n-950 block text-base leading-5 font-semibold">
-                              {field.label}
+                              {field.label} {field.required && <span class="text-red-500">*</span>}
                             </span>
                             <input
                               type={field.type}
                               name={field.name}
                               placeholder={field.placeholder}
-                              class="bg-n-100 text-n-800 placeholder:text-n-400 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-shadow duration-300 outline-none focus:ring-2 focus:ring-blue-500 md:py-4"
+                              required={field.required}
+                              minlength={field.minLength}
+                              pattern={field.pattern}
+                              title={field.title}
+                              class="bg-n-100 text-n-800 placeholder:text-n-400 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-shadow duration-300 outline-none focus:ring-2 focus:ring-blue-500 md:py-4 invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
                             />
                           </label>
                         ))}
@@ -81,14 +104,15 @@ const fieldRows = [
 
                   <label class="block space-y-1">
                     <span class="text-n-950 block text-base leading-5 font-semibold">
-                      Message
+                      Message <span class="text-red-500">*</span>
                     </span>
 
                     <!-- Message Section -->
                     <textarea
                       name="message"
+                      required
                       placeholder="Tell us what's on your mind..."
-                      class="bg-n-100 text-n-800 placeholder:text-n-400 min-h-44 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-shadow duration-300 outline-none focus:ring-2 focus:ring-blue-500 md:py-4"
+                      class="bg-n-100 text-n-800 placeholder:text-n-400 min-h-44 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-shadow duration-300 outline-none focus:ring-2 focus:ring-blue-500 md:py-4 invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
                     ></textarea>
                   </label>
 
@@ -96,13 +120,29 @@ const fieldRows = [
                   <div class="mt-auto pt-2">
                     <button
                       type="submit"
-                      class="animate-bouncy-hover text-n-50 w-full cursor-pointer rounded-full bg-blue-500 px-6 py-3 text-sm leading-6 font-bold transition-colors duration-300 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+                      class="animate-bouncy-hover text-n-50 w-full cursor-pointer rounded-full bg-blue-500 px-6 py-3 text-sm leading-6 font-bold transition-colors duration-300 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       Send Message
                     </button>
                   </div>
                 </form>
               </div>
+
+              <div id="success-message" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center space-y-4 bg-n-50 rounded-3xl animate-fade-in z-10">
+                <div class="size-20 rounded-full bg-green-100 flex items-center justify-center text-green-600 mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 class="text-n-900 text-2xl font-bold md:text-3xl">Thank You!</h3>
+                <p class="text-n-600 max-w-sm mx-auto text-lg">
+                  Your message has been successfully sent. We'll get back to you within 24 hours.
+                </p>
+                <button id="reset-form-btn" type="button" class="mt-6 text-blue-500 font-semibold hover:text-blue-600 transition-colors cursor-pointer">
+                  Send another message
+                </button>
+              </div>
+
             </div>
           </div>
         </div>
@@ -153,3 +193,38 @@ const fieldRows = [
     </div>
   </div>
 </section>
+
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement;
+  const formContainer = document.getElementById("form-container");
+  const successMessage = document.getElementById("success-message");
+  const resetBtn = document.getElementById("reset-form-btn");
+
+  if (form && formContainer && successMessage) {
+    form.addEventListener("submit", (e) => {
+      e.preventDefault(); 
+      
+      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      const originalText = submitBtn.innerText;
+      
+      submitBtn.innerText = "Sending...";
+      submitBtn.disabled = true;
+
+      setTimeout(() => {
+        formContainer.classList.add("opacity-0", "pointer-events-none", "hidden");
+        successMessage.classList.remove("hidden");
+        
+        submitBtn.innerText = originalText;
+        submitBtn.disabled = false;
+        form.reset();
+      }, 600); 
+    });
+  }
+
+  if (resetBtn && formContainer && successMessage) {
+    resetBtn.addEventListener("click", () => {
+      successMessage.classList.add("hidden");
+      formContainer.classList.remove("hidden", "opacity-0", "pointer-events-none");
+    });
+  }
+</script>

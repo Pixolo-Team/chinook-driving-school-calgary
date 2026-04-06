@@ -11,6 +11,7 @@ interface Props {
 
 const { items, variant = "primary" } = Astro.props as Props;
 const currentPath = Astro.url.pathname;
+const isHome = currentPath === "/" || currentPath === "/index.html" || currentPath === "";
 
 // Keep the enrollment route as a dedicated CTA so the primary nav stays focused on page links.
 const navItems = items.filter((item) => item.url !== "/enroll");
@@ -21,7 +22,7 @@ const getIsActiveLink = (href: string) =>
 
 const navClassName =
   variant === "primary"
-    ? "text-n-50 flex items-center gap-5 text-sm leading-5 lg:gap-7"
+    ? "flex items-center gap-5 text-sm leading-5 lg:gap-7"
     : "flex items-center gap-5 text-sm leading-5 lg:gap-7";
 const navLabel = variant === "primary" ? "Primary" : "Floating navigation";
 ---
@@ -39,13 +40,16 @@ const navLabel = variant === "primary" ? "Primary" : "Floating navigation";
           aria-current={isActiveLink ? "page" : undefined}
           class:list={[
             "group text-xs leading-5 whitespace-nowrap transition-colors duration-200 focus:outline-none lg:text-sm",
-            variant === "primary"
-              ? isActiveLink
-                ? "text-n-50 font-semibold"
-                : "text-n-50 hover:text-n-50/90 font-medium"
-              : isActiveLink
-                ? "font-semibold text-blue-500"
-                : "text-n-800 font-medium hover:text-blue-500",
+            variant === "primary" && [
+              "dynamic-menu-link", // JS hook we added in the main header
+              isActiveLink ? "font-semibold" : "font-medium",
+              isHome ? "text-n-100 hover:text-white" : "text-n-900 hover:text-n-600"
+            ],
+            
+            // Floating Variant Logic
+            variant === "floating" && [
+              isActiveLink ? "font-semibold text-blue-500" : "text-n-800 font-medium hover:text-blue-500"
+            ]
           ]}
         >
           <span class:list={["relative inline-flex", variant === "floating" && "px-1 lg:px-1.5"]}>
@@ -60,7 +64,7 @@ const navLabel = variant === "primary" ? "Primary" : "Floating navigation";
                   ? "scale-x-100 opacity-100"
                   : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100",
                 variant === "primary"
-                  ? "bg-n-50 -bottom-3 h-0.5 w-full"
+                  ? "bg-current -bottom-3 h-0.5 w-full"
                   : "inset-x-0 -bottom-4 h-1 w-full bg-blue-500 lg:-bottom-6",
               ]}
             />
