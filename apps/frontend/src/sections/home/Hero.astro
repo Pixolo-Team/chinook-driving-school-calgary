@@ -8,15 +8,15 @@ import { Image } from "astro:assets";
 ---
 
 <section
-  class="bg-n-900 relative flex h-[100dvh] max-h-[945px] w-full flex-col justify-end overflow-hidden"
+  class="bg-n-900 relative flex h-160 w-full flex-col justify-end overflow-hidden xl:h-185"
 >
   <div class="absolute inset-0">
     <Image
       src={heroSectionData.image}
       alt=""
       width={1920}
-      height={945}
-      class="h-full w-full object-cover object-[68%_center] lg:object-top"
+      height={1280}
+      class="h-full w-full object-cover lg:object-top"
       aria-hidden="true"
     />
   </div>
@@ -34,7 +34,7 @@ import { Image } from "astro:assets";
         >
           {heroSectionData.eyebrow}
         </p>
-        <p class="text-2xl leading-tight font-semibold lg:text-5xl">
+        <p class="text-2xl leading-tight md:text-4xl font-semibold lg:text-5xl">
           {heroSectionData.heading}
         </p>
       </div>
