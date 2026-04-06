@@ -44,15 +44,15 @@ const fieldRows = [
   <div class="container mx-auto max-w-screen-2xl px-6 py-8 md:py-9 xl:px-44">
     <!-- Outer Box -->
     <div class="rounded-3xl bg-blue-50 p-3 md:p-6">
-      <div class="grid gap-4 xl:grid-cols-12 xl:gap-6">
+      <div class="grid gap-4 xl:grid-cols-12 xl:items-stretch xl:gap-6">
         <div class="xl:col-span-8">
-          <div class="bg-n-50 rounded-3xl p-6 md:p-8">
-            <div class="">
-              <div class="space-y-5 md:space-y-6">
+          <div class="bg-n-50 h-full rounded-3xl p-6 md:p-8">
+            <div class="h-full">
+              <div class="flex h-full flex-col space-y-5 md:space-y-6">
                 <!-- Form Title -->
                 <p class="text-n-900 text-xl leading-7 font-bold md:text-2xl">Reach out to us!</p>
 
-                <form method="post" action="" class="space-y-4 md:space-y-6">
+                <form method="post" action="" class="flex flex-1 flex-col space-y-4 md:space-y-6">
                   {
                     fieldRows.map((fieldRow) => (
                       <div
@@ -93,12 +93,14 @@ const fieldRows = [
                   </label>
 
                   <!-- Send Message Button -->
-                  <button
-                    type="submit"
-                    class="animate-bouncy-hover text-n-50 w-full cursor-pointer rounded-full bg-blue-500 px-6 py-3 text-sm leading-6 font-bold transition-colors duration-300 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
-                  >
-                    Send Message
-                  </button>
+                  <div class="mt-auto pt-2">
+                    <button
+                      type="submit"
+                      class="animate-bouncy-hover text-n-50 w-full cursor-pointer rounded-full bg-blue-500 px-6 py-3 text-sm leading-6 font-bold transition-colors duration-300 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
+                    >
+                      Send Message
+                    </button>
+                  </div>
                 </form>
               </div>
             </div>
