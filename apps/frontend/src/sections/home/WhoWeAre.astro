@@ -1,0 +1,47 @@
+---
+import WhoWeAreCard from "@/components/WhoWeAreCard.astro";
+import { whoWeAreSectionData } from "@/data/who-we-are-section-data";
+
+const { content, cards } = whoWeAreSectionData;
+---
+
+<section class="bg-n-50">
+  <div
+    class="container mx-auto flex w-full flex-col items-center gap-7 px-5 py-12 sm:gap-11 sm:px-6 sm:py-20 lg:gap-12 lg:px-32 lg:py-20"
+  >
+    <div
+      class="flex w-full max-w-4xl flex-col items-center gap-7 text-center sm:gap-11 lg:gap-12"
+    >
+      <div class="flex flex-col items-center gap-2">
+        <p class="text-xs font-bold uppercase tracking-[0.6px] text-blue-500 md:text-sm">
+          {content.eyebrow}
+        </p>
+        <p class="text-3xl font-bold leading-tight text-n-800 md:text-4xl lg:text-5xl">
+          {content.heading}
+        </p>
+      </div>
+
+      <div class="flex flex-col gap-5 text-n-800">
+        <p class="text-sm leading-[1.4] sm:text-base md:text-lg lg:text-xl">
+          {content.intro}
+        </p>
+        <p class="text-sm leading-[1.4] sm:text-base md:text-lg lg:text-xl">
+          <span>{content.highlightPrefix}</span>
+          <span class="font-bold">{content.highlightText}</span>
+          <span>{content.highlightSuffix}</span>
+        </p>
+      </div>
+    </div>
+
+    <div class="grid w-full grid-cols-1 gap-3.5 sm:gap-4 lg:grid-cols-3 lg:gap-6">
+      {cards.map((card) => (
+        <WhoWeAreCard
+          icon={card.icon}
+          number={card.number}
+          title={card.title}
+          description={card.description}
+        />
+      ))}
+    </div>
+  </div>
+</section>
