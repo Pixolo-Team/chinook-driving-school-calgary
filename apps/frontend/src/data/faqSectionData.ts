@@ -2,36 +2,31 @@ export const faqSectionData = [
   {
     question: "What is the minimum age to start?",
     answer:
-      "The minimum age to start driving school is 16 in the country of Canada. But you can start earlier and will handle the rest. We can practice in localities where the cops do not show up.",
+      "You can begin driver training once you meet the local licensing age requirements. Our team can guide you on the right course based on your current licence stage.",
   },
   {
-    question: "What is the minimum age to start?",
+    question: "How many lessons do I need?",
     answer:
-      "The minimum age to start driving school is 16 in the country of Canada. But you can start earlier and will handle the rest. We can practice in localities where the cops do not show up.",
+      "The number of lessons depends on your experience, confidence, and goals. We can recommend a package after understanding whether you are a beginner, need a refresher, or are preparing for a road test.",
   },
   {
-    question: "What is the minimum age to start?",
+    question: "Can I use the school car for my road test?",
     answer:
-      "The minimum age to start driving school is 16 in the country of Canada. But you can start earlier and will handle the rest. We can practice in localities where the cops do not show up.",
+      "Yes, selected packages include road test support and vehicle use. You can also contact us directly if you need a school car for your test day.",
   },
   {
-    question: "What is the minimum age to start?",
+    question: "Can I use the school car for my road test?",
     answer:
-      "The minimum age to start driving school is 16 in the country of Canada. But you can start earlier and will handle the rest. We can practice in localities where the cops do not show up.",
+      "Yes, selected packages include road test support and vehicle use. You can also contact us directly if you need a school car for your test day.",
   },
   {
-    question: "What is the minimum age to start?",
+    question: "Can I choose my lesson schedule?",
     answer:
-      "The minimum age to start driving school is 16 in the country of Canada. But you can start earlier and will handle the rest. We can practice in localities where the cops do not show up.",
+      "Yes, we offer flexible scheduling based on instructor availability. We do our best to arrange lesson times that fit your weekly routine.",
   },
   {
-    question: "What is the minimum age to start?",
+    question: "Will I have access to recorded lessons?",
     answer:
-      "The minimum age to start driving school is 16 in the country of Canada. But you can start earlier and will handle the rest. We can practice in localities where the cops do not show up.",
-  },
-  {
-    question: "What is the minimum age to start?",
-    answer:
-      "The minimum age to start driving school is 16 in the country of Canada. But you can start earlier and will handle the rest. We can practice in localities where the cops do not show up.",
+      "If your package includes online theory or supporting study materials, our team will explain exactly what access is included and how to use it.",
   },
 ];

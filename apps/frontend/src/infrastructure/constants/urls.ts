@@ -6,4 +6,6 @@ export const URLS = {
   COURSES: "/courses",
   CONTACT: "/contact",
   ENROLL: "/enroll",
+  PRIVACY_POLICY: "/privacy-policy",
+  TERMS_OF_SERVICE: "/terms-of-service",
 } as const;
