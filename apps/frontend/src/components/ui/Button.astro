@@ -49,24 +49,22 @@ const anchorRel =
 
 const variantClassNames = {
   primary:
-    "bg-blue-500 text-n-50 hover:scale-[1.04] hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-200",
+    "bg-blue-500 text-n-50 hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-200",
   outline:
-    "border-2 border-blue-500 bg-transparent text-blue-500 hover:scale-[1.04] hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-200",
+    "border-2 border-blue-500 bg-transparent text-blue-500 hover:bg-blue-50 focus-visible:ring-2 focus-visible:ring-blue-200",
   default:
-    "bg-blue-500 text-n-50 hover:scale-[1.04] hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-200",
+    "bg-blue-500 text-n-50 hover:bg-blue-600 focus-visible:ring-2 focus-visible:ring-blue-200",
 } as const;
 
 const menuButtonClasses = [
-  "flex h-9 items-center justify-center gap-1.5 rounded-3xl px-3.5 text-sm font-semibold leading-[1.69] whitespace-nowrap transition-all duration-200 focus:outline-none lg:h-10",
+  "cursor-pointer animate-bouncy-hover flex h-9 items-center justify-center gap-1.5 rounded-3xl px-3.5 text-sm font-semibold leading-[1.69] whitespace-nowrap focus:outline-none lg:h-10",
   variantClassNames[variant ?? "primary"],
   className,
 ];
 
 const courseButtonClasses = [
-  "mt-8 block w-full rounded-full border py-3 text-center text-sm font-bold transition-colors lg:text-base",
-  theme === "brand"
-    ? "border-n-50 bg-n-50 text-blue-500"
-    : "border-blue-500 bg-n-50 text-blue-500",
+  "cursor-pointer animate-bouncy-hover mt-8 block w-full rounded-full border py-3 text-center text-sm font-bold lg:text-base",
+  theme === "brand" ? "border-n-50 bg-n-50 text-blue-500" : "border-blue-500 bg-n-50 text-blue-500",
   className,
 ];
 ---
@@ -81,19 +79,17 @@ const courseButtonClasses = [
       onclick={onClick || undefined}
       class:list={isCourseButton ? courseButtonClasses : menuButtonClasses}
     >
-      {
-        hasDefaultSlot ? (
-          <slot />
-        ) : isCourseButton ? (
-          label
-        ) : (
-          <div class="flex items-center gap-2">
-            {leftIcon && <Icon name={leftIcon} class="size-4" />}
-            <span>{label}</span>
-            {rightIcon && <Icon name={rightIcon} class="size-4" />}
-          </div>
-        )
-      }
+      {hasDefaultSlot ? (
+        <slot />
+      ) : isCourseButton ? (
+        label
+      ) : (
+        <div class="flex items-center gap-2">
+          {leftIcon && <Icon name={leftIcon} class="size-4" />}
+          <span>{label}</span>
+          {rightIcon && <Icon name={rightIcon} class="size-4" />}
+        </div>
+      )}
     </a>
   ) : (
     <button
@@ -102,19 +98,17 @@ const courseButtonClasses = [
       onclick={onClick || undefined}
       class:list={isCourseButton ? courseButtonClasses : menuButtonClasses}
     >
-      {
-        hasDefaultSlot ? (
-          <slot />
-        ) : isCourseButton ? (
-          label
-        ) : (
-          <div class="flex items-center gap-2">
-            {leftIcon && <Icon name={leftIcon} class="size-4" />}
-            <span>{label}</span>
-            {rightIcon && <Icon name={rightIcon} class="size-4.5" />}
-          </div>
-        )
-      }
+      {hasDefaultSlot ? (
+        <slot />
+      ) : isCourseButton ? (
+        label
+      ) : (
+        <div class="flex items-center gap-2">
+          {leftIcon && <Icon name={leftIcon} class="size-4" />}
+          <span>{label}</span>
+          {rightIcon && <Icon name={rightIcon} class="size-4.5" />}
+        </div>
+      )}
     </button>
   )
 }

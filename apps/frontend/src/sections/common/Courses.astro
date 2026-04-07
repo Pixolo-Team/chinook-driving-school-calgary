@@ -1,6 +1,8 @@
 ---
 // DATA //
 import { courseSectionData } from "@/data/courses";
+import { getCourseSectionData } from "@/data/course-cards";
+import type { CourseCardData, CourseGroupData } from "@/types/course";
 
 // COMPONENTS //
 import CourseCard from "@/components/CourseCard.astro";
@@ -9,20 +11,16 @@ import Tabs from "@/components/ui/Tabs.astro";
 
 interface CoursesProps {
   tabs?: string[];
-  cards?: typeof courseSectionData.cards;
-  courseGroups?: Array<{
-    cards: typeof courseSectionData.cards;
-    tab: string;
-  }>;
+  cards?: CourseCardData[];
+  courseGroups?: CourseGroupData[];
 }
 
+const courseData = await getCourseSectionData();
+
 const {
-  tabs = courseSectionData.tabs,
-  cards = courseSectionData.cards,
-  courseGroups = tabs.map((tab, index) => ({
-    tab,
-    cards: index === 0 ? cards : [],
-  })),
+  tabs = courseData.tabs,
+  cards = courseData.cards,
+  courseGroups = courseData.courseGroups,
 } = Astro.props as CoursesProps;
 ---
 
@@ -30,7 +28,6 @@ const {
   <div
     class="container mx-auto flex w-full max-w-screen-2xl flex-col items-center gap-10 px-6 py-14 lg:gap-16 lg:px-28 lg:py-28"
   >
-
     <!-- Section Header -->
     <SectionHeader
       eyebrow={courseSectionData.eyebrow}
@@ -39,7 +36,7 @@ const {
     />
 
     <!-- Courses Category Tabs -->
-    <div class="flex w-full flex-col items-center gap-7 md:gap-8 md:px-16 lg:gap-12">
+    <div class="flex w-full flex-col items-center gap-7 md:gap-8 md:px-20 lg:gap-12 xl:px-0">
       <div class="w-full max-w-3xl">
         <Tabs items={tabs} activeIndex={0} />
       </div>

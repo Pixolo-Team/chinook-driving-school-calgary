@@ -2,7 +2,7 @@
 import React, { useEffect, useState, type ReactNode } from "react";
 
 // COMPONENTS //
-import Radio from "./Radio";
+import Radio from "@/react/components/ui/Radio";
 
 type RadioGroupItemData = {
   value: string;
@@ -12,16 +12,19 @@ type RadioGroupItemData = {
   disabled?: boolean;
 };
 
-type RadioGroupPropsData = {
+type RadioGroupPropsData = Readonly<{
   label?: string;
   required?: boolean;
+  caption?: string;
+  isError?: boolean;
+  errorMessage?: string;
   items: RadioGroupItemData[];
   selectedItem: string;
   onChange?: (value: string) => void;
   name?: string;
   containerClassName?: string;
   itemContainerClassName?: string;
-};
+}>;
 
 function joinClasses(...classes: Array<string | false | null | undefined>): string {
   return classes.filter(Boolean).join(" ");
@@ -33,6 +36,9 @@ function joinClasses(...classes: Array<string | false | null | undefined>): stri
 export default function RadioGroup({
   label,
   required = false,
+  caption,
+  isError = false,
+  errorMessage,
   items,
   selectedItem,
   onChange,
@@ -60,20 +66,14 @@ export default function RadioGroup({
   }
 
   // Use Effects
+  const helperText = isError ? (errorMessage ?? caption) : caption;
 
   return (
     <div className="flex w-full flex-col gap-5">
       {label ? (
-        <p
-          className="flex items-center gap-1 text-lg leading-normal font-semibold"
-          style={{ color: "var(--color-n-900)" }}
-        >
+        <p className="text-n-900 flex items-center gap-1 text-lg leading-normal font-semibold">
           <span>{label}</span>
-          {required ? (
-            <span aria-hidden="true" style={{ color: "var(--color-error-500, #ef4444)" }}>
-              *
-            </span>
-          ) : null}
+          {required ? <span aria-hidden="true" className="text-error-500">*</span> : null}
         </p>
       ) : null}
 
@@ -96,6 +96,17 @@ export default function RadioGroup({
           />
         ))}
       </div>
+
+      {helperText ? (
+        <p
+          className="text-sm leading-5 font-normal"
+          style={{
+            color: isError ? "var(--color-error-500, #dc2626)" : "var(--color-n-500)",
+          }}
+        >
+          {helperText}
+        </p>
+      ) : null}
     </div>
   );
 }

@@ -1,7 +1,5 @@
 ---
 // OTHERS //
-import { courseSectionData } from "@/data/courses";
-import { getCourseGroups, type Course, type CourseGroup } from "@/data/courses-api";
 import Layout from "@/layouts/Layout.astro";
 import ContactForm from "@/sections/common/ContactForm.astro";
 import FaqSection from "@/sections/common/FaqSection.astro";
@@ -11,91 +9,17 @@ import Features from "@/sections/home/Features.astro";
 import Stats from "@/sections/home/Stats.astro";
 import ContactInfo from "@/sections/common/ContactInfo.astro";
 import Instructors from "@/sections/home/Instructors.astro";
-
-type CourseCardData = typeof courseSectionData.cards[number];
-
-interface CourseGroupData {
-  cards: CourseCardData[];
-  tab: string;
-}
-
-const DEFAULT_CARD_STYLES = [
-  { theme: "light", ellipse: "light" },
-  { theme: "brand", ellipse: "blue", badge: "Most Popular" },
-  { theme: "light", ellipse: "light-alt" },
-] as const;
-
-let courseTabs = courseSectionData.tabs;
-let courseCards = courseSectionData.cards;
-let courseGroups: CourseGroupData[] = courseSectionData.tabs.map((tab, index) => ({
-  tab,
-  cards: index === 0 ? courseSectionData.cards : [],
-}));
-
-function mapCourseToCard(course: Course, index: number): CourseCardData {
-  const style = DEFAULT_CARD_STYLES[index % DEFAULT_CARD_STYLES.length];
-  const hoursInCar = Number(course.hours_in_car ?? 0);
-  const hoursInClassroom = Number(course.hours_in_classroom ?? 0);
-  const totalHours = hoursInCar + hoursInClassroom;
-
-  return {
-    title: course.name?.trim() || courseSectionData.cards[index]?.title || "Course",
-    price: `$${course.course_price ?? 0}`,
-    duration: totalHours > 0 ? `${totalHours} Hours` : "Flexible Schedule",
-    practice: {
-      label: "Car Practice",
-      value: hoursInCar > 0 ? `${hoursInCar} Hours` : "Contact Us",
-    },
-    classroom: {
-      label: "Classroom Practice",
-      value: hoursInClassroom > 0 ? `${hoursInClassroom} Hours` : "Contact Us",
-    },
-    features: course.features
-      .map((feature) => feature.title?.trim())
-      .filter((feature): feature is string => Boolean(feature)) || [],
-    theme: style.theme,
-    ellipse: style.ellipse,
-    badge: style.badge,
-  };
-}
-
-try {
-  const groups = await getCourseGroups();
-
-  const groupsFromApi = groups
-    .map((courseType: CourseGroup) => {
-      const tab = courseType.name?.trim();
-
-      if (!tab) {
-        return null;
-      }
-
-      return {
-        tab,
-        cards: courseType.courses.map((course, index) => mapCourseToCard(course, index)),
-      };
-    })
-    .filter((group): group is CourseGroupData => Boolean(group));
-
-  if (groupsFromApi.length) {
-    courseGroups = groupsFromApi;
-    courseTabs = groupsFromApi.map((group) => group.tab);
-    courseCards = groupsFromApi[0]?.cards?.length ? groupsFromApi[0].cards : courseCards;
-  }
-} catch (error) {
-  console.warn("Failed to load course groups for the homepage.", error);
-}
 ---
 
 <Layout
-  title="Coming Soon | Chinook Driving School Calgary"
-  description="Chinook Driving School Calgary - new website coming soon."
+  title="Chinook Driving School Calgary"
+  description="Learn to drive with Chinook Driving School Calgary through certified instructors, flexible lessons, and trusted training programs."
 >
   <Hero />
-  <Courses tabs={courseTabs} cards={courseCards} courseGroups={courseGroups} />
+  <Courses />
   <Features />
-  <Instructors />
   <Stats />
+  <Instructors />
   <FaqSection />
   <ContactInfo />
   <ContactForm />

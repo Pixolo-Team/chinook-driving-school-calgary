@@ -1,7 +1,7 @@
 // REACT //
 import React, { type ChangeEvent, type InputHTMLAttributes, type ReactNode } from "react";
 
-type RadioPropsData = Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "children"> & {
+type RadioPropsData = Omit<InputHTMLAttributes<HTMLInputElement>, "type" | "children" | "content"> & {
   label: string;
   description?: string;
   content?: ReactNode;
@@ -33,9 +33,7 @@ function renderSelectionControl({ checked }: { checked: boolean }): React.JSX.El
       aria-hidden="true"
       className={joinClasses(
         "flex h-5 w-5 shrink-0 items-center justify-center rounded-[4px] border transition-colors duration-200",
-        checked
-          ? "border-[var(--color-n-50)] bg-[var(--color-blue-500)] text-[var(--color-n-50)]"
-          : "border-[var(--color-n-300)] bg-[var(--color-n-50)] text-transparent",
+        checked ? "border-n-50 bg-blue-500 text-n-50" : "border-n-300 bg-n-50 text-transparent",
       )}
     >
       {renderCheckIcon()}
@@ -75,11 +73,11 @@ export default function Radio({
   return (
     <label
       className={joinClasses(
-        "relative flex w-full items-center gap-6 rounded-[8px] border px-[21px] py-[17px] transition-colors duration-200",
-        checked
-          ? "border-[var(--color-blue-100)] bg-[var(--color-n-50)]"
-          : "border-[var(--color-n-300)] bg-[var(--color-n-50)]",
-        disabled ? "opacity-60" : "cursor-default",
+        "relative flex w-full items-center gap-6 rounded-[8px] border px-[21px] py-[17px] transition-[transform,background-color,border-color,color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)]",
+        checked ? "border-blue-500 bg-blue-500 text-n-50" : "border-n-300 bg-n-50 text-n-600",
+        disabled
+          ? "cursor-not-allowed opacity-60"
+          : "cursor-pointer hover:scale-[1.01] hover:shadow-[0_10px_24px_rgba(14,23,43,0.08)]",
         containerClassName,
       )}
     >
@@ -94,7 +92,7 @@ export default function Radio({
 
       {renderSelectionControl({ checked: Boolean(checked) })}
 
-      <span className="min-w-0 flex-1 text-base leading-5" style={{ color: "var(--color-n-950)" }}>
+      <span className={joinClasses("min-w-0 flex-1 text-base leading-5", checked ? "text-n-50" : "text-n-600")}>
         {content ?? (
           <>
             <span className="font-semibold">{label}</span>
