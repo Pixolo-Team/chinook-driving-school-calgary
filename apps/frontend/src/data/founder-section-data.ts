@@ -1,3 +1,5 @@
+import { image } from "motion/react-client";
+
 export const founderSectionData = {
   eyebrow: "Meet Our Founder",
   heading: "Meet Our Founder",
@@ -8,4 +10,7 @@ export const founderSectionData = {
   ],
   name: "Amit",
   title: "Founder & Chief Instructor",
+  // TODO: Update the image source and alt text with the actual founder's image and description.
+  imageSrc: "/assets/images/hero.jpg",
+  imageAlt: "Founder of Chinook Driving School Calgary.",
 };
