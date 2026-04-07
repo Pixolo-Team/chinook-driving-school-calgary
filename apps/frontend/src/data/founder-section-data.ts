@@ -1,4 +1,3 @@
-import { image } from "motion/react-client";
 
 export const founderSectionData = {
   eyebrow: "Meet Our Founder",
