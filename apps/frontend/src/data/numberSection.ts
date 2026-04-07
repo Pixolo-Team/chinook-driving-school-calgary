@@ -1,3 +1,8 @@
+export const statHeaderData = {
+  eyebrow: "Our Track Record",
+  heading: "Our Driving School in Numbers"
+};
+
 export const numberStatsData = [
   {
     icon: "user-check-validate",
