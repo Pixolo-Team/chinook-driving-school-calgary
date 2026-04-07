@@ -1,9 +1,7 @@
 ---
 // COMPONENTS //
 import { Icon } from "astro-icon/components";
-import { Image } from "astro:assets";
 import Button from "@/components/ui/Button.astro";
-import Chip from "@/components/ui/Chip.astro";
 
 // CONSTANTS //
 import { URLS } from "@/infrastructure/constants/urls";
@@ -27,7 +25,7 @@ interface CourseCardProps {
     label: string;
     value: string;
   };
-  classroom: {
+  classroom?: {
     label: string;
     value: string;
   };
@@ -38,9 +36,12 @@ interface CourseCardProps {
 }
 
 const card = Astro.props as CourseCardProps;
+const hasClassroomHours = Boolean(card.classroom?.value?.trim());
 ---
 
 <div class="relative flex h-full w-full">
+  
+  <!-- Most Popular Badge -->
   {
     card.badge && (
       <div class="absolute top-0 left-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 md:block">
@@ -51,6 +52,7 @@ const card = Astro.props as CourseCardProps;
     )
   }
 
+  <!-- Course Details Card -->
   <div
     class:list={[
       "relative flex h-full w-full flex-col justify-between overflow-hidden rounded-4xl border p-5 lg:p-6 2xl:p-10",
@@ -59,21 +61,23 @@ const card = Astro.props as CourseCardProps;
         : "border-n-300 bg-n-50 text-n-800",
     ]}
   >
-    <Image
-      src={ellipseMap[card.ellipse]}
-      alt=""
-      width={353}
-      height={353}
+    
+    <!-- Ellipse Background -->
+    <div
       class:list={[
-        "pointer-events-none absolute -right-36 -bottom-22 w-56 opacity-100 md:-right-22 md:-bottom-30 lg:w-60 2xl:-right-26 2xl:-bottom-36 2xl:w-72",
+        "absolute top-1/2 left-1/2 size-88 rounded-full bg-blue-100 opacity-30",
         card.theme === "brand" ? "opacity-90" : "opacity-100",
       ]}
-      aria-hidden="true"
-    />
+    >
+    </div>
 
     <div class="relative z-10 flex flex-col gap-5 lg:gap-6">
+      
+      <!-- Course Title & Price -->
       <div class="flex items-start justify-between gap-3">
-        <div class="flex min-w-0 flex-1 flex-col gap-3">
+        <div class="flex flex-1 flex-col gap-3">
+          
+          <!-- Course Title -->
           <p
             class:list={[
               "text-sm leading-tight font-bold tracking-[1.4px] uppercase",
@@ -82,6 +86,8 @@ const card = Astro.props as CourseCardProps;
           >
             {card.title}
           </p>
+          
+          <!-- Course Price -->
           <div class="flex items-end gap-1">
             <p
               class:list={[
@@ -101,15 +107,16 @@ const card = Astro.props as CourseCardProps;
             </p>
           </div>
         </div>
-
-        <div class="shrink-0 self-start">
-          <Chip duration={card.duration} theme={card.theme} />
-        </div>
       </div>
 
+      
       <div class="flex flex-col gap-4">
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+          
+          
           <div class="flex flex-1 items-center gap-3 2xl:flex-none">
+            
+            <!-- Car Practice Icon -->
             <div
               class:list={[
                 "flex size-8 items-center justify-center rounded-2xl",
@@ -117,11 +124,13 @@ const card = Astro.props as CourseCardProps;
               ]}
             >
               <Icon
-                name={card.theme === "brand" ? "steering-wheel-inverse" : "steering-wheel"}
+                name={card.theme === "brand" ? "steering-wheel" : "steering-wheel"}
                 class:list={["size-4", card.theme === "brand" ? "text-n-50" : "text-n-800"]}
                 aria-hidden="true"
               />
             </div>
+
+            <!-- Car Practice Details -->
             <div class="flex flex-col leading-tight">
               <p
                 class:list={[
@@ -142,56 +151,67 @@ const card = Astro.props as CourseCardProps;
             </div>
           </div>
 
-          <div
-            class:list={[
-              "hidden h-8 w-px md:block",
-              card.theme === "brand" ? "bg-n-50/30" : "bg-n-200",
-            ]}
-          >
-          </div>
+          {
+            hasClassroomHours && (
+              <>
+                <!-- Divider Line -->
+                <div
+                  class:list={[
+                    "hidden h-8 w-px md:block",
+                    card.theme === "brand" ? "bg-n-50/30" : "bg-n-200",
+                  ]}
+                >
+                </div>
 
-          <div
-            class:list={[
-              "block h-px w-full md:hidden",
-              card.theme === "brand" ? "bg-blue-200" : "bg-n-200",
-            ]}
-          >
-          </div>
+                <div
+                  class:list={[
+                    "block h-px w-full md:hidden",
+                    card.theme === "brand" ? "bg-blue-200" : "bg-n-200",
+                  ]}
+                >
+                </div>
 
-          <div class="flex flex-1 items-center gap-3">
-            <div
-              class:list={[
-                "flex size-8 items-center justify-center rounded-2xl",
-                card.theme === "brand" ? "bg-n-50/13" : "bg-blue-500/10 text-blue-500",
-              ]}
-            >
-              <Icon
-                name={card.theme === "brand"
-                  ? "whiteboard-classroom-course-inverse"
-                  : "whiteboard-classroom-course"}
-                class:list={["size-4", card.theme === "brand" ? "text-n-50" : "text-n-800"]}
-                aria-hidden="true"
-              />
-            </div>
-            <div class="flex flex-col leading-tight">
-              <p
-                class:list={[
-                  "text-xs font-medium",
-                  card.theme === "brand" ? "text-n-200" : "text-n-500",
-                ]}
-              >
-                {card.classroom.label}
-              </p>
-              <p
-                class:list={[
-                  "text-lg leading-tight font-bold",
-                  card.theme === "brand" ? "text-n-50" : "text-n-800",
-                ]}
-              >
-                {card.classroom.value}
-              </p>
-            </div>
-          </div>
+                <div class="flex flex-1 items-center gap-3">
+                  
+                  <!-- Classroom Icon -->
+                  <div
+                    class:list={[
+                      "flex size-8 items-center justify-center rounded-2xl",
+                      card.theme === "brand" ? "bg-n-50/13" : "bg-blue-500/10 text-blue-500",
+                    ]}
+                  >
+                    <Icon
+                      name={card.theme === "brand"
+                        ? "whiteboard-classroom-course-inverse"
+                        : "whiteboard-classroom-course"}
+                      class:list={["size-4", card.theme === "brand" ? "text-n-50" : "text-n-800"]}
+                      aria-hidden="true"
+                    />
+                  </div>
+                  
+                  <!-- Classroom Hours Details -->
+                  <div class="flex flex-col leading-tight">
+                    <p
+                      class:list={[
+                        "text-xs font-medium",
+                        card.theme === "brand" ? "text-n-200" : "text-n-500",
+                      ]}
+                    >
+                      {card.classroom?.label}
+                    </p>
+                    <p
+                      class:list={[
+                        "text-lg leading-tight font-bold",
+                        card.theme === "brand" ? "text-n-50" : "text-n-800",
+                      ]}
+                    >
+                      {card.classroom?.value}
+                    </p>
+                  </div>
+                </div>
+              </>
+            )
+          }
         </div>
 
         <div class="flex flex-col gap-2.5">
@@ -208,7 +228,7 @@ const card = Astro.props as CourseCardProps;
                 />
                 <p
                   class:list={[
-                    "text-sm leading-snug",
+                    "text-sm leading-5",
                     card.theme === "brand" ? "text-n-50 font-semibold" : "text-n-800 font-normal",
                   ]}
                 >

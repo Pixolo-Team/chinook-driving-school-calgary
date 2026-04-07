@@ -11,7 +11,7 @@ interface CourseTypeRow {
 }
 
 interface CourseRow {
-  array_of_features?: string[] | null;
+  features?: string[] | null;
   course_price?: number | string | null;
   course_type_id: string;
   hours_in_car?: number | string | null;
@@ -111,7 +111,7 @@ export async function getCourseGroups(): Promise<CourseGroup[]> {
       hours_in_car: course.hours_in_car,
       hours_in_classroom: course.hours_in_classroom,
       image: course.image,
-      features: (course.array_of_features || []).map((feature) => ({
+      features: (course.features || []).map((feature) => ({
         title: feature,
       })),
     });

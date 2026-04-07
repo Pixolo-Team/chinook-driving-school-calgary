@@ -2,12 +2,14 @@ import { courseSectionData } from "@/data/courses";
 import { getCourseGroups, type Course, type CourseGroup } from "@/data/courses-api";
 import type { CourseCardData, CourseGroupData } from "@/types/course";
 
+// Rotated across cards so the API-driven list keeps the same visual rhythm as the static design.
 const DEFAULT_CARD_STYLES = [
   { theme: "light", ellipse: "light" },
   { theme: "brand", ellipse: "blue", badge: "Most Popular" },
   { theme: "light", ellipse: "light-alt" },
 ] as const;
 
+// Static content used when the API is unavailable or returns empty groups.
 export const fallbackCourseTabs = courseSectionData.tabs;
 export const fallbackCourseCards = courseSectionData.cards;
 export const fallbackCourseGroups: CourseGroupData[] = courseSectionData.tabs.map((tab, index) => ({
@@ -22,6 +24,7 @@ export interface CourseSectionData {
 }
 
 export function mapCourseToCard(course: Course, index: number): CourseCardData {
+  // Reuse the predefined card treatments in a repeating sequence.
   const style = DEFAULT_CARD_STYLES[index % DEFAULT_CARD_STYLES.length];
   const hoursInCar = Number(course.hours_in_car ?? 0);
   const hoursInClassroom = Number(course.hours_in_classroom ?? 0);
@@ -35,10 +38,12 @@ export function mapCourseToCard(course: Course, index: number): CourseCardData {
       label: "Car Practice",
       value: hoursInCar > 0 ? `${hoursInCar} Hours` : "Contact Us",
     },
-    classroom: {
-      label: "Classroom Practice",
-      value: hoursInClassroom > 0 ? `${hoursInClassroom} Hours` : "Contact Us",
-    },
+    classroom: hoursInClassroom > 0
+      ? {
+          label: "Classroom Practice",
+          value: `${hoursInClassroom} Hours`,
+        }
+      : undefined,
     features: course.features
       .map((feature) => feature.title?.trim())
       .filter((feature): feature is string => Boolean(feature)),
@@ -51,6 +56,8 @@ export function mapCourseToCard(course: Course, index: number): CourseCardData {
 export function mapCourseGroupsToCardGroups(groups: CourseGroup[]): CourseGroupData[] {
   return groups
     .map((courseType) => {
+      
+      // Ignore unnamed groups so tabs always have a usable label.
       const tab = courseType.name?.trim();
 
       if (!tab) {
@@ -66,6 +73,7 @@ export function mapCourseGroupsToCardGroups(groups: CourseGroup[]): CourseGroupD
 }
 
 export async function getCourseSectionData(): Promise<CourseSectionData> {
+  // Keep a ready-to-use fallback so the section still renders if the API fails.
   const fallbackData: CourseSectionData = {
     tabs: fallbackCourseTabs,
     cards: fallbackCourseCards,

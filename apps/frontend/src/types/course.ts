@@ -6,7 +6,7 @@ export interface CourseCardData {
     label: string;
     value: string;
   };
-  classroom: {
+  classroom?: {
     label: string;
     value: string;
   };
