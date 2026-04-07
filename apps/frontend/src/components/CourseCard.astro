@@ -21,7 +21,7 @@ interface CourseCardProps {
   title: string;
   price: string;
   duration: string;
-  practice: {
+  practice?: {
     label: string;
     value: string;
   };
@@ -36,7 +36,9 @@ interface CourseCardProps {
 }
 
 const card = Astro.props as CourseCardProps;
+const hasPracticeHours = Boolean(card.practice?.value?.trim());
 const hasClassroomHours = Boolean(card.classroom?.value?.trim());
+const showDivider = hasPracticeHours && hasClassroomHours;
 ---
 
 <div class="relative flex h-full w-full">
@@ -114,45 +116,49 @@ const hasClassroomHours = Boolean(card.classroom?.value?.trim());
         <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
           
           
-          <div class="flex flex-1 items-center gap-3 2xl:flex-none">
-            
-            <!-- Car Practice Icon -->
-            <div
-              class:list={[
-                "flex size-8 items-center justify-center rounded-2xl",
-                card.theme === "brand" ? "bg-n-50/13" : "bg-blue-500/10 text-blue-500",
-              ]}
-            >
-              <Icon
-                name={card.theme === "brand" ? "steering-wheel" : "steering-wheel"}
-                class:list={["size-4", card.theme === "brand" ? "text-n-50" : "text-n-800"]}
-                aria-hidden="true"
-              />
-            </div>
+          {
+            hasPracticeHours && (
+              <div class="flex flex-1 items-center gap-3 2xl:flex-none">
+                
+                <!-- Car Practice Icon -->
+                <div
+                  class:list={[
+                    "flex size-8 items-center justify-center rounded-2xl",
+                    card.theme === "brand" ? "bg-n-50/13" : "bg-blue-500/10 text-blue-500",
+                  ]}
+                >
+                  <Icon
+                    name={card.theme === "brand" ? "steering-wheel" : "steering-wheel"}
+                    class:list={["size-4", card.theme === "brand" ? "text-n-50" : "text-n-800"]}
+                    aria-hidden="true"
+                  />
+                </div>
 
-            <!-- Car Practice Details -->
-            <div class="flex flex-col leading-tight">
-              <p
-                class:list={[
-                  "text-xs font-medium",
-                  card.theme === "brand" ? "text-n-200" : "text-n-500",
-                ]}
-              >
-                {card.practice.label}
-              </p>
-              <p
-                class:list={[
-                  "text-lg leading-tight font-bold",
-                  card.theme === "brand" ? "text-n-50" : "text-n-800",
-                ]}
-              >
-                {card.practice.value}
-              </p>
-            </div>
-          </div>
+                <!-- Car Practice Details -->
+                <div class="flex flex-col leading-tight">
+                  <p
+                    class:list={[
+                      "text-xs font-medium",
+                      card.theme === "brand" ? "text-n-200" : "text-n-500",
+                    ]}
+                  >
+                    {card.practice?.label}
+                  </p>
+                  <p
+                    class:list={[
+                      "text-lg leading-tight font-bold",
+                      card.theme === "brand" ? "text-n-50" : "text-n-800",
+                    ]}
+                  >
+                    {card.practice?.value}
+                  </p>
+                </div>
+              </div>
+            )
+          }
 
           {
-            hasClassroomHours && (
+            showDivider && (
               <>
                 <!-- Divider Line -->
                 <div
@@ -170,7 +176,12 @@ const hasClassroomHours = Boolean(card.classroom?.value?.trim());
                   ]}
                 >
                 </div>
+              </>
+            )
+          }
 
+          {
+            hasClassroomHours && (
                 <div class="flex flex-1 items-center gap-3">
                   
                   <!-- Classroom Icon -->
@@ -209,7 +220,6 @@ const hasClassroomHours = Boolean(card.classroom?.value?.trim());
                     </p>
                   </div>
                 </div>
-              </>
             )
           }
         </div>

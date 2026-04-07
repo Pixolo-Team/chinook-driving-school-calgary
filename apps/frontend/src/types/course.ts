@@ -2,7 +2,7 @@ export interface CourseCardData {
   title: string;
   price: string;
   duration: string;
-  practice: {
+  practice?: {
     label: string;
     value: string;
   };

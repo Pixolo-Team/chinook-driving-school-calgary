@@ -34,10 +34,12 @@ export function mapCourseToCard(course: Course, index: number): CourseCardData {
     title: course.name?.trim() || courseSectionData.cards[index]?.title || "Course",
     price: `$${course.course_price ?? 0}`,
     duration: totalHours > 0 ? `${totalHours} Hours` : "Flexible Schedule",
-    practice: {
-      label: "Car Practice",
-      value: hoursInCar > 0 ? `${hoursInCar} Hours` : "Contact Us",
-    },
+    practice: hoursInCar > 0
+      ? {
+          label: "Car Practice",
+          value: `${hoursInCar} Hours`,
+        }
+      : undefined,
     classroom: hoursInClassroom > 0
       ? {
           label: "Classroom Practice",
