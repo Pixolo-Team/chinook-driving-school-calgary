@@ -21,6 +21,8 @@ import { founderSectionData } from "@/data/founder-section-data";
       <div class="h-70.25 w-full rounded-3xl bg-n-100 md:h-114 md:rounded-4xl lg:h-135 lg:w-116.5"></div>
 
       <div class="flex w-full flex-col gap-7 md:gap-11 lg:gap-12">
+        
+        <!-- Founder Story Paragraph -->
         <div class="flex w-full flex-col gap-4 text-sm text-n-800 md:gap-5 md:text-base lg:gap-6 lg:text-lg">
           {founderSectionData.paragraphs.map((paragraph) => (
             <p>{paragraph}</p>
@@ -28,7 +30,11 @@ import { founderSectionData } from "@/data/founder-section-data";
         </div>
 
         <div class="flex w-full items-center gap-2.5 border-t border-n-300 pt-4 md:gap-3.5 md:pt-5 lg:gap-4 lg:pt-6">
+          
+          <!-- Decorative Black Element -->
           <span class="h-12 w-1 bg-n-950"></span>
+          
+          <!-- Founder Name and Title -->
           <div class="flex flex-col items-start gap-1">
             <p class="text-lg font-bold text-n-700 md:text-xl">
               {founderSectionData.name}
