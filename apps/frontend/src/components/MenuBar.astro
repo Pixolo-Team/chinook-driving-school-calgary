@@ -30,39 +30,35 @@ const navLabel = variant === "primary" ? "Primary" : "Floating navigation";
 <nav aria-label={navLabel} class={navClassName}>
   {
     navItems.map((item) => {
-      // Determine if the current menu item is active based on the URL.
       const isActiveLink = getIsActiveLink(item.url);
 
       return (
-        // Menu links
         <a
           href={item.url}
           aria-current={isActiveLink ? "page" : undefined}
           class:list={[
-            "group text-xs leading-5 whitespace-nowrap transition-colors duration-200 focus:outline-none lg:text-sm",
+            "group text-xs leading-5 whitespace-nowrap transition-colors duration-200 lg:text-sm",
+            "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-sm",
+
             variant === "primary" && [
-              "dynamic-menu-link", // JS hook we added in the main header
+              "dynamic-menu-link",
               isActiveLink ? "font-semibold" : "font-medium",
               isHome ? "text-n-100 hover:text-white" : "text-n-900 hover:text-n-600"
             ],
-            
-            // Floating Variant Logic
             variant === "floating" && [
               isActiveLink ? "font-semibold text-blue-500" : "text-n-800 font-medium hover:text-blue-500"
             ]
           ]}
         >
           <span class:list={["relative inline-flex", variant === "floating" && "px-1 lg:px-1.5"]}>
-            {/* Menu item name */}
             <span>{item.name}</span>
 
-            {/* Keep the active underline visible and animate the same underline in on hover for other items. */}
             <span
               class:list={[
                 "absolute left-1/2 -translate-x-1/2 rounded-lg transition-all duration-200 ease-out",
                 isActiveLink
                   ? "scale-x-100 opacity-100"
-                  : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100",
+                  : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100 group-focus-visible:scale-x-100 group-focus-visible:opacity-100",
                 variant === "primary"
                   ? "bg-current -bottom-3 h-0.5 w-full"
                   : "inset-x-0 -bottom-4 h-1 w-full bg-blue-500 lg:-bottom-6",
