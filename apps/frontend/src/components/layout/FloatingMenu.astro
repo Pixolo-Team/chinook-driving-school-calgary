@@ -1,7 +1,10 @@
 ---
+// COMPONENTS //
 import BrandLogo from "@/components/common/BrandLogo.astro";
 import Button from "@/components/ui/Button.astro";
 import MenuBar from "@/components/MenuBar.astro";
+
+// CONSTANTS //
 import { URLS } from "@/infrastructure/constants/urls";
 
 // DATA //
@@ -18,10 +21,9 @@ import { menuItems } from "@/data/menu";
   <div class="mx-auto w-full max-w-screen-2xl px-4 lg:px-5">
     <div
       id="floating-menu"
-      class="outline-n-300 bg-n-50 pointer-events-none mx-auto flex w-full rounded-3xl max-w-248.5 items-center overflow-hidden px-4 py-2 opacity-0 shadow-lg outline-2 lg:px-5 lg:py-2.5"
+      class="outline-n-300 bg-n-50 pointer-events-none mx-auto flex w-full max-w-248.5 items-center overflow-hidden rounded-full px-4 py-2 opacity-0 shadow-lg outline-2 lg:px-5 lg:py-2.5"
     >
       <div class="flex w-full items-center justify-between">
-        
         <!-- Brand Logo -->
         <a href="/" aria-label="Chinook Driving Academy home" class="shrink-0">
           <BrandLogo
@@ -39,7 +41,12 @@ import { menuItems } from "@/data/menu";
           <!-- Menu Button Group -->
           <div class="flex items-center gap-2 lg:gap-2.5">
             <Button buttonText="Enroll Now" className="w-26.5" href={URLS.ENROLL} />
-            <Button buttonText="Call Us" rightIcon="phone-icon" variant="outline" href={URLS.CONTACT} />
+            <Button
+              buttonText="Call Us"
+              rightIcon="phone-icon"
+              variant="outline"
+              href={URLS.CONTACT}
+            />
           </div>
         </div>
       </div>

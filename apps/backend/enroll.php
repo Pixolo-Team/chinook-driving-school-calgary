@@ -23,6 +23,14 @@ declare(strict_types=1);
 // ---------------------------------------------------------------------------
 
 header('Content-Type: application/json');
+header('Access-Control-Allow-Origin: *');
+header('Access-Control-Allow-Methods: POST, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(204);
+    exit;
+}
 
 require_once __DIR__ . '/helper/utils.php';
 require_once __DIR__ . '/helper/supabase.php';
@@ -46,7 +54,13 @@ const AVAILABILITY_SLOTS_TABLE = 'availability_slots';
 // ---------------------------------------------------------------------------
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    respond(405, ['success' => false, 'message' => 'Method Not Allowed']);
+    respond(405, [
+        'status' => false,
+        'status_code' => 405,
+        'message' => 'Method Not Allowed',
+        'data' => null,
+        'error' => 'Method Not Allowed',
+    ]);
 }
 
 // ---------------------------------------------------------------------------
@@ -66,16 +80,12 @@ requireField($input, 'student_first_name',            $errors);
 requireField($input, 'student_last_name',             $errors);
 requireField($input, 'student_address',               $errors);
 requireField($input, 'student_city',                  $errors);
-requireField($input, 'student_state',                 $errors);
 requireField($input, 'student_postal_code',           $errors);
 requireField($input, 'student_email',                 $errors);
 requireField($input, 'student_mobile_phone_number',   $errors);
 requireField($input, 'student_date_of_birth',         $errors);
 requireField($input, 'license_status',                $errors);
 requireField($input, 'driving_experience',            $errors);
-requireField($input, 'availability_date',             $errors);
-requireField($input, 'avilability_time_slots',        $errors);
-requireField($input, 'availability_days_of_week',     $errors);
 requireField($input, 'payment_method',                $errors);
 requireField($input, 'amount',                        $errors);
 requireField($input, 'did_agree_conditions',          $errors, 'did_agree_conditions is required');
@@ -91,8 +101,8 @@ if (!isset($errors['course'])) {
         $course = $input['course'];
 
         // Ensure all four course amount fields are present and numeric
-        if (!isset($course['course_id'])) {
-            $errors['course.course_id'] = 'course.course_id is required';
+        if (!isset($course['id'])) {
+            $errors['course.id'] = 'course.id is required';
         }
         if (!isset($course['course_price']) || !isValidAmount($course['course_price'])) {
             $errors['course.course_price'] = 'course.course_price is required and must be a non-negative number';
@@ -140,7 +150,12 @@ if (isset($input['student_date_of_birth']) && !isValidDate($input['student_date_
     $errors['student_date_of_birth'] = 'student_date_of_birth must be in Y-m-d format';
 }
 
-if (isset($input['availability_date']) && !isValidDate($input['availability_date'])) {
+if (
+    isset($input['availability_date']) &&
+    $input['availability_date'] !== null &&
+    $input['availability_date'] !== '' &&
+    !isValidDate($input['availability_date'])
+) {
     $errors['availability_date'] = 'availability_date must be in Y-m-d format';
 }
 
@@ -165,9 +180,9 @@ if (isset($input['payment_method']) && !in_array($input['payment_method'], ALLOW
 }
 
 // Validate each day in the availability_days_of_week array
-if (!isset($errors['availability_days_of_week'])) {
-    if (!is_array($input['availability_days_of_week']) || count($input['availability_days_of_week']) === 0) {
-        $errors['availability_days_of_week'] = 'availability_days_of_week must be a non-empty array';
+if (array_key_exists('availability_days_of_week', $input) && !isset($errors['availability_days_of_week'])) {
+    if (!is_array($input['availability_days_of_week'])) {
+        $errors['availability_days_of_week'] = 'availability_days_of_week must be an array';
     } else {
         foreach ($input['availability_days_of_week'] as $index => $day) {
             if (!in_array($day, ALLOWED_DAYS_OF_WEEK, true)) {
@@ -178,9 +193,9 @@ if (!isset($errors['availability_days_of_week'])) {
 }
 
 // Validate each time slot object within avilability_time_slots
-if (!isset($errors['avilability_time_slots'])) {
-    if (!is_array($input['avilability_time_slots']) || count($input['avilability_time_slots']) === 0) {
-        $errors['avilability_time_slots'] = 'avilability_time_slots must be a non-empty array';
+if (array_key_exists('avilability_time_slots', $input) && !isset($errors['avilability_time_slots'])) {
+    if (!is_array($input['avilability_time_slots'])) {
+        $errors['avilability_time_slots'] = 'avilability_time_slots must be an array';
     } else {
         foreach ($input['avilability_time_slots'] as $index => $slot) {
             if (!is_array($slot)) {
@@ -231,7 +246,7 @@ $hasLicense = isset($input['license_status']) && $input['license_status'] !== 'n
 if ($hasLicense) {
     // License number, region, type, and both dates are required
     if (!isNonEmptyString($input['license_number'] ?? null)) {
-        $errors['license_number'] = 'license_number is required when license_status is not none';
+        $errors['license_number'] = 'license_number is required when license_status is not None';
     }
 
     if (!isNonEmptyString($input['license_issuing_region'] ?? null) || !in_array($input['license_issuing_region'], ALLOWED_LICENSE_REGIONS, true)) {
@@ -242,12 +257,22 @@ if ($hasLicense) {
         $errors['license_type'] = 'Valid license_type is required';
     }
 
-    if (!isNonEmptyString($input['license_issue_date'] ?? null) || !isValidDate($input['license_issue_date'])) {
-        $errors['license_issue_date'] = 'license_issue_date is required and must be Y-m-d';
+    if (
+        isset($input['license_issue_date']) &&
+        $input['license_issue_date'] !== null &&
+        $input['license_issue_date'] !== '' &&
+        !isValidDate($input['license_issue_date'])
+    ) {
+        $errors['license_issue_date'] = 'license_issue_date must be Y-m-d when provided';
     }
 
-    if (!isNonEmptyString($input['license_expiry_date'] ?? null) || !isValidDate($input['license_expiry_date'])) {
-        $errors['license_expiry_date'] = 'license_expiry_date is required and must be Y-m-d';
+    if (
+        isset($input['license_expiry_date']) &&
+        $input['license_expiry_date'] !== null &&
+        $input['license_expiry_date'] !== '' &&
+        !isValidDate($input['license_expiry_date'])
+    ) {
+        $errors['license_expiry_date'] = 'license_expiry_date must be Y-m-d when provided';
     }
 }
 
@@ -263,8 +288,8 @@ if ($courseTotal !== null && $inputAmount !== null && round($courseTotal, 2) !==
     $errors['amount'] = 'amount must equal course.total_amount';
 }
 
-// Card fields are required only for CREDIT_CARD and DEBIT_CARD payments
-$requiresCard = isset($input['payment_method']) && in_array($input['payment_method'], ['CREDIT_CARD', 'DEBIT_CARD'], true);
+// Card fields are required only for card payments
+$requiresCard = isset($input['payment_method']) && $input['payment_method'] === 'card';
 
 if ($requiresCard) {
     if (!isNonEmptyString($input['name_on_card'] ?? null)) {
@@ -291,9 +316,11 @@ if (!isset($input['did_agree_conditions']) || $input['did_agree_conditions'] !==
 
 if (!empty($errors)) {
     respond(422, [
-        'success' => false,
+        'status' => false,
+        'status_code' => 422,
         'message' => 'Validation failed',
-        'errors'  => $errors,
+        'data'  => $errors,
+        'error' => 'Validation failed',
     ]);
 }
 
@@ -326,7 +353,7 @@ $studentRow = [
 
 $enrollmentRow = [
     'student_id'           => null, // filled after student insert
-    'course_id'            => $input['course']['course_id'],
+    'course_id'            => $input['course']['id'],
     'session_type'         => $input['session_type'],
     'course_price'         => (float)$input['course']['course_price'],
     'tax_amount'           => (float)$input['course']['tax_amount'],
@@ -355,12 +382,27 @@ if ($requiresCard) {
     ];
 }
 
-$availabilityRow = [
-    'enrollment_id' => null, // filled after enrollment insert
-    'start_date'    => $input['availability_date'],
-    'days_of_week'  => $input['availability_days_of_week'],
-    'time_slots'    => $input['avilability_time_slots'],
-];
+$availabilityTimeSlots = is_array($input['avilability_time_slots'] ?? null)
+    ? $input['avilability_time_slots']
+    : [];
+
+$availabilityDaysOfWeek = is_array($input['availability_days_of_week'] ?? null)
+    ? $input['availability_days_of_week']
+    : [];
+
+$availabilityRow = null;
+
+if (count($availabilityTimeSlots) > 0) {
+    $availabilityRow = [
+        'enrollment_id' => null, // filled after enrollment insert
+        'days_of_week'  => $availabilityDaysOfWeek,
+        'time_slots'    => $availabilityTimeSlots,
+    ];
+
+    if (isset($input['availability_date']) && $input['availability_date'] !== '') {
+        $availabilityRow['start_date'] = $input['availability_date'];
+    }
+}
 
 // ---------------------------------------------------------------------------
 // Step 12: Insert rows in dependency order; roll back on any failure
@@ -384,7 +426,6 @@ try {
 
     // Insert the enrollment, linking it to the new student
     $enrollmentRow['student_id'] = $studentId;
-    print_r($enrollmentRow);
     $enrollmentInsert = supabaseInsert(ENROLLMENTS_TABLE, $enrollmentRow);
     if (!$enrollmentInsert['ok'] || empty($enrollmentInsert['data'][0]['id'])) {
         throw new RuntimeException('Failed to insert enrollment: ' . $enrollmentInsert['error']);
@@ -410,16 +451,19 @@ try {
     }
 
     // Insert the availability slots, linked to the enrollment
-    $availabilityRow['enrollment_id'] = $enrollmentId;
-    $availabilityInsert = supabaseInsert(AVAILABILITY_SLOTS_TABLE, $availabilityRow);
-    if (!$availabilityInsert['ok'] || empty($availabilityInsert['data'][0]['id'])) {
-        throw new RuntimeException('Failed to insert availability slots: ' . $availabilityInsert['error']);
+    if ($availabilityRow !== null) {
+        $availabilityRow['enrollment_id'] = $enrollmentId;
+        $availabilityInsert = supabaseInsert(AVAILABILITY_SLOTS_TABLE, $availabilityRow);
+        if (!$availabilityInsert['ok'] || empty($availabilityInsert['data'][0]['id'])) {
+            throw new RuntimeException('Failed to insert availability slots: ' . $availabilityInsert['error']);
+        }
+        $availabilityId = (string)$availabilityInsert['data'][0]['id'];
     }
-    $availabilityId = (string)$availabilityInsert['data'][0]['id'];
 
     // All inserts succeeded – return the IDs of the created records
     respond(201, [
-        'success' => true,
+        'status' => true,
+        'status_code' => 201,
         'message' => 'Enrollment created successfully',
         'data'    => [
             'student_id'          => $studentId,
@@ -428,6 +472,7 @@ try {
             'card_information_id' => $cardInfoId,
             'availability_id'     => $availabilityId,
         ],
+        'error' => '',
     ]);
 
 } catch (Throwable $e) {
@@ -451,8 +496,10 @@ try {
     }
 
     respond(500, [
-        'success' => false,
+        'status' => false,
+        'status_code' => 500,
         'message' => 'Enrollment creation failed',
+        'data'   => null,
         'error'   => $e->getMessage(),
     ]);
 }
