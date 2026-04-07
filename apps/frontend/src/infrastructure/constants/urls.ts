@@ -2,7 +2,7 @@ export const API_URL = "http://pixoloproductions.com/api/";
 
 export const URLS = {
   HOME: "/",
-  ABOUT: "/about-us",
+  ABOUT: "/about",
   COURSES: "/courses",
   CONTACT: "/contact",
   ENROLL: "/enroll",
