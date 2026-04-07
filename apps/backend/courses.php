@@ -124,8 +124,8 @@ foreach ($courses['data'] as $course) {
 
     $features = [];
 
-    if (!empty($course['array_of_features'])) {
-        foreach ($course['array_of_features'] as $feature) {
+    if (!empty($course['features'])) {
+        foreach ($course['features'] as $feature) {
             $features[] = ['title' => $feature];
         }
     }
