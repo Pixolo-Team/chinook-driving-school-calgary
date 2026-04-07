@@ -5,7 +5,6 @@ import Button from "@/components/ui/Button.astro";
 
 import { ctaData } from "@/data/cta";
 
-const ctaImage = "https://www.figma.com/api/mcp/asset/647c0024-8faa-4a44-94bc-b5ecb10f08a1";
 ---
 
 <section class="bg-n-50">
@@ -16,8 +15,8 @@ const ctaImage = "https://www.figma.com/api/mcp/asset/647c0024-8faa-4a44-94bc-b5
       class="bg-n-50 relative h-[240px] w-full overflow-hidden rounded-3xl md:h-[387px] lg:h-[449px] lg:w-[595px] lg:shrink-0"
     >
       <Image
-        src={ctaImage}
-        alt="Student giving a thumbs up after a driving lesson"
+        src={ctaData.imageSrc}
+        alt={ctaData.imageAlt}
         width={822}
         height={548}
         class="h-full w-full object-cover object-[68%_center]"
