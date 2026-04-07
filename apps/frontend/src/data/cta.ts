@@ -1,5 +1,3 @@
-import { image } from "motion/react-client";
-
 export const ctaData = {
   eyebrow: "New To Driving?",
   heading: "Start Your Driving Journey Today",
