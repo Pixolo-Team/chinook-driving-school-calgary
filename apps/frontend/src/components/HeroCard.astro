@@ -8,6 +8,7 @@ interface Props {
   description: string;
   illustration: ImageMetadata;
   illustrationAlt?: string;
+  flipImage?: boolean; 
 }
 
 const {
@@ -15,6 +16,7 @@ const {
   description,
   illustration,
   illustrationAlt = title,
+  flipImage = false, 
 } = Astro.props as Props;
 ---
 
@@ -32,7 +34,9 @@ const {
     <Image
       src={illustration}
       alt={illustrationAlt}
-      class="h-full w-full object-cover object-top grayscale md:object-[center_top_8%] lg:object-top"
+      class={`h-full w-full object-cover object-top grayscale md:object-[center_top_8%] lg:object-top ${
+    flipImage ? "scale-x-[-1]" : ""
+  }`}
     />
   </div>
 </div>
