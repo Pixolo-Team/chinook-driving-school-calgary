@@ -1,0 +1,39 @@
+---
+import { Image } from "astro:assets";
+import logoMark from "@/../public/images/footer-logo-mark.svg";
+import logoText from "@/../public/images/footer-logo-text.svg";
+
+interface Props {
+  containerClass?: string;
+  markClass?: string;
+  textClass?: string;
+  textAlt?: string;
+}
+
+const {
+  containerClass = "inline-flex h-14 items-center gap-0.5",
+  markClass = "h-full w-auto shrink-0 object-contain",
+  textClass = "h-8 w-auto shrink-0 object-contain",
+  textAlt = "Chinook Driving Academy",
+} = Astro.props as Props;
+---
+
+<div class={containerClass} role="img" aria-label={textAlt}>
+  <Image
+    src={logoMark}
+    alt=""
+    width={65}
+    height={82}
+    class={markClass}
+    loading="lazy"
+    aria-hidden="true"
+  />
+  <Image
+    src={logoText}
+    alt={textAlt}
+    width={144}
+    height={42}
+    class={textClass}
+    loading="lazy"
+  />
+</div>

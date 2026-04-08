@@ -1,14 +1,12 @@
 ---
 // COMPONENTS //
-import { Image } from "astro:assets";
 import Button from "@/components/ui/Button.astro";
 import MenuBar from "@/components/MenuBar.astro";
+import BrandLogo from "@/components/common/BrandLogo.astro"; 
 
 // CONSTANTS //
 import { URLS } from "@/infrastructure/constants/urls";
 
-// SVG's //
-import chinookLogoLight from "@/../public/icons/chinook-logo-light.svg";
 
 // DATA //
 import { menuItems } from "@/data/menu";
@@ -25,17 +23,16 @@ import { menuItems } from "@/data/menu";
   <div class="mx-auto w-full max-w-screen-2xl px-4 lg:px-5">
     <div
       id="floating-menu"
-      class="outline-n-300 bg-n-50 pointer-events-none mx-auto flex w-full max-w-248.5 items-center overflow-hidden rounded-full px-4 py-2 opacity-0 shadow-lg outline-2 lg:px-5 lg:py-2.5"
+      class="outline-n-300 bg-n-50 pointer-events-none mx-auto flex w-full max-w-248.5 items-center overflow-hidden rounded-full px-4 py-2 opacity-0 shadow-lg outline-2 lg:px-5 lg:py-2.5 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
     >
       <div class="flex w-full items-center justify-between">
         <!-- Brand Logo -->
         <a href="/" aria-label="Chinook Driving Academy home" class="shrink-0">
-          <Image
-            src={chinookLogoLight}
-            alt="Chinook Driving Academy"
-            class="h-12 w-auto"
-            width={210}
-            height={82}
+          <BrandLogo
+            containerClass="inline-flex h-12 items-center gap-0.5"
+            markClass="h-full w-auto shrink-0 object-contain"
+            textClass="h-7 w-auto shrink-0 object-contain"
+            textAlt="Chinook Driving Academy"
           />
         </a>
 

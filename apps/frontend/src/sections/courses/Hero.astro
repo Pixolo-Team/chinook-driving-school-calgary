@@ -1,9 +1,6 @@
 ---
 // COMPONENTS //
-import { Image } from "astro:assets";
-
-// IMAGES //
-import heroIllustration from "@/../public/images/courses-hero-illustration.png";
+import HeroCard from "@/components/HeroCard.astro";
 
 // DATA //
 import { coursesHeroSectionData } from "@/data/courses";
@@ -11,27 +8,10 @@ import { coursesHeroSectionData } from "@/data/courses";
 ---
 
 <section class="bg-n-100 overflow-hidden">
-  <!-- Hero Content -->
-  <div class="container mx-auto flex flex-col px-6 pt-22 lg:pt-24 gap-9 md:gap-10 md:px-8 lg:flex-row lg:justify-end lg:gap-10 ">
-      
-      <!-- Hero Text -->
-      <div class="flex flex-col gap-6 md:gap-7 lg:gap-8 lg:pb-32 lg:self-end">
-        <p class="text-3xl font-bold leading-tight text-n-900 md:text-5xl lg:text-6xl">
-          {coursesHeroSectionData.title}
-        </p>
-        <p class="text-sm font-medium leading-6 text-n-700 md:text-lg md:leading-7 lg:text-xl">
-          {coursesHeroSectionData.description}
-          <span class="font-bold">{coursesHeroSectionData.emphasis}</span>
-          {coursesHeroSectionData.descriptionSuffix}
-        </p>
-      </div>
-
-      <div class="flex w-full -scale-x-100 opacity-50 h-[233px] md:h-[550px] overflow-hidden">
-        <Image
-          src={heroIllustration}
-          alt="Hero Illustration"
-          class="w-full h-[150%] object-cover grayscale"
-        />
-      </div>
-  </div>
+  <HeroCard
+    title={coursesHeroSectionData.title}
+    description={coursesHeroSectionData.description}
+    illustration={coursesHeroSectionData.illustration}
+    illustrationAlt={coursesHeroSectionData.illustrationAlt}
+  />
 </section>

@@ -1,8 +1,7 @@
 ---
-import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import Button from "@/components/ui/Button.astro";
-import chinookLogoLight from "@/../public/icons/chinook-logo-light.svg";
+import BrandLogo from "@/components/common/BrandLogo.astro";
 
 // DATA //
 import { menuItems } from "@/data/menu";
@@ -27,12 +26,11 @@ const navigationItems = menuItems.filter((menuItem) => menuItem.url !== "/enroll
     <!-- Top row: brand logo and close action. -->
     <div data-mobile-menu-section class="flex items-center justify-between px-6 py-4">
       <a href="/" aria-label="Chinook Driving Academy home" class="shrink-0">
-        <Image
-          src={chinookLogoLight}
-          alt="Chinook Driving Academy"
-          class="h-14 w-auto"
-          width={210}
-          height={82}
+        <BrandLogo
+          containerClass="inline-flex h-14 items-center gap-0.5"
+          markClass="h-full w-auto shrink-0 object-contain"
+          textClass="h-8 w-auto shrink-0 object-contain"
+          textAlt="Chinook Driving Academy"
         />
       </a>
 
