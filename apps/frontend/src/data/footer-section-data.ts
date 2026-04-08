@@ -29,8 +29,8 @@ export const footerSectionData = {
     },
   ],
   legalLinks: [
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
+    { label: "Privacy Policy", href: URLS.PRIVACY_POLICY },
+    { label: "Terms of Service", href: URLS.TERMS_OF_SERVICE },
   ],
   craftedBy: {
     label: "Crafted by",

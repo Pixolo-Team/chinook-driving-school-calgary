@@ -12,22 +12,31 @@ const { icon, number, title, description } = Astro.props as WhoWeAreCardProps;
 ---
 
 <div
-  class="relative flex h-full w-full flex-col gap-3.5 overflow-hidden rounded-3xl border border-n-200 bg-n-50 px-5 pt-3.5 pb-7 sm:gap-5 sm:px-7 sm:pt-5 sm:pb-9 lg:gap-6 lg:px-8 lg:pt-6 lg:pb-10"
+  class="relative flex h-full w-full flex-col gap-3.5 overflow-hidden rounded-3xl border border-n-200 bg-n-50 px-5 pt-3.5 pb-7 sm:gap-5 sm:px-7 sm:pt-5 sm:pb-9 lg:gap-6 lg:px-8"
 >
-  <span
-    class="pointer-events-none absolute bottom-3 right-4 text-8xl font-bold leading-none text-blue-50 sm:bottom-4 sm:right-6 sm:text-9xl"
+
+<!-- Index Number -->
+<p
+    class="absolute -bottom-2 -right-3 z-0 text-8xl font-bold leading-none text-blue-50 md:text-9xl md:-bottom-4 md:-right-1"
     aria-hidden="true"
   >
     {number}
-  </span>
+</p>
 
-  <Icon name={icon} class="size-8 sm:size-10 lg:size-11" aria-hidden="true" />
+  <!-- Icon -->
+  <Icon
+    name={icon}
+    class="relative z-10 size-8 sm:size-10 lg:size-11"
+    aria-hidden="true"
+  />
 
-  <div class="flex flex-col gap-1">
+  <!-- Title & Description -->
+  <div class="relative z-10 flex flex-col gap-1">
     <p class="text-lg font-bold text-n-800 sm:text-xl lg:text-2xl">
       {title}
     </p>
-    <p class="text-xs leading-[1.4] text-n-800 sm:text-sm lg:text-base">
+
+    <p class="text-xs text-n-800 lg:text-base">
       {description}
     </p>
   </div>
