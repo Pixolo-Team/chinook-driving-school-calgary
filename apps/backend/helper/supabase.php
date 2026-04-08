@@ -133,3 +133,21 @@ function supabaseDeleteById(string $table, string $id): void
     $endpoint = '/rest/v1/' . $table . '?id=eq.' . rawurlencode($id);
     supabaseRequest('DELETE', $endpoint, null, ['Prefer: return=minimal']);
 }
+
+/**
+ * Select all rows from a Supabase table.
+ *
+ * Sends a GET request to the PostgREST REST endpoint for the given table and
+ * returns the normalized result array from {@see supabaseRequest()}.
+ *
+ * @param string $table Name of the target database table.
+ *
+ * @return array Normalized response from {@see supabaseRequest()}.
+ */
+function supabaseSelect(string $table): array
+{
+    // Build the PostgREST REST endpoint for the target table and select all columns
+    $endpoint = '/rest/v1/' . $table . '?select=*';
+
+    return supabaseRequest('GET', $endpoint);
+}
