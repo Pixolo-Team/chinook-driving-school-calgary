@@ -1,16 +1,21 @@
 ---
 // COMPONENTS //
-import { Image } from "astro:assets";
+import ProcessStepCard from "@/components/ProcessStepCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import Tabs from "@/components/ui/Tabs.astro";
 
 // DATA //
-import { processSectionData } from "@/data/process-section-data";
+import { processSectionData } from "@/data/process-data";
+
+const tabs = processSectionData.stepGroups.map((group) => group.category);
+const stepGroups = processSectionData.stepGroups;
 
 ---
 
-<section class="bg-n-100">
-  <div class="container mx-auto flex w-full max-w-screen-2xl flex-col items-center gap-10 px-6 py-20 md:gap-12 md:px-6 md:py-28 lg:px-12 xl:gap-14 xl:px-32">
-    
+<section class="bg-n-100" data-process-section>
+  <div
+    class="container mx-auto flex w-full max-w-screen-2xl flex-col items-center gap-10 px-6 py-20 md:gap-12 md:px-6 md:py-28 lg:px-12 xl:gap-14 xl:px-32"
+  >
     <!-- Section Header -->
     <SectionHeader
       eyebrow={processSectionData.eyebrow}
@@ -18,36 +23,78 @@ import { processSectionData } from "@/data/process-section-data";
       description={processSectionData.description}
     />
 
-    <div class="grid w-full grid-cols-1 gap-3 md:grid-cols-2 md:gap-5 xl:grid-cols-3 xl:gap-6">
-      {processSectionData.steps.map((step) => (
-        <div class="relative flex h-full flex-col overflow-hidden rounded-4xl border border-n-300 bg-n-50 p-8 md:p-9 xl:p-10">
-            
-            
-            <Image
-            src={step.ellipse}
-            alt=""
-            width={353}
-            height={353}
-            class="pointer-events-none absolute -left-[271px] top-[102px] size-[353px]"
-            aria-hidden="true"
-          />
-          <div class="relative flex flex-col gap-6">
-            <p class="text-4xl font-bold leading-none text-blue-500 xl:text-5xl">
-              {step.number}
-            </p>
-            <div class="flex flex-col gap-3">
-              <p class="text-lg font-bold leading-snug text-n-700 md:text-xl xl:text-2xl">
-                {step.titleLines.map((line) => (
-                  <span class="block">{line}</span>
-                ))}
-              </p>
-              <p class="text-sm leading-relaxed text-n-600 xl:text-base">
-                {step.description}
-              </p>
+    <div class="flex w-full flex-col items-center gap-7 md:gap-8 md:px-20 lg:gap-12 xl:px-0">
+      
+      <!-- Tabs -->
+      <div class="w-full max-w-3xl">
+        <Tabs items={tabs} activeIndex={0} />
+      </div>
+
+      <div class="w-full">
+        {
+          // Looping Through stepGroups to Render Tabs and Corresponding Process Steps
+          stepGroups.map((group, groupIndex) => (
+            <div
+              data-tab-panel
+              data-active={groupIndex === 0 ? "true" : "false"}
+              class:list={[groupIndex === 0 ? "block" : "hidden"]}
+            >
+              <div class="grid w-full grid-cols-1 gap-3 md:grid-cols-2 md:gap-5 xl:grid-cols-3 xl:gap-6">
+                {
+                  group.steps.map((step, index) => (
+                    
+                    // Process Step Card
+                    <ProcessStepCard
+                      index={index}
+                      title={step.title}
+                      description={step.description}
+                    />
+                  ))
+                }
+              </div>
             </div>
-          </div>
-        </div>
-      ))}
+          ))
+        }
+      </div>
     </div>
   </div>
 </section>
+
+<script>
+  // Tab Functionality for Process Section
+  document.querySelectorAll("[data-process-section]").forEach((section) => {
+    if (section.dataset.initialized === "true") {
+      return;
+    }
+
+    section.dataset.initialized = "true";
+
+    const tabs = section.querySelector("[data-tabs]");
+    const panels = section.querySelectorAll("[data-tab-panel]");
+
+    if (!tabs || panels.length === 0) {
+      return;
+    }
+
+    tabs.addEventListener("click", (event) => {
+      const button = event.target instanceof Element
+        ? event.target.closest("[data-tab-button]")
+        : null;
+
+      if (!(button instanceof HTMLButtonElement) || !tabs.contains(button)) {
+        return;
+      }
+
+      const buttons = [...tabs.querySelectorAll("[data-tab-button]")];
+      const activeIndex = buttons.indexOf(button);
+
+      panels.forEach((panel, index) => {
+        const isActive = index === activeIndex;
+
+        panel.dataset.active = isActive ? "true" : "false";
+        panel.classList.toggle("hidden", !isActive);
+        panel.classList.toggle("block", isActive);
+      });
+    });
+  });
+</script>
