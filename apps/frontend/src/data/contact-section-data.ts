@@ -10,10 +10,12 @@ export const contactSectionData = {
         {
           icon: "mail-send-envelope",
           value: "chinookdriving@gmail.com",
+          href: "mailto:chinookdriving@gmail.com",
         },
         {
           icon: "phone",
           value: "+(403) 281-8050",
+          href: "tel:+14032818050",
         },
       ],
     },
@@ -42,12 +44,14 @@ export const contactSectionData = {
           name: "Manilla Office",
           address: "4620 Manilla Road SE",
           actionLabel: "Get Directions",
+          href: "https://maps.google.com/?q=4620+Manilla+Road+SE+Calgary",
         },
         {
           icon: "location-pin",
           name: "Carringsby Office",
           address: "22 Carringsby Landing NW  Calgary T3P 1L9",
           actionLabel: "Get Directions",
+          href: "https://maps.google.com/?q=22+Carringsby+Landing+NW+Calgary+T3P+1L9",
         },
       ],
       serviceArea: {
