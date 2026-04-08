@@ -1,3 +1,12 @@
+import heroIllustration from "@/../public/images/courses-hero-illustration.png";
+
+export const coursesHeroSectionData = {
+  title: "Our Driving Programs",
+  description: "Flexible courses designed for beginners and learners at every stage.",
+  illustration: heroIllustration,
+  illustrationAlt: "Student driver training illustration",
+};
+
 export const courseSectionData = {
   eyebrow: "Training Programs",
   heading: "Our Driving Courses",
@@ -18,9 +27,9 @@ export const courseSectionData = {
         value: "15 Hours",
       },
       features: [
-        "10 Hours In-Car Training",
         "15 Hours Online Theory",
         "Insurance Certificate",
+        "Road Test Support",
       ],
       theme: "light",
       ellipse: "light",
@@ -49,7 +58,7 @@ export const courseSectionData = {
     },
     {
       title: "Ultimate Course",
-      price: "$999",
+      price: "$870",
       duration: "14 Weeks",
       practice: {
         label: "Car Practice",
@@ -60,9 +69,9 @@ export const courseSectionData = {
         value: "15 Hours",
       },
       features: [
-        "20 Hours In-Car Training",
-        "Car for Road Test Included",
-        "Unlimited Access to Resources",
+        "15 Hours Online Theory",
+        "Insurance Certificate",
+        "Road Test Support",
       ],
       theme: "light",
       ellipse: "light-alt",

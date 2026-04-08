@@ -1,0 +1,51 @@
+---
+// COMPONENTS //
+import { Image } from "astro:assets";
+import Button from "@/components/ui/Button.astro";
+
+import { ctaData } from "@/data/cta";
+
+---
+
+<section class="bg-n-50">
+  <div
+    class="container mx-auto flex w-full flex-col items-center gap-8 px-5 py-14 sm:px-6 md:gap-10 lg:flex-row lg:gap-20 lg:px-10 lg:py-24"
+  >
+    <div
+      class="bg-n-50 relative h-[240px] w-full overflow-hidden rounded-3xl md:h-[387px] lg:h-[449px] lg:w-[595px] lg:shrink-0"
+    >
+      <Image
+        src={ctaData.imageSrc}
+        alt={ctaData.imageAlt}
+        width={822}
+        height={548}
+        class="h-full w-full object-cover object-[68%_center]"
+      />
+    </div>
+
+    <div class="flex w-full flex-col gap-5 md:gap-7 lg:flex-1 lg:gap-8">
+      <div class="flex flex-col gap-5 md:gap-7 lg:gap-10">
+        <div class="flex flex-col gap-1 md:gap-2 lg:gap-3">
+          <p class="text-xs font-bold uppercase tracking-[0.6px] text-blue-500">
+            {ctaData.eyebrow}
+          </p>
+          <p class="text-3xl font-bold leading-tight text-n-800 md:text-4xl lg:text-5xl">
+            {ctaData.heading}
+          </p>
+        </div>
+        <p set:html={ctaData.description} class="text-sm leading-relaxed text-n-600 md:text-base lg:text-lg">
+        </p>
+      </div>
+
+      <span class="h-px w-44 bg-n-200 lg:w-72"></span>
+
+      <Button
+        buttonText="Start Enrollment"
+        rightIcon="arrow-right"
+        href="/enroll"
+        variant="primary"
+        className="h-11 w-fit rounded-full px-4 text-sm font-bold md:h-11 md:px-5 lg:h-12 lg:px-6 lg:text-base"
+      />
+    </div>
+  </div>
+</section>

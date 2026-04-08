@@ -5,37 +5,38 @@ import React, { useEffect, useRef, useState } from "react";
 import type {
   AvailabilityValueData,
   EnrollmentFormValueData,
+  EnrollmentPayloadData,
   EnrollmentResponseData,
   LicenseInformationValueData,
   ParentInformationValueData,
-  PaymentDetailsValueData,
-  EnrollmentPayloadData,
   StepStateData,
+  PaymentDetailsValueData,
   UserInfoValueData,
 } from "@/react/types/enrollment.type";
+import type { StepStatusData } from "@/react/types/steps.type";
 
 // COMPONENTS //
-import Availability from "./steps/Availability";
-import LicenseInformation from "./steps/LicenseInformation";
-import ParentInformation from "./steps/ParentInformation";
-import PaymentDetails from "./steps/PaymentDetails";
-import SelectCourse from "./steps/SelectCourse";
-import SubmissionModal from "./ui/SubmissionModal";
-import UserInfo from "./steps/UserInfo";
-import Steps from "./ui/Steps";
+import Availability from "@/react/components/steps/Availability";
+import LicenseInformation from "@/react/components/steps/LicenseInformation";
+import ParentInformation from "@/react/components/steps/ParentInformation";
+import PaymentDetails from "@/react/components/steps/PaymentDetails";
+import SelectCourse from "@/react/components/steps/SelectCourse";
+import SubmissionModal from "@/react/components/ui/SubmissionModal";
+import UserInfo from "@/react/components/steps/UserInfo";
+import Steps from "@/react/components/ui/Steps";
+
+// API SERVICES //
+import { submitEnrollmentRequest } from "@/react/services/api/enrollment.api.service";
 
 // CONSTANTS //
-import { TOTAL_ENROLLMENT_STEPS } from "../constants/form-items";
-
-// SERVICES //
-import { submitEnrollmentRequest } from "../services/api/enrollment.api.service";
+import { TOTAL_ENROLLMENT_STEPS } from "@/react/constants/form-items";
 
 // UTILS //
-import { transformEnrollmentPayload } from "../utils/api.util";
+import { transformEnrollmentPayload } from "@/react/utils/api.util";
 
 type SubmissionModalStateData = {
   isOpen: boolean;
-  isLoading: boolean;
+  mode: "checking" | "sending" | "result";
   title: string;
   message: string;
 };
@@ -63,6 +64,8 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
   // Define Refs
   const stepValidators = useRef<Record<number, () => StepStateData>>({});
   const hasHydratedFromStorageRef = useRef<boolean>(false);
+  const stepCheckIntervalRef = useRef<number | null>(null);
+  const isSubmissionCancelledRef = useRef<boolean>(false);
 
   // Define States
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -120,14 +123,22 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
       name_on_card: null,
       card_number: null,
       expiry_date: null,
-      did_agree_conditions: false,
+      did_agree_conditions: true,
     },
   });
   const [submissionModalState, setSubmissionModalState] = useState<SubmissionModalStateData>({
     isOpen: false,
-    isLoading: false,
+    mode: "result",
     title: "",
     message: "",
+  });
+  const [submissionStepStatuses, setSubmissionStepStatuses] = useState<Record<number, StepStatusData>>({
+    1: "untouched",
+    2: "untouched",
+    3: "untouched",
+    4: "untouched",
+    5: "untouched",
+    6: "untouched",
   });
 
   // Helper Functions
@@ -178,11 +189,68 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
   };
 
   /**
-   * Waits for a fixed delay before continuing the submission flow.
+   * Clears the in-flight step-check interval if it exists.
    */
-  const waitForSubmissionDelay = async (): Promise<void> => {
+  const clearStepCheckInterval = (): void => {
+    if (stepCheckIntervalRef.current !== null) {
+      window.clearInterval(stepCheckIntervalRef.current);
+      stepCheckIntervalRef.current = null;
+    }
+  };
+
+  /**
+   * Waits for the specified number of milliseconds.
+   */
+  const waitForMilliseconds = async (durationInMs: number): Promise<void> => {
     await new Promise((resolveDelay) => {
-      window.setTimeout(resolveDelay, 2000);
+      window.setTimeout(resolveDelay, durationInMs);
+    });
+  };
+
+  /**
+   * Animates step validation one item at a time with a 400ms interval.
+   */
+  const animateStepChecks = async (
+    targetStepStates: Record<number, StepStateData>,
+  ): Promise<void> => {
+    const stepIds: number[] = [1, 2, 3, 4, 5, 6];
+
+    setSubmissionStepStatuses({
+      1: "untouched",
+      2: "untouched",
+      3: "untouched",
+      4: "untouched",
+      5: "untouched",
+      6: "untouched",
+    });
+
+    await new Promise<void>((resolveValidationAnimation) => {
+      let currentIndex: number = 0;
+
+      clearStepCheckInterval();
+
+      stepCheckIntervalRef.current = window.setInterval(() => {
+        if (isSubmissionCancelledRef.current) {
+          clearStepCheckInterval();
+          resolveValidationAnimation();
+          return;
+        }
+
+        if (currentIndex >= stepIds.length) {
+          clearStepCheckInterval();
+          resolveValidationAnimation();
+          return;
+        }
+
+        const currentStepId: number = stepIds[currentIndex];
+
+        setSubmissionStepStatuses((currentStates) => ({
+          ...currentStates,
+          [currentStepId]: targetStepStates[currentStepId] ?? "untouched",
+        }));
+
+        currentIndex += 1;
+      }, 400);
     });
   };
 
@@ -190,18 +258,31 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
    * Closes the submission popup and clears its message state.
    */
   const closeSubmissionModal = (): void => {
+    isSubmissionCancelledRef.current = true;
+    clearStepCheckInterval();
+
     setSubmissionModalState({
       isOpen: false,
-      isLoading: false,
+      mode: "result",
       title: "",
       message: "",
     });
   };
 
   /**
+   * Navigates directly to an incomplete step from the submission checker popup.
+   */
+  const jumpToStepFromModal = (stepId: number): void => {
+    closeSubmissionModal();
+    setCurrentStep(Math.min(Math.max(stepId, 1), TOTAL_ENROLLMENT_STEPS));
+  };
+
+  /**
    * Validates all steps and submits the enrollment payload when everything is complete.
    */
   const handleEnrollmentCompletion = async (): Promise<void> => {
+    isSubmissionCancelledRef.current = false;
+
     const currentStepStatesInfo: Record<number, StepStateData> = {
       1: findStepState(1),
       2: findStepState(2),
@@ -214,13 +295,15 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
     setStepStates(currentStepStatesInfo);
     setSubmissionModalState({
       isOpen: true,
-      isLoading: true,
-      title: "",
+      mode: "checking",
+      title: "Checking Your Enrollment Form",
       message: "",
     });
+    await animateStepChecks(currentStepStatesInfo);
 
-    // Fake Loader
-    await waitForSubmissionDelay();
+    if (isSubmissionCancelledRef.current) {
+      return;
+    }
 
     // Check all steps
     const hasIncompleteSteps: boolean = Object.values(currentStepStatesInfo).some(
@@ -231,9 +314,9 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
     if (hasIncompleteSteps) {
       setSubmissionModalState({
         isOpen: true,
-        isLoading: false,
-        title: "Form Incomplete",
-        message: "You have not completed all the steps in the Form",
+        mode: "checking",
+        title: "Checking Your Details",
+        message: "Please complete the highlighted sections to continue.",
       });
       return;
     }
@@ -241,26 +324,59 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
     // Transform the Input Values
     const enrollmentPayloadInfo: EnrollmentPayloadData =
       transformEnrollmentPayload(enrollmentFormValue);
+    const requestStartedAtInMs: number = Date.now();
+
+    setSubmissionModalState({
+      isOpen: true,
+      mode: "sending",
+      title: "",
+      message: "",
+    });
 
     try {
       // Submit the data to API
       const enrollmentResponseInfo: EnrollmentResponseData<EnrollmentPayloadData> =
         await submitEnrollmentRequest(enrollmentPayloadInfo);
 
+      if (isSubmissionCancelledRef.current) {
+        return;
+      }
+
+      if (!enrollmentResponseInfo.status) {
+        const elapsedMs: number = Date.now() - requestStartedAtInMs;
+
+        if (elapsedMs < 2000) {
+          await waitForMilliseconds(2000 - elapsedMs);
+        }
+
+        if (isSubmissionCancelledRef.current) {
+          return;
+        }
+      }
+
       // Show Success or Error message
       setSubmissionModalState({
         isOpen: true,
-        isLoading: false,
+        mode: "result",
         title: enrollmentResponseInfo.status ? "Enrollment Submitted" : "Submission Result",
         message: enrollmentResponseInfo.message,
       });
 
       if (enrollmentResponseInfo.status) {
-        console.log("OLA");
         clearEnrollmentFormStorage();
         onSuccess?.();
       }
     } catch (error) {
+      const elapsedMs: number = Date.now() - requestStartedAtInMs;
+
+      if (elapsedMs < 2000) {
+        await waitForMilliseconds(2000 - elapsedMs);
+      }
+
+      if (isSubmissionCancelledRef.current) {
+        return;
+      }
+
       const errorMessage: string =
         error instanceof Error
           ? error.message
@@ -268,7 +384,7 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
 
       setSubmissionModalState({
         isOpen: true,
-        isLoading: false,
+        mode: "result",
         title: "Submission Failed",
         message: errorMessage,
       });
@@ -286,11 +402,6 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
       ...currentStates,
       [currentStep]: currentStepState,
     }));
-
-    if (currentStep === TOTAL_ENROLLMENT_STEPS) {
-      void handleEnrollmentCompletion();
-      return;
-    }
 
     // Go to Next Step
     setCurrentStep((step) => Math.min(step + 1, TOTAL_ENROLLMENT_STEPS));
@@ -312,6 +423,20 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
   };
 
   /**
+   * Stores the payment step state and submits the enrollment directly.
+   */
+  const handlePaymentSubmission = (stepState?: StepStateData): void => {
+    const currentStepState: StepStateData = stepState ?? findStepState(currentStep);
+
+    setStepStates((currentStates) => ({
+      ...currentStates,
+      [currentStep]: currentStepState,
+    }));
+
+    void handleEnrollmentCompletion();
+  };
+
+  /**
    * Validates the current step before changing steps from the stepper.
    */
   const handleStepChange = (stepId: number): void => {
@@ -321,7 +446,7 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
       ...currentStates,
       [currentStep]: currentStepState,
     }));
-    setCurrentStep(stepId);
+    setCurrentStep(Math.min(stepId, TOTAL_ENROLLMENT_STEPS));
   };
 
   /**
@@ -405,7 +530,7 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
               )
             }
             registerValidator={registerValidator}
-            onNext={goToNextStep}
+            onNext={handlePaymentSubmission}
             onPrevious={goToPreviousStep}
           />
         );
@@ -440,11 +565,12 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
         storedEnrollmentFormValue,
       ) as EnrollmentFormStorageData;
 
-      setCurrentStep(parsedEnrollmentFormValue.currentStep ?? 1);
+      setCurrentStep(
+        Math.min(parsedEnrollmentFormValue.currentStep ?? 1, TOTAL_ENROLLMENT_STEPS),
+      );
       setStepStates(parsedEnrollmentFormValue.stepStates ?? stepStates);
       setEnrollmentFormValue(parsedEnrollmentFormValue.enrollmentFormValue ?? enrollmentFormValue);
-    } catch (error) {
-      console.error("Failed to restore enrollment form draft", error);
+    } catch {
       clearEnrollmentFormStorage();
     } finally {
       hasHydratedFromStorageRef.current = true;
@@ -468,8 +594,14 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
     );
   }, [currentStep, enrollmentFormValue, stepStates]);
 
+  useEffect(() => {
+    return () => {
+      clearStepCheckInterval();
+    };
+  }, []);
+
   return (
-    <section className="mx-auto flex min-h-screen w-full max-w-6xl flex-col gap-10 px-6 py-16 md:px-10">
+    <section className="container mx-auto flex min-h-screen w-full flex-col gap-5 px-4 py-9 sm:px-6 md:gap-8 md:px-7 lg:px-8 lg:py-12 xl:px-10">
       {/* Steps Component */}
       <Steps currentStep={currentStep} stepStates={stepStates} onStepChange={handleStepChange} />
 
@@ -478,9 +610,11 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
 
       <SubmissionModal
         isOpen={submissionModalState.isOpen}
-        isLoading={submissionModalState.isLoading}
+        mode={submissionModalState.mode}
         title={submissionModalState.title}
         message={submissionModalState.message}
+        stepStatuses={submissionStepStatuses}
+        onSelectStep={jumpToStepFromModal}
         onClose={closeSubmissionModal}
       />
     </section>

@@ -2,25 +2,40 @@
 interface TabsProps {
   items: string[];
   activeIndex?: number;
+  controlsPanels?: boolean;
 }
 
-const { items, activeIndex = 0 } = Astro.props as TabsProps;
+const {
+  items,
+  activeIndex = 0,
+  controlsPanels = false,
+} = Astro.props as TabsProps;
 ---
 
 <div
   data-tabs
-  class="flex w-full items-center rounded-full border border-n-200 bg-n-50 p-1"
+  data-tabs-controls-panels={controlsPanels ? "true" : undefined}
+  role="tablist"
+  class="relative flex w-full items-center rounded-full border border-n-200 bg-n-50 p-1"
 >
+  <div
+    data-tab-indicator
+    class="absolute inset-y-1 left-0 rounded-full bg-blue-500 shadow-[0_8px_16px_rgba(19,127,236,0.18)] transition-transform duration-300 ease-out"
+    style="width: 0px; transform: translateX(0px);"
+  ></div>
   {
     items.map((item, index) => (
       <button
         type="button"
         data-tab-button
+        data-tab-index={index}
         data-active={index === activeIndex ? "true" : "false"}
-        aria-pressed={index === activeIndex ? "true" : "false"}
+        role="tab"
+        aria-selected={index === activeIndex ? "true" : "false"}
+        tabindex={index === activeIndex ? "0" : "-1"}
         class:list={[
-          "flex min-w-0 flex-1 cursor-pointer items-center justify-center rounded-full px-3 py-3 text-center text-xs font-semibold leading-tight whitespace-normal transition-colors sm:text-sm lg:text-base",
-          index === activeIndex ? "bg-blue-500 text-n-50" : "text-n-600",
+          "animate-bouncy-hover relative z-10 flex min-w-0 flex-1 cursor-pointer items-center justify-center rounded-full px-3 py-3 text-center text-xs font-semibold leading-tight whitespace-normal transition-colors duration-300 ease-out sm:text-sm lg:text-base",
+          index === activeIndex ? "text-n-50" : "text-n-600",
         ]}
       >
         {item}
@@ -30,15 +45,107 @@ const { items, activeIndex = 0 } = Astro.props as TabsProps;
 </div>
 
 <script>
-  const activeClasses = ["bg-blue-500", "text-n-50"];
+  const activeClasses = ["text-n-50"];
   const inactiveClasses = ["text-n-600"];
+  let tabsInstanceCount = 0;
+
+  // Keep the sliding indicator aligned with the active tab.
+  const syncIndicator = (
+    tabs: Element,
+    targetButton: HTMLButtonElement,
+  ) => {
+    const indicator = tabs.querySelector("[data-tab-indicator]");
+
+    if (!(indicator instanceof HTMLElement) || !(tabs instanceof HTMLElement)) {
+      return;
+    }
+
+    indicator.style.width = `${targetButton.offsetWidth}px`;
+    indicator.style.transform = `translateX(${targetButton.offsetLeft}px)`;
+  };
+
+  // Only wire panels when the component is explicitly opted in.
+  const getPanels = (tabs: HTMLElement) => {
+    if (tabs.dataset.tabsControlsPanels !== "true") {
+      return [];
+    }
+
+    const scope = tabs.closest("[data-process-section], [data-courses-section]");
+
+    if (!(scope instanceof HTMLElement)) {
+      return [];
+    }
+
+    return [...scope.querySelectorAll("[data-tab-panel]")];
+  };
+
+  // Update button state and show the matching panel.
+  const activateTab = (
+    tabs: HTMLElement,
+    buttons: HTMLButtonElement[],
+    panels: HTMLElement[],
+    activeIndex: number,
+  ) => {
+    const activeButton = buttons[activeIndex];
+
+    if (!(activeButton instanceof HTMLButtonElement)) {
+      return;
+    }
+
+    syncIndicator(tabs, activeButton);
+
+    buttons.forEach((button, index) => {
+      const isActive = index === activeIndex;
+
+      button.dataset.active = isActive ? "true" : "false";
+      button.setAttribute("aria-selected", isActive ? "true" : "false");
+      button.setAttribute("tabindex", isActive ? "0" : "-1");
+      button.classList.remove(...(isActive ? inactiveClasses : activeClasses));
+      button.classList.add(...(isActive ? activeClasses : inactiveClasses));
+    });
+
+    panels.forEach((panel, index) => {
+      const isActive = index === activeIndex;
+
+      panel.dataset.active = isActive ? "true" : "false";
+      panel.hidden = !isActive;
+    });
+  };
 
   document.querySelectorAll("[data-tabs]").forEach((tabs) => {
-    if (tabs.dataset.initialized === "true") {
+    if (!(tabs instanceof HTMLElement) || tabs.dataset.initialized === "true") {
       return;
     }
 
     tabs.dataset.initialized = "true";
+    tabsInstanceCount += 1;
+
+    const buttons = [...tabs.querySelectorAll("[data-tab-button]")].filter(
+      (button): button is HTMLButtonElement => button instanceof HTMLButtonElement,
+    );
+    const panels = getPanels(tabs);
+    const instanceId = `tabs-${tabsInstanceCount}`;
+
+    // Generate stable IDs so tabs and panels stay linked for accessibility.
+    buttons.forEach((button, index) => {
+      button.id = `${instanceId}-tab-${index}`;
+
+      if (panels[index] instanceof HTMLElement) {
+        panels[index].id = `${instanceId}-panel-${index}`;
+        panels[index].setAttribute("role", "tabpanel");
+        panels[index].setAttribute("aria-labelledby", button.id);
+        button.setAttribute("aria-controls", panels[index].id);
+      }
+    });
+
+    const initialActiveIndex = Math.max(
+      buttons.findIndex((button) => button.dataset.active === "true"),
+      0,
+    );
+
+    if (buttons.length > 0) {
+      activateTab(tabs, buttons, panels, initialActiveIndex);
+    }
 
     tabs.addEventListener("click", (event) => {
       const button = event.target instanceof Element
@@ -49,19 +156,51 @@ const { items, activeIndex = 0 } = Astro.props as TabsProps;
         return;
       }
 
-      const buttons = tabs.querySelectorAll("[data-tab-button]");
+      const activeIndex = buttons.indexOf(button);
+      if (activeIndex === -1) {
+        return;
+      }
 
-      buttons.forEach((tabButton) => {
-        tabButton.dataset.active = "false";
-        tabButton.setAttribute("aria-pressed", "false");
-        tabButton.classList.remove(...activeClasses);
-        tabButton.classList.add(...inactiveClasses);
-      });
+      activateTab(tabs, buttons, panels, activeIndex);
+      button.focus();
+    });
 
-      button.dataset.active = "true";
-      button.setAttribute("aria-pressed", "true");
-      button.classList.remove(...inactiveClasses);
-      button.classList.add(...activeClasses);
+    // Support standard tab keyboard navigation.
+    tabs.addEventListener("keydown", (event) => {
+      if (!["ArrowRight", "ArrowLeft", "Home", "End"].includes(event.key)) {
+        return;
+      }
+
+      const currentIndex = Math.max(
+        buttons.findIndex((button) => button.getAttribute("aria-selected") === "true"),
+        0,
+      );
+
+      let nextIndex = currentIndex;
+
+      if (event.key === "ArrowRight") {
+        nextIndex = (currentIndex + 1) % buttons.length;
+      } else if (event.key === "ArrowLeft") {
+        nextIndex = (currentIndex - 1 + buttons.length) % buttons.length;
+      } else if (event.key === "Home") {
+        nextIndex = 0;
+      } else if (event.key === "End") {
+        nextIndex = buttons.length - 1;
+      }
+
+      event.preventDefault();
+      activateTab(tabs, buttons, panels, nextIndex);
+      buttons[nextIndex]?.focus();
+    });
+
+    // Recalculate the indicator position after layout changes.
+    window.addEventListener("resize", () => {
+      const activeIndex = buttons.findIndex((button) => button.dataset.active === "true");
+      const activeButton = buttons[activeIndex];
+
+      if (activeButton instanceof HTMLButtonElement) {
+        syncIndicator(tabs, activeButton);
+      }
     });
   });
 </script>

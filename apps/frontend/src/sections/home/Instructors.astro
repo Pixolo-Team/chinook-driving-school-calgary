@@ -25,8 +25,7 @@ import SliderArrows from "@/components/SliderArrows.astro";
           {instructorsSectionData.instructors.map((instructor) => (
             <div class="embla__slide pl-3 cursor-default min-w-0 flex-[0_0_100%] md:flex-[0_0_50%] lg:pl-5 xl:flex-[0_0_33.33%]">
               <InstructorCard
-                firstName={instructor.firstName}
-                lastName={instructor.lastName}
+                name={instructor.name}
                 role={instructor.role}
                 description={instructor.description}
               />

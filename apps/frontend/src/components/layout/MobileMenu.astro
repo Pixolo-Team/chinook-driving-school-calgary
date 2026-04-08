@@ -1,7 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
-import BrandLogo from "@/components/common/BrandLogo.astro";
 import Button from "@/components/ui/Button.astro";
+import BrandLogo from "@/components/common/BrandLogo.astro";
 
 // DATA //
 import { menuItems } from "@/data/menu";
@@ -27,9 +27,9 @@ const navigationItems = menuItems.filter((menuItem) => menuItem.url !== "/enroll
     <div data-mobile-menu-section class="flex items-center justify-between px-6 py-4">
       <a href="/" aria-label="Chinook Driving Academy home" class="shrink-0">
         <BrandLogo
-          containerClass="relative h-14 w-36"
-          markClass="absolute top-0 left-0 h-full w-12 object-contain"
-          textClass="absolute top-1/2 left-11 h-8 w-28 -translate-y-1/2 object-contain"
+          containerClass="inline-flex h-14 items-center gap-0.5"
+          markClass="h-full w-auto shrink-0 object-contain"
+          textClass="h-8 w-auto shrink-0 object-contain"
           textAlt="Chinook Driving Academy"
         />
       </a>
@@ -37,7 +37,7 @@ const navigationItems = menuItems.filter((menuItem) => menuItem.url !== "/enroll
       <button
         id="mobile-menu-close-button"
         type="button"
-        class="border-n-300 bg-n-100 text-n-600 inline-flex size-10 items-center justify-center rounded-full border"
+        class="animate-bouncy-hover border-n-300 bg-n-100 text-n-600 inline-flex size-10 items-center justify-center rounded-full border"
         aria-label="Close mobile menu"
       >
         <Icon name="menu-close" class="size-3" />
