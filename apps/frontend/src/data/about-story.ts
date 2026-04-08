@@ -1,4 +1,4 @@
-export const whoWeAreSectionData = {
+export const aboutStorySectionData = {
   content: {
     eyebrow: "Who We Are",
     heading: "Chinook: Why it's the Best",
@@ -21,7 +21,7 @@ export const whoWeAreSectionData = {
       icon: "seatbelt",
       title: "Safety & Success",
       description:
-        "We prioritize safe driving habits that lasts a lifetime. With our proven training methods, Students gain confidence to pass their test and drive responsibly",
+        "We prioritize safe driving habits that last a lifetime. With our proven training methods, students gain confidence to pass their test and drive responsibly",
     },
   ],
 };

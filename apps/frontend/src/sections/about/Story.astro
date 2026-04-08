@@ -1,9 +1,12 @@
 ---
+// COMPONENTS //
 import SectionHeader from "@/components/SectionHeader.astro";
-import WhoWeAreCard from "@/components/WhoWeAreCard.astro";
-import { whoWeAreSectionData } from "@/data/who-we-are-section-data";
+import StoryCard from "@/components/StoryCard.astro";
 
-const { content, cards } = whoWeAreSectionData;
+// DATA //
+import { aboutStorySectionData } from "@/data/about-story";
+
+const { content, cards } = aboutStorySectionData;
 ---
 
 <section class="bg-n-50">
@@ -27,7 +30,7 @@ const { content, cards } = whoWeAreSectionData;
 
     <div class="grid w-full grid-cols-1 gap-3.5 sm:gap-4 lg:grid-cols-3 lg:gap-6">
       {cards.map((card, index) => (
-        <WhoWeAreCard
+        <StoryCard
           icon={card.icon}
           number={String(index + 1).padStart(2, "0")}
           title={card.title}
