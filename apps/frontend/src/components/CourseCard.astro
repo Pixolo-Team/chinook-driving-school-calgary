@@ -6,16 +6,6 @@ import Button from "@/components/ui/Button.astro";
 // CONSTANTS //
 import { URLS } from "@/infrastructure/constants/urls";
 
-// SVG's //
-import ellipseLight from "@/assets/ellipse-light.svg";
-import ellipseBlue from "@/assets/ellipse-blue.svg";
-import ellipseLightAlt from "@/assets/ellipse-light-alt.svg";
-
-const ellipseMap = {
-  light: ellipseLight,
-  blue: ellipseBlue,
-  "light-alt": ellipseLightAlt,
-};
 
 interface CourseCardProps {
   title: string;
@@ -31,7 +21,6 @@ interface CourseCardProps {
   };
   features: string[];
   theme: "light" | "brand";
-  ellipse: keyof typeof ellipseMap;
   badge?: string;
 }
 
