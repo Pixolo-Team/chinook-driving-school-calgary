@@ -1,0 +1,16 @@
+---
+// COMPONENTS //
+import HeroCard from "@/components/HeroCard.astro";
+
+// DATA //
+import { aboutHeroSectionData } from "@/data/about";
+---
+
+<section class="bg-n-100 overflow-hidden">
+  <HeroCard
+    title={aboutHeroSectionData.title}
+    description={aboutHeroSectionData.description}
+    illustration={aboutHeroSectionData.illustration}
+    illustrationAlt={aboutHeroSectionData.illustrationAlt}
+  />
+</section>
