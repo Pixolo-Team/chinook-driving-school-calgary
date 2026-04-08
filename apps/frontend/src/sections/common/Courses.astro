@@ -1,17 +1,33 @@
 ---
+// DATA //
+import { courseSectionData } from "@/data/courses";
+import { getCourseSectionData } from "@/data/course-cards";
+import type { CourseCardData, CourseGroupData } from "@/types/course";
+
 // COMPONENTS //
 import CourseCard from "@/components/CourseCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Tabs from "@/components/ui/Tabs.astro";
 
-// DATA //
-import { courseSectionData } from "@/data/courses";
+interface CoursesProps {
+  tabs?: string[];
+  cards?: CourseCardData[];
+  courseGroups?: CourseGroupData[];
+}
+
+const courseData = await getCourseSectionData();
+
+const {
+  tabs = courseData.tabs,
+  cards = courseData.cards,
+  courseGroups = courseData.courseGroups,
+} = Astro.props as CoursesProps;
 
 ---
 
-<section class="bg-n-50">
+<section class="bg-n-100" data-courses-section>
   <div
-    class="container mx-auto flex w-full flex-col items-center gap-10 px-6 py-14 lg:gap-16 lg:px-28 lg:py-28"
+    class="container mx-auto flex w-full max-w-screen-2xl flex-col items-center gap-10 px-6 py-14 lg:gap-16 lg:px-28 lg:py-28"
   >
     <!-- Section Header -->
     <SectionHeader
@@ -23,15 +39,73 @@ import { courseSectionData } from "@/data/courses";
     <!-- Courses Category Tabs -->
     <div class="flex w-full flex-col items-center gap-7 md:gap-8 md:px-20 lg:gap-12 xl:px-0">
       <div class="w-full max-w-3xl">
-        <Tabs items={courseSectionData.tabs} activeIndex={0} />
+        <Tabs items={tabs} activeIndex={0} />
       </div>
 
       <!--Courses Cards -->
       <div class="w-full max-w-3xl lg:max-w-none">
-        <div class="grid w-full grid-cols-1 gap-5 xl:grid-cols-3">
-          {courseSectionData.cards.map((card) => <CourseCard {...card} />)}
-        </div>
+        {
+          courseGroups.map((group, groupIndex) => (
+            <div
+              data-tab-panel
+              data-active={groupIndex === 0 ? "true" : "false"}
+              class:list={[groupIndex === 0 ? "block" : "hidden"]}
+            >
+              {group.cards.length > 0 ? (
+                <div class="grid w-full grid-cols-1 gap-5 md:px-4 xl:grid-cols-3">
+                  {
+                    group.cards.map((card) => (
+                      <CourseCard {...card} />
+                    ))
+                  }
+                </div>
+              ) : (
+                <div class="rounded-4xl border border-n-300 bg-n-50 px-6 py-10 text-center text-n-600">
+                  Course details for {group.tab} will be available soon.
+                </div>
+              )}
+            </div>
+          ))
+        }
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  document.querySelectorAll("[data-courses-section]").forEach((section) => {
+    if (section.dataset.initialized === "true") {
+      return;
+    }
+
+    section.dataset.initialized = "true";
+
+    const tabs = section.querySelector("[data-tabs]");
+    const panels = section.querySelectorAll("[data-tab-panel]");
+
+    if (!tabs || panels.length === 0) {
+      return;
+    }
+
+    tabs.addEventListener("click", (event) => {
+      const button = event.target instanceof Element
+        ? event.target.closest("[data-tab-button]")
+        : null;
+
+      if (!(button instanceof HTMLButtonElement) || !tabs.contains(button)) {
+        return;
+      }
+
+      const buttons = [...tabs.querySelectorAll("[data-tab-button]")];
+      const activeIndex = buttons.indexOf(button);
+
+      panels.forEach((panel, index) => {
+        const isActive = index === activeIndex;
+
+        panel.dataset.active = isActive ? "true" : "false";
+        panel.classList.toggle("hidden", !isActive);
+        panel.classList.toggle("block", isActive);
+      });
+    });
+  });
+</script>
