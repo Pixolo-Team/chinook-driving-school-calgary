@@ -39,17 +39,17 @@ const {
     <!-- Courses Category Tabs -->
     <div class="flex w-full flex-col items-center gap-7 md:gap-8 md:px-20 lg:gap-12 xl:px-0">
       <div class="w-full max-w-3xl">
-        <Tabs items={tabs} activeIndex={0} />
+        <Tabs items={tabs} activeIndex={0} controlsPanels />
       </div>
 
-      <!--Courses Cards -->
+      <!-- Courses Cards -->
       <div class="w-full max-w-3xl lg:max-w-none">
         {
           courseGroups.map((group, groupIndex) => (
             <div
               data-tab-panel
               data-active={groupIndex === 0 ? "true" : "false"}
-              class:list={[groupIndex === 0 ? "block" : "hidden"]}
+              hidden={groupIndex !== 0}
             >
               {group.cards.length > 0 ? (
                 <div class="grid w-full grid-cols-1 gap-5 md:px-4 xl:grid-cols-3">
@@ -71,41 +71,3 @@ const {
     </div>
   </div>
 </section>
-
-<script>
-  document.querySelectorAll("[data-courses-section]").forEach((section) => {
-    if (section.dataset.initialized === "true") {
-      return;
-    }
-
-    section.dataset.initialized = "true";
-
-    const tabs = section.querySelector("[data-tabs]");
-    const panels = section.querySelectorAll("[data-tab-panel]");
-
-    if (!tabs || panels.length === 0) {
-      return;
-    }
-
-    tabs.addEventListener("click", (event) => {
-      const button = event.target instanceof Element
-        ? event.target.closest("[data-tab-button]")
-        : null;
-
-      if (!(button instanceof HTMLButtonElement) || !tabs.contains(button)) {
-        return;
-      }
-
-      const buttons = [...tabs.querySelectorAll("[data-tab-button]")];
-      const activeIndex = buttons.indexOf(button);
-
-      panels.forEach((panel, index) => {
-        const isActive = index === activeIndex;
-
-        panel.dataset.active = isActive ? "true" : "false";
-        panel.classList.toggle("hidden", !isActive);
-        panel.classList.toggle("block", isActive);
-      });
-    });
-  });
-</script>
