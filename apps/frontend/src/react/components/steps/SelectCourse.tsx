@@ -48,16 +48,14 @@ export default function SelectCourse({
   // Define Refs
 
   // Define States
-  const [selectedCourseTypeValue, setSelectedCourseTypeValue] = useState<string>(
-    COURSES[0]?.id ?? "",
-  );
+  const [selectedCourseTypeValue, setSelectedCourseTypeValue] = useState<string>("");
   const [touchedFields, setTouchedFields] = useState<SelectCourseTouchedFieldsData>({
     session_type: false,
     course: false,
   });
 
   const activeSessionValue: string = value.session_type ?? "";
-  const activeCourseTypeValue: string = selectedCourseTypeValue || (COURSES[0]?.id ?? "");
+  const activeCourseTypeValue: string = selectedCourseTypeValue;
   const activeCourseValue: string = value.course.course_id ?? "";
 
   /** Change the Courses when the Course Type changes */
@@ -182,13 +180,6 @@ export default function SelectCourse({
   const courseError = getCourseError();
   const shouldShowSessionTypeError = touchedFields.session_type && Boolean(sessionTypeError);
   const shouldShowCourseError = touchedFields.course && Boolean(courseError);
-
-  // Use Effects
-  useEffect(() => {
-    if (!selectedCourseTypeValue && COURSES[0]?.id) {
-      setSelectedCourseTypeValue(COURSES[0].id);
-    }
-  }, [selectedCourseTypeValue]);
 
   useEffect(() => {
     // Register the Validator (so parent can use it)
