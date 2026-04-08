@@ -26,7 +26,7 @@ import { courseSectionData } from "@/data/courses";
         <Tabs items={courseSectionData.tabs} activeIndex={0} />
       </div>
 
-      <!--  -->
+      <!--Courses Cards -->
       <div class="w-full max-w-3xl lg:max-w-none">
         <div class="grid w-full grid-cols-1 gap-5 xl:grid-cols-3">
           {courseSectionData.cards.map((card) => <CourseCard {...card} />)}
