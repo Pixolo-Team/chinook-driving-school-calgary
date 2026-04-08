@@ -1,3 +1,12 @@
+import heroIllustration from "@/../public/images/courses-hero-illustration.png";
+
+export const coursesHeroSectionData = {
+  title: "Our Driving Programs",
+  description: "Flexible courses designed for beginners and learners at every stage.",
+  illustration: heroIllustration,
+  illustrationAlt: "Student driver training illustration",
+};
+
 export const courseSectionData = {
   eyebrow: "Training Programs",
   heading: "Our Driving Courses",
