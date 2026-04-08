@@ -2,6 +2,20 @@
 // OTHERS //
 import Layout from "@/layouts/Layout.astro";
 
+// SECTIONS //
+import Founder from "@/sections/about/Founder.astro";
+import Features from "@/sections/home/Features.astro";
+import Instructors from "@/sections/home/Instructors.astro";
+import ContactForm from "@/sections/common/ContactForm.astro";
+
 ---
 
-<Layout />
+<Layout
+  title="About Us | Chinook Driving School Calgary"
+  description="Learn more about the instructors, approach, and trusted training programs at Chinook Driving School Calgary."
+>
+  <Founder />
+  <Instructors />
+  <Features />
+  <ContactForm />
+</Layout>

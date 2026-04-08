@@ -1,4 +1,4 @@
-import type { StepItemData } from "../types/steps.type";
+import type { StepItemData } from "@/react/types/steps.type";
 
 export const DEFAULT_STEPS: StepItemData[] = [
   { label: "Select Course", icon: "course" },

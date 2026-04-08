@@ -3,10 +3,10 @@ import type {
   EnrollmentFormValueData,
   EnrollmentPayloadData,
   TimeSlotData,
-} from "../types/enrollment.type";
+} from "@/react/types/enrollment.type";
 
 // CONSTANTS //
-import { COURSES } from "../constants/form-items";
+import { COURSES } from "@/react/constants/form-items";
 
 const TIME_SLOT_MAP: Record<string, TimeSlotData> = {
   morning: {

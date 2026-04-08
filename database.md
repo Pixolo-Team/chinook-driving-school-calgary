@@ -117,7 +117,7 @@ Defines available driving courses.
 | hours_in_classroom | NUMERIC | Theory hours      | 0                  |
 | image              | TEXT    | Course image      | NULL               |
 | description        | TEXT    | Course details    | NULL               |
-| array_of_features  | JSON    | Course Features   | '[]'               |
+| features           | JSON    | Course Features   | '[]'               |
 
 ---
 

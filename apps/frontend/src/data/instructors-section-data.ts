@@ -5,52 +5,40 @@ export const instructorsSectionData = {
     "Certified instructors guide you step-by-step to become a confident, skilled driver.",
   instructors: [
     {
-      id: "darshan-1",
-      firstName: "Darshan",
-      lastName: "Sengupta",
+      name: "Darshan Sengupta",
       role: "Senior Instructor",
       description:
         "Darshan Sengupta is a senior instructor and co-founder of the driving school, bringing years of hands-on experience in training new drivers.",
     },
     {
-      id: "darshan-2",
-      firstName: "Darshan",
-      lastName: "Sengupta",
+      name: "George Haokip",
+      role: "Junior Instructor",
+      description:
+        "With a patient, practical approach, he focuses on building confidence and real-world driving skills for every student.",
+    },
+    {
+      name: "Hussain Sunesara",
+      role: "Senior Instructor",
+      description:
+        "Hussain Sunesara is a senior instructor and co-founder of the driving school, bringing years of hands-on experience in training new drivers.",
+    },
+    {
+      name: "Darshan Sengupta",
       role: "Senior Instructor",
       description:
         "Darshan Sengupta is a senior instructor and co-founder of the driving school, bringing years of hands-on experience in training new drivers.",
     },
     {
-      id: "darshan-3",
-      firstName: "Darshan",
-      lastName: "Sengupta",
-      role: "Senior Instructor",
+      name: "George Haokip",
+      role: "Junior Instructor",
       description:
-        "Darshan Sengupta is a senior instructor and co-founder of the driving school, bringing years of hands-on experience in training new drivers.",
+        "With a patient, practical approach, he focuses on building confidence and real-world driving skills for every student.",
     },
     {
-      id: "darshan-4",
-      firstName: "Darshan",
-      lastName: "Sengupta",
+      name: "Hussain Sunesara",
       role: "Senior Instructor",
       description:
-        "Darshan Sengupta is a senior instructor and co-founder of the driving school, bringing years of hands-on experience in training new drivers.",
-    },
-    {
-      id: "darshan-5",
-      firstName: "Darshan",
-      lastName: "Sengupta",
-      role: "Senior Instructor",
-      description:
-        "Darshan Sengupta is a senior instructor and co-founder of the driving school, bringing years of hands-on experience in training new drivers.",
-    },
-    {
-      id: "darshan-6",
-      firstName: "Darshan",
-      lastName: "Sengupta",
-      role: "Senior Instructor",
-      description:
-        "Darshan Sengupta is a senior instructor and co-founder of the driving school, bringing years of hands-on experience in training new drivers.",
+        "Hussain Sunesara is a senior instructor and co-founder of the driving school, bringing years of hands-on experience in training new drivers.",
     },
   ],
 };
