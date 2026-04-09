@@ -328,6 +328,8 @@ if (!empty($errors)) {
 // Step 11: Build the database row payloads from the validated input
 // ---------------------------------------------------------------------------
 
+$createdAtTimestamp = gmdate('c');
+
 $studentRow = [
     'first_name'            => sanitizeString($input['student_first_name']),
     'last_name'             => sanitizeString($input['student_last_name']),
@@ -349,6 +351,7 @@ $studentRow = [
     'license_expiry_date'   => $hasLicense ? ($input['license_expiry_date'] ?? null) : null,
     'license_issue_date'    => $hasLicense ? ($input['license_issue_date'] ?? null) : null,
     'driving_experience'    => sanitizeString($input['driving_experience']),
+    'created_at'            => $createdAtTimestamp,
 ];
 
 $enrollmentRow = [
@@ -362,6 +365,7 @@ $enrollmentRow = [
     'enrollment_status'    => 'pending',
     'payment_status'       => 'pending',
     'did_agree_conditions' => true,
+    'created_at'           => $createdAtTimestamp,
 ];
 
 $paymentRow = [
@@ -369,6 +373,7 @@ $paymentRow = [
     'payment_method' => $input['payment_method'],
     'amount'         => (float)$input['amount'],
     'status'         => 'pending',
+    'created_at'     => $createdAtTimestamp,
 ];
 
 // Build card info row only when the payment method requires it
