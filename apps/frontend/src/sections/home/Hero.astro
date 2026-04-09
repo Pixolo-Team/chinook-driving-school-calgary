@@ -5,20 +5,32 @@ import { heroSectionData } from "@/data/hero-section-data";
 // COMPONENTS //
 import { Image } from "astro:assets";
 
+const heroSlides = Array.from({ length: 3 }, () => ({
+  image: heroSectionData.image,
+}));
+
 ---
 
 <section
   class="bg-n-900 relative flex h-160 w-full flex-col justify-end overflow-hidden xl:h-185"
 >
-  <div class="absolute inset-0">
-    <Image
-      src={heroSectionData.image}
-      alt=""
-      width={1920}
-      height={1280}
-      class="h-full w-full object-cover lg:object-top"
-      aria-hidden="true"
-    />
+  <div class="hero-carousel-wrapper absolute inset-0">
+    <div class="hero-embla h-full overflow-hidden">
+      <div class="hero-embla__container flex h-full">
+        {heroSlides.map((slide) => (
+          <div class="hero-embla__slide min-w-0 flex-[0_0_100%]">
+            <Image
+              src={slide.image}
+              alt=""
+              width={1920}
+              height={1280}
+              class="h-full w-full object-cover lg:object-top"
+              aria-hidden="true"
+            />
+          </div>
+        ))}
+      </div>
+    </div>
   </div>
 
   <div
@@ -40,4 +52,106 @@ import { Image } from "astro:assets";
       </div>
     </div>
   </div>
+
+  <div class="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center sm:bottom-8 lg:bottom-10">
+    <div class="hero-embla__dots pointer-events-auto flex items-center justify-center gap-2.5"></div>
+  </div>
 </section>
+
+<script>
+  import EmblaCarousel from "embla-carousel";
+
+  const AUTO_SLIDE_DELAY = 5000;
+
+  const initHeroCarousel = () => {
+    const wrappers = document.querySelectorAll(".hero-carousel-wrapper");
+
+    wrappers.forEach((wrapper) => {
+      if (wrapper instanceof HTMLElement && wrapper.dataset.emblaInitialized === "true") {
+        return;
+      }
+
+      const viewport = wrapper.querySelector(".hero-embla") as HTMLElement | null;
+      if (!viewport) return;
+
+      const emblaApi = EmblaCarousel(viewport, {
+        loop: true,
+        align: "start",
+        duration: 32,
+      });
+      const dotsContainer = wrapper.parentElement?.querySelector(".hero-embla__dots");
+      let dotNodes: HTMLButtonElement[] = [];
+
+      let autoSlideId = window.setInterval(() => {
+        emblaApi.scrollNext();
+      }, AUTO_SLIDE_DELAY);
+
+      const restartAutoSlide = () => {
+        window.clearInterval(autoSlideId);
+        autoSlideId = window.setInterval(() => {
+          emblaApi.scrollNext();
+        }, AUTO_SLIDE_DELAY);
+      };
+
+      emblaApi.on("pointerDown", restartAutoSlide);
+      emblaApi.on("settle", restartAutoSlide);
+
+      if (dotsContainer instanceof HTMLElement) {
+        const createDots = () => {
+          const snapList = emblaApi.scrollSnapList();
+
+          dotsContainer.innerHTML = snapList
+            .map(
+              (_, index) => `
+                <button
+                  type="button"
+                  class="h-2.5 w-2.5 rounded-[9px] bg-white/95 transition-all duration-300 cursor-pointer"
+                  aria-label="Go to slide ${index + 1}"
+                ></button>
+              `,
+            )
+            .join("");
+
+          dotNodes = Array.from(dotsContainer.querySelectorAll("button"));
+
+          dotNodes.forEach((dot, index) => {
+            dot.addEventListener("click", () => {
+              emblaApi.scrollTo(index);
+              restartAutoSlide();
+            });
+          });
+        };
+
+        const updateDots = () => {
+          const selectedIndex = emblaApi.selectedScrollSnap();
+
+          dotNodes.forEach((dot, index) => {
+            if (index === selectedIndex) {
+              dot.classList.remove("w-3", "bg-white/95");
+              dot.classList.add("w-9", "bg-blue-600");
+            } else {
+              dot.classList.remove("w-9", "bg-blue-600");
+              dot.classList.add("w-3", "bg-white/95");
+            }
+          });
+        };
+
+        createDots();
+        updateDots();
+
+        emblaApi.on("select", updateDots);
+        emblaApi.on("reInit", () => {
+          createDots();
+          updateDots();
+        });
+      }
+
+      if (wrapper instanceof HTMLElement) {
+        wrapper.dataset.emblaInitialized = "true";
+      }
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", initHeroCarousel);
+  document.addEventListener("astro:page-load", initHeroCarousel);
+</script>
