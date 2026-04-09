@@ -105,9 +105,13 @@ const heroSlides = Array.from({ length: 3 }, () => ({
               (_, index) => `
                 <button
                   type="button"
-                  class="h-2.5 w-2.5 rounded-[9px] bg-white/95 transition-all duration-300 cursor-pointer"
+                  class="relative h-2.5 w-2.5 overflow-hidden rounded-[9px] bg-n-50/95 transition-all duration-300 cursor-pointer"
                   aria-label="Go to slide ${index + 1}"
-                ></button>
+                >
+                  <span
+                    class="hero-embla__dot-progress pointer-events-none absolute inset-y-0 left-0 w-0 rounded-[9px] bg-blue-600"
+                  ></span>
+                </button>
               `,
             )
             .join("");
@@ -126,12 +130,31 @@ const heroSlides = Array.from({ length: 3 }, () => ({
           const selectedIndex = emblaApi.selectedScrollSnap();
 
           dotNodes.forEach((dot, index) => {
+            const progressBar = dot.querySelector(".hero-embla__dot-progress");
+
             if (index === selectedIndex) {
-              dot.classList.remove("w-3", "bg-white/95");
-              dot.classList.add("w-9", "bg-blue-600");
+              dot.classList.remove("w-2.5");
+              dot.classList.add("w-9", "bg-n-50/95");
+
+              if (progressBar instanceof HTMLElement) {
+                progressBar.style.transition = "none";
+                progressBar.style.width = "0";
+
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    progressBar.style.transition = `width ${AUTO_SLIDE_DELAY}ms linear`;
+                    progressBar.style.width = "100%";
+                  });
+                });
+              }
             } else {
-              dot.classList.remove("w-9", "bg-blue-600");
-              dot.classList.add("w-3", "bg-white/95");
+              dot.classList.remove("w-9");
+              dot.classList.add("w-2.5", "bg-n-50/95");
+
+              if (progressBar instanceof HTMLElement) {
+                progressBar.style.transition = "none";
+                progressBar.style.width = "0";
+              }
             }
           });
         };
