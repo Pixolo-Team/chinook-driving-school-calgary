@@ -1,0 +1,54 @@
+---
+import { termsConditionsData } from "@/data/termsConditions";
+---
+
+<section class="bg-n-50 text-n-950">
+  <div class="container mx-auto flex w-full flex-col gap-6 px-6 py-12 md:gap-9 md:py-24 lg:gap-10 lg:px-2">
+    {
+      termsConditionsData.map((section) => (
+        <div class="flex flex-col gap-3 md:gap-4 lg:gap-5">
+          <h2 class="text-xl font-bold leading-snug md:text-2xl lg:text-3xl">
+            {section.title}
+          </h2>
+
+          {section.paragraphs && (
+            <div class="flex flex-col gap-2 text-sm leading-snug md:text-lg md:leading-7 lg:text-xl lg:leading-7">
+              {section.preserveLineBreaks ? (
+                <p>
+                  {section.paragraphs.map((paragraph, index) => (
+                    <>
+                      {index > 0 && <br />}
+                      {paragraph}
+                    </>
+                  ))}
+                </p>
+              ) : (
+                section.paragraphs.map((paragraph) => <p>{paragraph}</p>)
+              )}
+            </div>
+          )}
+
+          {section.items && (
+            <div class="flex flex-col gap-2 text-sm leading-relaxed md:text-lg md:leading-7 lg:text-xl lg:leading-7">
+              {section.listIntro && <p>{section.listIntro}</p>}
+              <ul class="list-disc space-y-2 pl-5 lg:pl-6">
+                {section.items.map((item) => (
+                  <li>
+                    {item.text}
+                    {item.children && (
+                      <ul class="list-disc space-y-2 pl-8 md:pl-10 lg:pl-12">
+                        {item.children.map((child) => (
+                          <li>{child}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      ))
+    }
+  </div>
+</section>

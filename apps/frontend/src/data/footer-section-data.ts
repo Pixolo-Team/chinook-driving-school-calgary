@@ -1,11 +1,6 @@
 import { URLS } from "@/infrastructure/constants/urls";
 
 export const footerSectionData = {
-  logo: {
-    mark: "/images/footer-logo-mark.svg",
-    text: "/images/footer-logo-text.svg",
-    alt: "Chinook Driving School Calgary logo",
-  },
   certification: {
     prefix: "Certified by ",
     emphasis: "Alberta Transportation",
@@ -29,8 +24,8 @@ export const footerSectionData = {
     },
   ],
   legalLinks: [
-    { label: "Privacy Policy", href: "#" },
-    { label: "Terms of Service", href: "#" },
+    { label: "Privacy Policy", href: URLS.PRIVACY_POLICY },
+    { label: "Terms of Service", href: URLS.TERMS_OF_SERVICE },
   ],
   craftedBy: {
     label: "Crafted by",

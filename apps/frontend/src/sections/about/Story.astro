@@ -1,0 +1,42 @@
+---
+// COMPONENTS //
+import SectionHeader from "@/components/SectionHeader.astro";
+import StoryCard from "@/components/StoryCard.astro";
+
+// DATA //
+import { aboutStorySectionData } from "@/data/about-story";
+
+const { content, cards } = aboutStorySectionData;
+---
+
+<section class="bg-n-50">
+  <div
+    class="container mx-auto flex w-full flex-col items-center gap-7 px-5 py-12 sm:gap-11 sm:px-6 sm:py-20 lg:gap-12 lg:py-20"
+  >
+    <div
+      class="flex w-full max-w-4xl flex-col items-center gap-7 text-center sm:gap-11 lg:gap-12"
+    >
+      <SectionHeader
+        eyebrow={content.eyebrow}
+        heading={content.heading}
+      />
+
+      <p
+        set:html={content.story}
+        class="text-sm leading-[1.4] text-n-800 sm:text-base md:text-lg lg:text-xl"
+      >
+      </p>
+    </div>
+
+    <div class="grid w-full grid-cols-1 gap-3.5 sm:gap-4 lg:grid-cols-3 lg:gap-6">
+      {cards.map((card, index) => (
+        <StoryCard
+          icon={card.icon}
+          number={String(index + 1).padStart(2, "0")}
+          title={card.title}
+          description={card.description}
+        />
+      ))}
+    </div>
+  </div>
+</section>

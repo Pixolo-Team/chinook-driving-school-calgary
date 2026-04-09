@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
-import { footerSectionData } from "@/data/footer-section-data";
+import logoMark from "@/../public/images/footer-logo-mark.svg";
+import logoText from "@/../public/images/footer-logo-text.svg";
 
 interface Props {
   containerClass?: string;
@@ -10,16 +11,16 @@ interface Props {
 }
 
 const {
-  containerClass = "relative block h-14 w-36",
-  markClass = "absolute top-0 left-0 h-full w-12 object-contain",
-  textClass = "absolute top-1/2 left-11 h-8 w-28 -translate-y-1/2 object-contain",
-  textAlt = footerSectionData.logo.alt,
+  containerClass = "inline-flex h-14 items-center gap-0.5",
+  markClass = "h-full w-auto shrink-0 object-contain",
+  textClass = "h-8 w-auto shrink-0 object-contain",
+  textAlt = "Chinook Driving Academy",
 } = Astro.props as Props;
 ---
 
 <div class={containerClass} role="img" aria-label={textAlt}>
   <Image
-    src={footerSectionData.logo.mark}
+    src={logoMark}
     alt=""
     width={65}
     height={82}
@@ -28,7 +29,7 @@ const {
     aria-hidden="true"
   />
   <Image
-    src={footerSectionData.logo.text}
+    src={logoText}
     alt={textAlt}
     width={144}
     height={42}

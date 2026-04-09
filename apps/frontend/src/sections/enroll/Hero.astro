@@ -1,0 +1,17 @@
+---
+// COMPONENTS //
+import HeroCard from "@/components/HeroCard.astro";
+
+// DATA //
+import { enrollHeroData } from "@/data/enroll-hero-data";
+
+---
+
+<section class="bg-n-100 overflow-hidden">
+  <HeroCard
+    title={enrollHeroData.title}
+    description={enrollHeroData.description}
+    illustration={enrollHeroData.illustration}
+    illustrationAlt={enrollHeroData.illustrationAlt}
+  />
+</section>
