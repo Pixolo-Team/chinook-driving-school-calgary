@@ -1,4 +1,4 @@
-import heroIllustration from "@/assets/enroll-hero.png";
+import heroIllustration from "public/images/enroll-hero.png";
 
 export const enrollHeroData = {
   title: "Start Your Driving Journey with Chinook",
