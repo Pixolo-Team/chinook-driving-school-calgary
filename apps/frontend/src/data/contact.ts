@@ -1,4 +1,4 @@
-import contactIllustration from "@/assets/contact-illustration.png";
+import contactIllustration from "public/images/contact-hero.png";
 
 export const contactHeroSectionData = {
   title: "Get in Touch",

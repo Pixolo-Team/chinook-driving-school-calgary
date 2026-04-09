@@ -7,5 +7,5 @@ export const URLS = {
   CONTACT: "/contact",
   ENROLL: "/enroll",
   PRIVACY_POLICY: "/privacy-policy",
-  TERMS_OF_SERVICE: "/terms-of-service",
+  TERMS_OF_SERVICE: "/terms",
 } as const;
