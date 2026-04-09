@@ -32,7 +32,7 @@ const ALLOWED_LICENSE_TYPES = ['CLASS_7', 'CLASS_5_GDL', 'CLASS_5', 'OTHER'];
 const ALLOWED_PAYMENT_METHODS = ['card', 'upi', 'bank_transfer', 'cash'];
 
 /** @var string[] Valid day-of-week labels for availability_days_of_week entries. */
-const ALLOWED_DAYS_OF_WEEK = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+const ALLOWED_DAYS_OF_WEEK = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
 // ---------------------------------------------------------------------------
 // Validation helpers

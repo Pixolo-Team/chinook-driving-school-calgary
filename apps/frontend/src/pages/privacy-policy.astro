@@ -1,6 +1,10 @@
 ---
-// OTHERS //
+// LAYOUT //
 import Layout from "@/layouts/Layout.astro";
+
+// SECTIONS //
+import Hero from "@/sections/privacy/Hero.astro";
+import PrivacyPolicy from "@/sections/privacy/PrivacyPolicy.astro";
 
 ---
 
@@ -8,21 +12,6 @@ import Layout from "@/layouts/Layout.astro";
   title="Privacy Policy | Chinook Driving School Calgary"
   description="Read the privacy policy for Chinook Driving School Calgary."
 >
-  <section class="bg-n-50">
-    <div class="container mx-auto flex w-full max-w-4xl flex-col gap-6 px-6 py-16 lg:px-0 lg:py-24">
-      <h1 class="text-n-800 text-3xl font-bold leading-tight lg:text-5xl">Privacy Policy</h1>
-      <p class="text-n-600 text-base leading-7">
-        Chinook Driving School Calgary respects your privacy and is committed to protecting the
-        personal information you share through our website, contact forms, and enrollment process.
-      </p>
-      <p class="text-n-600 text-base leading-7">
-        We collect only the information needed to respond to inquiries, process enrollments,
-        communicate scheduling details, and support your driver training experience.
-      </p>
-      <p class="text-n-600 text-base leading-7">
-        If you have any questions about how your information is used, please contact our team
-        directly through the contact page.
-      </p>
-    </div>
-  </section>
+  <Hero />
+  <PrivacyPolicy />
 </Layout>
