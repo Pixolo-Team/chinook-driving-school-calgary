@@ -82,19 +82,22 @@ const heroSlides = Array.from({ length: 3 }, () => ({
       const dotsContainer = wrapper.parentElement?.querySelector(".hero-embla__dots");
       let dotNodes: HTMLButtonElement[] = [];
 
-      let autoSlideId = window.setInterval(() => {
-        emblaApi.scrollNext();
-      }, AUTO_SLIDE_DELAY);
+      let autoSlideId: number | undefined;
 
-      const restartAutoSlide = () => {
-        window.clearInterval(autoSlideId);
-        autoSlideId = window.setInterval(() => {
+      const clearAutoSlide = () => {
+        if (autoSlideId !== undefined) {
+          window.clearTimeout(autoSlideId);
+        }
+      };
+
+      const scheduleAutoSlide = () => {
+        clearAutoSlide();
+        autoSlideId = window.setTimeout(() => {
           emblaApi.scrollNext();
         }, AUTO_SLIDE_DELAY);
       };
 
-      emblaApi.on("pointerDown", restartAutoSlide);
-      emblaApi.on("settle", restartAutoSlide);
+      emblaApi.on("pointerDown", clearAutoSlide);
 
       if (dotsContainer instanceof HTMLElement) {
         const createDots = () => {
@@ -121,7 +124,6 @@ const heroSlides = Array.from({ length: 3 }, () => ({
           dotNodes.forEach((dot, index) => {
             dot.addEventListener("click", () => {
               emblaApi.scrollTo(index);
-              restartAutoSlide();
             });
           });
         };
@@ -161,11 +163,16 @@ const heroSlides = Array.from({ length: 3 }, () => ({
 
         createDots();
         updateDots();
+        scheduleAutoSlide();
 
-        emblaApi.on("select", updateDots);
+        emblaApi.on("select", () => {
+          updateDots();
+          scheduleAutoSlide();
+        });
         emblaApi.on("reInit", () => {
           createDots();
           updateDots();
+          scheduleAutoSlide();
         });
       }
 
