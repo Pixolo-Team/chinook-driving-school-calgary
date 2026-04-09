@@ -22,7 +22,7 @@ const activeStarCount = Math.min(Math.max(Math.floor(rating), 0), 5);
 
 <!-- TestimonialCard Component -->
 <div
-  class="relative w-full overflow-hidden rounded-4xl border border-n-900 bg-n-900 justify-self-center lg:aspect-[32/31]"  
+  class="relative w-full overflow-hidden rounded-4xl border border-n-900 bg-n-900 justify-self-center min-h-[320px] md:min-h-[400px] lg:aspect-[32/31]"  
 >
   <!-- Only render the background photo for the highlighted testimonial variant. -->
   {testimonial.customReview && testimonial.backgroundImage && (
