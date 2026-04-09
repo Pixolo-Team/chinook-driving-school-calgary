@@ -1,12 +1,10 @@
 // TYPES //
 import type {
+  CourseCategoryData,
   EnrollmentFormValueData,
   EnrollmentPayloadData,
   TimeSlotData,
 } from "@/react/types/enrollment.type";
-
-// CONSTANTS //
-import { COURSES } from "@/react/constants/form-items";
 
 const TIME_SLOT_MAP: Record<string, TimeSlotData> = {
   morning: {
@@ -28,9 +26,10 @@ const TIME_SLOT_MAP: Record<string, TimeSlotData> = {
  */
 export function transformEnrollmentPayload(
   enrollmentFormValue: EnrollmentFormValueData,
+  courseCategories: CourseCategoryData[],
 ): EnrollmentPayloadData {
   const selectedCourseInfo =
-    COURSES.flatMap((courseCategoryItem) => courseCategoryItem.courses).find(
+    courseCategories.flatMap((courseCategoryItem) => courseCategoryItem.courses).find(
       (courseItem) => courseItem.id === enrollmentFormValue.select_course.course.course_id,
     ) ?? null;
 

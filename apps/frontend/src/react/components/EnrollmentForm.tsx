@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 // TYPES //
 import type {
   AvailabilityValueData,
+  CourseCategoryData,
   EnrollmentFormValueData,
   EnrollmentPayloadData,
   EnrollmentResponseData,
@@ -26,6 +27,7 @@ import UserInfo from "@/react/components/steps/UserInfo";
 import Steps from "@/react/components/ui/Steps";
 
 // API SERVICES //
+import { fetchCoursesRequest } from "@/react/services/api/courses.api.service";
 import { submitEnrollmentRequest } from "@/react/services/api/enrollment.api.service";
 
 // CONSTANTS //
@@ -140,6 +142,9 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
     5: "untouched",
     6: "untouched",
   });
+  const [courseCategories, setCourseCategories] = useState<CourseCategoryData[]>([]);
+  const [isCoursesLoading, setIsCoursesLoading] = useState<boolean>(true);
+  const [coursesErrorMessage, setCoursesErrorMessage] = useState<string | null>(null);
 
   // Helper Functions
   /**
@@ -323,7 +328,7 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
 
     // Transform the Input Values
     const enrollmentPayloadInfo: EnrollmentPayloadData =
-      transformEnrollmentPayload(enrollmentFormValue);
+      transformEnrollmentPayload(enrollmentFormValue, courseCategories);
     const requestStartedAtInMs: number = Date.now();
 
     setSubmissionModalState({
@@ -538,6 +543,9 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
       default:
         return (
           <SelectCourse
+            courses={courseCategories}
+            isLoadingCourses={isCoursesLoading}
+            coursesErrorMessage={coursesErrorMessage}
             value={enrollmentFormValue.select_course}
             onChange={(fieldKey, fieldValue) =>
               updateEnrollmentSectionValue("select_course", fieldKey, fieldValue)
@@ -550,6 +558,52 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
   };
 
   // Use Effects
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCourses = async (): Promise<void> => {
+      setIsCoursesLoading(true);
+      setCoursesErrorMessage(null);
+
+      try {
+        const coursesResponseInfo = await fetchCoursesRequest();
+
+        if (!isMounted) {
+          return;
+        }
+
+        if (!coursesResponseInfo.status || !coursesResponseInfo.data) {
+          setCourseCategories([]);
+          setCoursesErrorMessage(
+            coursesResponseInfo.message || "Unable to load courses right now.",
+          );
+          return;
+        }
+
+        setCourseCategories(coursesResponseInfo.data);
+      } catch (error) {
+        if (!isMounted) {
+          return;
+        }
+
+        setCourseCategories([]);
+        setCoursesErrorMessage(
+          error instanceof Error ? error.message : "Unable to load courses right now.",
+        );
+      } finally {
+        if (isMounted) {
+          setIsCoursesLoading(false);
+        }
+      }
+    };
+
+    void loadCourses();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   useEffect(() => {
     const storedEnrollmentFormValue: string | null = window.localStorage.getItem(
       ENROLLMENT_FORM_STORAGE_KEY,
