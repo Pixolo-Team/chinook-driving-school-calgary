@@ -156,7 +156,9 @@ export default function EnrollmentForm({
     title: "",
     message: "",
   });
-  const [submissionStepStatuses, setSubmissionStepStatuses] = useState<Record<number, StepStatusData>>({
+  const [submissionStepStatuses, setSubmissionStepStatuses] = useState<
+    Record<number, StepStatusData>
+  >({
     1: "untouched",
     2: "untouched",
     3: "untouched",
@@ -175,12 +177,12 @@ export default function EnrollmentForm({
     license_information: {
       ...storedValue.license_information,
       issuing_region: storedValue.license_information.issuing_region
-        ? LEGACY_LICENSE_REGION_MAP[storedValue.license_information.issuing_region] ??
-          storedValue.license_information.issuing_region
+        ? (LEGACY_LICENSE_REGION_MAP[storedValue.license_information.issuing_region] ??
+          storedValue.license_information.issuing_region)
         : storedValue.license_information.issuing_region,
       type: storedValue.license_information.type
-        ? LEGACY_LICENSE_TYPE_MAP[storedValue.license_information.type] ??
-          storedValue.license_information.type
+        ? (LEGACY_LICENSE_TYPE_MAP[storedValue.license_information.type] ??
+          storedValue.license_information.type)
         : storedValue.license_information.type,
     },
   });
@@ -365,8 +367,10 @@ export default function EnrollmentForm({
     }
 
     // Transform the Input Values
-    const enrollmentPayloadInfo: EnrollmentPayloadData =
-      transformEnrollmentPayload(enrollmentFormValue, courseCategories);
+    const enrollmentPayloadInfo: EnrollmentPayloadData = transformEnrollmentPayload(
+      enrollmentFormValue,
+      courseCategories,
+    );
     const requestStartedAtInMs: number = Date.now();
 
     setSubmissionModalState({
@@ -611,9 +615,7 @@ export default function EnrollmentForm({
         storedEnrollmentFormValue,
       ) as EnrollmentFormStorageData;
 
-      setCurrentStep(
-        Math.min(parsedEnrollmentFormValue.currentStep ?? 1, TOTAL_ENROLLMENT_STEPS),
-      );
+      setCurrentStep(Math.min(parsedEnrollmentFormValue.currentStep ?? 1, TOTAL_ENROLLMENT_STEPS));
       setStepStates(parsedEnrollmentFormValue.stepStates ?? stepStates);
       setEnrollmentFormValue(
         parsedEnrollmentFormValue.enrollmentFormValue
@@ -651,22 +653,24 @@ export default function EnrollmentForm({
   }, []);
 
   return (
-    <section className="container mx-auto flex min-h-screen w-full flex-col gap-5 px-4 py-9 sm:px-6 md:gap-8 md:px-7 lg:px-8 lg:py-12 xl:px-10">
-      {/* Steps Component */}
-      <Steps currentStep={currentStep} stepStates={stepStates} onStepChange={handleStepChange} />
+    <section className="bg-n-50">
+      <div className="container mx-auto flex min-h-screen w-full flex-col gap-5 px-4 py-9 sm:px-6 md:gap-8 md:px-7 lg:px-8 lg:py-12 xl:px-10">
+        {/* Steps Component */}
+        <Steps currentStep={currentStep} stepStates={stepStates} onStepChange={handleStepChange} />
 
-      {/* Step Section (Renders based on Step) */}
-      {renderCurrentStep()}
+        {/* Step Section (Renders based on Step) */}
+        {renderCurrentStep()}
 
-      <SubmissionModal
-        isOpen={submissionModalState.isOpen}
-        mode={submissionModalState.mode}
-        title={submissionModalState.title}
-        message={submissionModalState.message}
-        stepStatuses={submissionStepStatuses}
-        onSelectStep={jumpToStepFromModal}
-        onClose={closeSubmissionModal}
-      />
+        <SubmissionModal
+          isOpen={submissionModalState.isOpen}
+          mode={submissionModalState.mode}
+          title={submissionModalState.title}
+          message={submissionModalState.message}
+          stepStatuses={submissionStepStatuses}
+          onSelectStep={jumpToStepFromModal}
+          onClose={closeSubmissionModal}
+        />
+      </div>
     </section>
   );
 }

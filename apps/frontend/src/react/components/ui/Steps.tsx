@@ -288,7 +288,7 @@ export default function Steps({
 
   // Use Effects
   return (
-    <div className={joinClasses("border-n-200 w-full border-b-2 pb-6", className)}>
+    <div className={joinClasses("border-n-300 w-full border-b-2 pb-6", className)}>
       <div className="flex w-full flex-col gap-6 md:hidden">
         <div className="flex w-full items-center gap-3">
           <div
@@ -297,7 +297,7 @@ export default function Steps({
           >
             <StepGlyph icon={currentStepInfo.icon} status="current" />
           </div>
-          <div className="bg-n-200 relative h-[3px] flex-1 overflow-hidden rounded-full">
+          <div className="bg-n-300 relative h-[3px] flex-1 overflow-hidden rounded-full">
             <div className="h-full w-4/5 bg-blue-500" />
           </div>
         </div>
@@ -322,7 +322,7 @@ export default function Steps({
               )}
               aria-current={status === "current" ? "step" : undefined}
             >
-              <div className="flex w-full items-center justify-center">
+              <div className="relative z-10 flex w-full items-center justify-center">
                 <div
                   className={joinClasses(
                     "flex h-8 w-8 shrink-0 items-center justify-center rounded-full border",
@@ -334,7 +334,7 @@ export default function Steps({
               </div>
 
               {index !== steps.length - 1 ? (
-                <div className="bg-n-200 absolute top-6 left-1/2 -z-10 h-[3px] w-full -translate-y-1/2">
+                <div className="bg-n-300 pointer-events-none absolute top-6 left-1/2 z-0 h-[3px] w-full -translate-y-1/2">
                   <div
                     className={joinClasses(
                       "h-full bg-blue-500 transition-[width] duration-400",
@@ -375,7 +375,7 @@ export default function Steps({
               )}
               aria-current={status === "current" ? "step" : undefined}
             >
-              <div className="flex w-full items-center justify-center gap-3">
+              <div className="relative z-10 flex w-full items-center justify-center gap-3">
                 <div
                   className={joinClasses(
                     "flex h-9 w-9 shrink-0 items-center justify-center rounded-full border",
@@ -396,7 +396,7 @@ export default function Steps({
                 {index + 1}. {step.label}
               </p>
               {index !== 5 && (
-                <div className="bg-n-200 absolute top-[30px] left-1/2 -z-10 h-[3px] w-full -translate-y-1/2">
+                <div className="bg-n-300 pointer-events-none absolute top-[30px] left-1/2 z-0 h-[3px] w-full -translate-y-1/2">
                   <div
                     className={joinClasses(
                       "h-full bg-blue-500 transition-[width] duration-400",
