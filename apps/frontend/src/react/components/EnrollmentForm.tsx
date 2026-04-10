@@ -55,6 +55,21 @@ type EnrollmentFormPropsData = Readonly<{
 
 const ENROLLMENT_FORM_STORAGE_KEY = "chinook-enrollment-form";
 
+const LEGACY_LICENSE_REGION_MAP: Record<string, string> = {
+  alberta: "AB",
+  "british-columbia": "BC",
+  manitoba: "MB",
+  ontario: "ON",
+  saskatchewan: "SK",
+};
+
+const LEGACY_LICENSE_TYPE_MAP: Record<string, string> = {
+  "class-7": "CLASS_7",
+  "class-5-gdl": "CLASS_5_GDL",
+  "class-5-full": "CLASS_5",
+  international: "OTHER",
+};
+
 /**
  * Coordinates the multi-step enrollment flow and stores the shared form state.
  */
@@ -147,6 +162,26 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
   const [coursesErrorMessage, setCoursesErrorMessage] = useState<string | null>(null);
 
   // Helper Functions
+  /**
+   * Migrates older saved license values into the current backend-safe format.
+   */
+  const normalizeStoredEnrollmentFormValue = (
+    storedValue: EnrollmentFormValueData,
+  ): EnrollmentFormValueData => ({
+    ...storedValue,
+    license_information: {
+      ...storedValue.license_information,
+      issuing_region: storedValue.license_information.issuing_region
+        ? LEGACY_LICENSE_REGION_MAP[storedValue.license_information.issuing_region] ??
+          storedValue.license_information.issuing_region
+        : storedValue.license_information.issuing_region,
+      type: storedValue.license_information.type
+        ? LEGACY_LICENSE_TYPE_MAP[storedValue.license_information.type] ??
+          storedValue.license_information.type
+        : storedValue.license_information.type,
+    },
+  });
+
   /**
    * Registers a validator function for a step.
    */
@@ -623,7 +658,11 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
         Math.min(parsedEnrollmentFormValue.currentStep ?? 1, TOTAL_ENROLLMENT_STEPS),
       );
       setStepStates(parsedEnrollmentFormValue.stepStates ?? stepStates);
-      setEnrollmentFormValue(parsedEnrollmentFormValue.enrollmentFormValue ?? enrollmentFormValue);
+      setEnrollmentFormValue(
+        parsedEnrollmentFormValue.enrollmentFormValue
+          ? normalizeStoredEnrollmentFormValue(parsedEnrollmentFormValue.enrollmentFormValue)
+          : enrollmentFormValue,
+      );
     } catch {
       clearEnrollmentFormStorage();
     } finally {

@@ -126,6 +126,14 @@ export const PROVINCES: ProvinceOptionData[] = [
   { name: "Saskatchewan", value: "saskatchewan" },
 ];
 
+export const LICENSE_ISSUING_REGIONS: ProvinceOptionData[] = [
+  { name: "Alberta", value: "AB" },
+  { name: "British Columbia", value: "BC" },
+  { name: "Manitoba", value: "MB" },
+  { name: "Ontario", value: "ON" },
+  { name: "Saskatchewan", value: "SK" },
+];
+
 export const LICENSE_STATUS_ITEMS = [
   { value: "none", label: "No License Yet", description: "" },
   { value: "learning", label: "Learner License", description: "" },
@@ -133,10 +141,10 @@ export const LICENSE_STATUS_ITEMS = [
 ];
 
 export const LICENSE_TYPES = [
-  { label: "Class 7 Learner", value: "class-7" },
-  { label: "Class 5 GDL", value: "class-5-gdl" },
-  { label: "Class 5 Full", value: "class-5-full" },
-  { label: "International License", value: "international" },
+  { label: "Class 7 Learner", value: "CLASS_7" },
+  { label: "Class 5 GDL", value: "CLASS_5_GDL" },
+  { label: "Class 5 Full", value: "CLASS_5" },
+  { label: "International License", value: "OTHER" },
 ];
 
 export const DRIVING_EXPERIENCE_ITEMS = [

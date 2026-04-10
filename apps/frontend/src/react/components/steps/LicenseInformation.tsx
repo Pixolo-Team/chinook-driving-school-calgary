@@ -14,9 +14,9 @@ import RadioTab from "@/react/components/ui/RadioTab";
 // CONSTANTS //
 import {
   DRIVING_EXPERIENCE_ITEMS,
+  LICENSE_ISSUING_REGIONS,
   LICENSE_STATUS_ITEMS,
   LICENSE_TYPES,
-  PROVINCES,
 } from "@/react/constants/form-items";
 
 // COMPONENT PROPS //
@@ -230,7 +230,7 @@ export default function LicenseInformation({
                 helperText="Enter your surname as per your official documents."
                 isError={shouldShowIssuingRegionError}
                 errorMessage={issuingRegionError ?? undefined}
-                options={PROVINCES.map((provinceItem) => ({
+                options={LICENSE_ISSUING_REGIONS.map((provinceItem) => ({
                   label: provinceItem.name,
                   value: provinceItem.value,
                 }))}

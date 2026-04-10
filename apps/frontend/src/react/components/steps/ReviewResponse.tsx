@@ -11,10 +11,10 @@ import Button from "@/react/components/ui/Button";
 import {
   COURSES,
   DRIVING_EXPERIENCE_ITEMS,
+  LICENSE_ISSUING_REGIONS,
   LICENSE_TYPES,
   PAYMENT_METHOD_ITEMS,
   PREFERRED_DAYS_ITEMS,
-  PROVINCES,
   TIME_SLOT_ITEMS,
 } from "@/react/constants/form-items";
 
@@ -62,7 +62,9 @@ export default function ReviewResponse({
 
   const selectedProvinceInfo = useMemo(
     () =>
-      PROVINCES.find((provinceItem) => provinceItem.value === value.license_information.issuing_region),
+      LICENSE_ISSUING_REGIONS.find(
+        (provinceItem) => provinceItem.value === value.license_information.issuing_region,
+      ),
     [value.license_information.issuing_region],
   );
 
