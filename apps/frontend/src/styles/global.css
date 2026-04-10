@@ -107,6 +107,35 @@ body {
   --color-blue-950: #031426;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-n-50: #020617;
+    --color-n-100: #0e172b;
+    --color-n-200: #1d283d;
+    --color-n-300: #324158;
+    --color-n-400: #45556c;
+    --color-n-500: #62748e;
+    --color-n-600: #90a2b9;
+    --color-n-700: #cad5e2;
+    --color-n-800: #e2e8f1;
+    --color-n-900: #f1f5f9;
+    --color-n-950: #ffffff;
+
+    /* Blue Shades Dark Mode */
+    --color-blue-50: #031426;
+    --color-blue-100: #08335e;
+    --color-blue-200: #0b4784;
+    --color-blue-300: #0e5caa;
+    --color-blue-400: #1170d0;
+    --color-blue-500: #137fec;
+    --color-blue-600: #4299f0;
+    --color-blue-700: #68adf3;
+    --color-blue-800: #8ec2f6;
+    --color-blue-900: #b4d6f9;
+    --color-blue-950: #ffffff;
+  }
+}
+
 /* ===== COLOR VARIABLES - DARK MODE ===== */
 
 .dark {
