@@ -54,6 +54,17 @@ body {
   display: none;
 }
 
+.custom-date-input::-webkit-calendar-picker-indicator {
+  opacity: 0;
+  width: 0;
+  margin: 0;
+  pointer-events: none;
+}
+
+.custom-date-input::-webkit-date-and-time-value {
+  text-align: left;
+}
+
 @theme inline {
   --color-n-50: var(--color-n-50);
   --color-n-100: var(--color-n-100);

@@ -27,14 +27,10 @@ import UserInfo from "@/react/components/steps/UserInfo";
 import Steps from "@/react/components/ui/Steps";
 
 // API SERVICES //
-import { fetchCoursesRequest } from "@/react/services/api/courses.api.service";
 import { submitEnrollmentRequest } from "@/react/services/api/enrollment.api.service";
 
 // CONSTANTS //
-import {
-  COURSE_CATEGORY_IMAGE_BY_ID,
-  TOTAL_ENROLLMENT_STEPS,
-} from "@/react/constants/form-items";
+import { TOTAL_ENROLLMENT_STEPS } from "@/react/constants/form-items";
 
 // UTILS //
 import { transformEnrollmentPayload } from "@/react/utils/api.util";
@@ -53,6 +49,9 @@ type EnrollmentFormStorageData = {
 };
 
 type EnrollmentFormPropsData = Readonly<{
+  courseCategories: CourseCategoryData[];
+  isCoursesLoading: boolean;
+  coursesErrorMessage?: string | null;
   onSuccess?: () => void;
 }>;
 
@@ -73,18 +72,15 @@ const LEGACY_LICENSE_TYPE_MAP: Record<string, string> = {
   international: "OTHER",
 };
 
-const withLocalCourseCategoryImages = (
-  courseCategories: CourseCategoryData[],
-): CourseCategoryData[] =>
-  courseCategories.map((courseCategoryItem) => ({
-    ...courseCategoryItem,
-    image: COURSE_CATEGORY_IMAGE_BY_ID[courseCategoryItem.id] ?? courseCategoryItem.image,
-  }));
-
 /**
  * Coordinates the multi-step enrollment flow and stores the shared form state.
  */
-export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
+export default function EnrollmentForm({
+  courseCategories,
+  isCoursesLoading,
+  coursesErrorMessage = null,
+  onSuccess,
+}: EnrollmentFormPropsData) {
   // Define Navigation
 
   // Define Context
@@ -168,10 +164,6 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
     5: "untouched",
     6: "untouched",
   });
-  const [courseCategories, setCourseCategories] = useState<CourseCategoryData[]>([]);
-  const [isCoursesLoading, setIsCoursesLoading] = useState<boolean>(true);
-  const [coursesErrorMessage, setCoursesErrorMessage] = useState<string | null>(null);
-
   // Helper Functions
   /**
    * Migrates older saved license values into the current backend-safe format.
@@ -604,52 +596,6 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
   };
 
   // Use Effects
-  useEffect(() => {
-    let isMounted = true;
-
-    const loadCourses = async (): Promise<void> => {
-      setIsCoursesLoading(true);
-      setCoursesErrorMessage(null);
-
-      try {
-        const coursesResponseInfo = await fetchCoursesRequest();
-
-        if (!isMounted) {
-          return;
-        }
-
-        if (!coursesResponseInfo.status || !coursesResponseInfo.data) {
-          setCourseCategories([]);
-          setCoursesErrorMessage(
-            coursesResponseInfo.message || "Unable to load courses right now.",
-          );
-          return;
-        }
-
-        setCourseCategories(withLocalCourseCategoryImages(coursesResponseInfo.data));
-      } catch (error) {
-        if (!isMounted) {
-          return;
-        }
-
-        setCourseCategories([]);
-        setCoursesErrorMessage(
-          error instanceof Error ? error.message : "Unable to load courses right now.",
-        );
-      } finally {
-        if (isMounted) {
-          setIsCoursesLoading(false);
-        }
-      }
-    };
-
-    void loadCourses();
-
-    return () => {
-      isMounted = false;
-    };
-  }, []);
-
   useEffect(() => {
     const storedEnrollmentFormValue: string | null = window.localStorage.getItem(
       ENROLLMENT_FORM_STORAGE_KEY,
