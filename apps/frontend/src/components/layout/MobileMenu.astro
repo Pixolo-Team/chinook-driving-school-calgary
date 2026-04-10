@@ -2,6 +2,7 @@
 import { Icon } from "astro-icon/components";
 import Button from "@/components/ui/Button.astro";
 import BrandLogo from "@/components/common/BrandLogo.astro";
+import { URLS } from "@/infrastructure/constants/urls";
 
 // DATA //
 import { menuItems } from "@/data/menu";
@@ -81,7 +82,7 @@ const currentPath = Astro.url.pathname;
         <!-- Call Us Button -->
         <Button
           variant="outline"
-          href="/contact"
+          href={URLS.PHONE}
           className="bg-n-100 border-n-300 text-n-700 h-14 rounded-full px-6"
         >
           <span class="flex items-center gap-2">
