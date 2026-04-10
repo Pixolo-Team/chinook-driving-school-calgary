@@ -1,0 +1,39 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  rating: number;
+  maxStars?: number;
+  starClass?: string;
+  activeClass?: string;
+  inactiveClass?: string;
+  class?: string;
+}
+
+const {
+  rating,
+  maxStars = 5,
+  starClass = "size-5",
+  activeClass = "text-yellow-500",
+  inactiveClass = "text-n-300",
+  class: wrapperClass,
+} = Astro.props;
+
+const safeMaxStars = Math.max(Math.floor(maxStars), 1);
+const activeStarCount = Math.min(Math.max(Math.floor(rating), 0), safeMaxStars);
+---
+
+<div
+  class:list={["flex items-center gap-1", wrapperClass]}
+  aria-label={`${activeStarCount} out of ${safeMaxStars} stars`}
+>
+  {
+    Array.from({ length: safeMaxStars }, (_, index) => (
+      <Icon
+        name="star"
+        class:list={[starClass, index < activeStarCount ? activeClass : inactiveClass]}
+        aria-hidden="true"
+      />
+    ))
+  }
+</div>

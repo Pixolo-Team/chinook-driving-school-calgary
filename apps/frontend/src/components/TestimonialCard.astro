@@ -4,7 +4,8 @@ import type { TestimonialData } from "@/types/testimonial";
 
 // COMPONENTS //
 import { Image } from "astro:assets";
-import { Icon } from "astro-icon/components";
+import Avatar from "@/components/Avatar.astro";
+import RatingStars from "@/components/RatingStars.astro";
 
 // IMAGES //
 import googleLogo from "@/../public/images/google-logo.png";
@@ -15,9 +16,6 @@ interface Props {
 }
 
 const { testimonial, rating } = Astro.props;
-
-// Keep ratings within the expected 5-star scale so the UI stays predictable.
-const activeStarCount = Math.min(Math.max(Math.floor(rating), 0), 5);
 ---
 
 <!-- TestimonialCard Component -->
@@ -47,21 +45,7 @@ const activeStarCount = Math.min(Math.max(Math.floor(rating), 0), 5);
         : "bg-n-50",
     ]}
   >
-    <!-- Render a fixed 5-star row and highlight only the stars included in the rating. -->
-    <div class="flex items-center gap-1" aria-label={`${activeStarCount} out of 5 stars`}>
-      {
-        Array.from({ length: 5 }, (_, index) => (
-          <Icon
-            name="star"
-            class:list={[
-              "size-5",
-              index < activeStarCount ? "text-yellow-500" : "text-n-300",
-            ]}
-            aria-hidden="true"
-          />
-        ))
-      }
-    </div>
+    <RatingStars rating={rating} starClass="size-5" />
 
     <!-- Testimonial text -->
     <div class="w-full">
@@ -77,23 +61,17 @@ const activeStarCount = Math.min(Math.max(Math.floor(rating), 0), 5);
 
     <div class="flex w-full items-center justify-center gap-2.5">
       <div class="flex flex-1 items-center gap-2.5">
-        <!-- Match the avatar border color to the card theme for consistent contrast. -->
-        <div
-          class:list={[
+        <Avatar
+          src={testimonial.profilePhoto}
+          alt={`${testimonial.name} profile photo`}
+          wrapperClass={[
             "size-10 overflow-hidden rounded-4xl border-2",
             testimonial.customReview ? "border-n-50" : "border-n-900",
           ]}
-        >
-          <Image
-            src={testimonial.profilePhoto}
-            alt={`${testimonial.name} profile photo`}
-            class="size-full rounded-4xl object-cover"
-            loading="lazy"
-            referrerpolicy="no-referrer"
-            width={40}
-            height={40}
-          />
-        </div>
+          imageClass="size-full rounded-4xl object-cover"
+          width={40}
+          height={40}
+        />
 
         <!-- Name and role -->
         <div

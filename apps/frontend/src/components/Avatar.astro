@@ -1,0 +1,33 @@
+---
+import { Image } from "astro:assets";
+
+interface Props {
+  src: string;
+  alt: string;
+  wrapperClass?: string | string[];
+  imageClass?: string | string[];
+  width?: number;
+  height?: number;
+}
+
+const {
+  src,
+  alt,
+  wrapperClass = "size-10 overflow-hidden rounded-4xl border-2 border-n-900",
+  imageClass = "size-full rounded-4xl object-cover",
+  width = 40,
+  height = 40,
+} = Astro.props;
+---
+
+<div class:list={wrapperClass}>
+  <Image
+    src={src}
+    alt={alt}
+    class:list={imageClass}
+    loading="lazy"
+    referrerpolicy="no-referrer"
+    width={width}
+    height={height}
+  />
+</div>

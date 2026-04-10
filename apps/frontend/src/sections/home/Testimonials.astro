@@ -1,10 +1,10 @@
 ---
 // COMPONENTS //
 import TestimonialCard from "@/components/TestimonialCard.astro";
+import RatingStars from "@/components/RatingStars.astro";
 
 // DATA //
 import { testimonialSectionDetails } from "@/data/testimonials";
-import { Icon } from "astro-icon/components";
 
 const { testimonials } = testimonialSectionDetails;
 ---
@@ -44,19 +44,7 @@ const { testimonials } = testimonialSectionDetails;
           </div>
 
           <div class="flex items-center gap-1">
-            <!-- Stars -->
-           <div class="flex items-center gap-1" aria-label="5 out of 5 stars">
-              {Array.from({ length: 5 }, (_, index) => (
-                <Icon
-                  name="star"
-                  class:list={[
-                    "size-4",
-                    index < 5 ? "text-yellow-500" : "text-n-300",
-                  ]}
-                  aria-hidden="true"
-                />
-              ))}
-            </div>
+            <RatingStars rating={5} starClass="size-4" />
 
             <span class="font-inter font-medium text-xs leading-tight tracking-normal text-center">
               5.0 rating of 12 reviews
