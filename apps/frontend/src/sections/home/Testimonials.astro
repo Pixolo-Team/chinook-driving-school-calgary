@@ -2,6 +2,7 @@
 // COMPONENTS //
 import TestimonialCard from "@/components/TestimonialCard.astro";
 import RatingStars from "@/components/RatingStars.astro";
+import Button from "@/components/ui/Button.astro";
 import { Icon } from "astro-icon/components";
 
 // DATA //
@@ -54,11 +55,12 @@ const { testimonials } = testimonialSectionDetails;
         </div>
 
         <!-- Right: CTA button -->
-        <button
-          class="hover:cursor-pointer font-inter w-fit py-2 px-4 rounded-lg opacity-100 lg:py-4 lg:px-6 lg:gap-2.5 bg-blue-500 text-n-100 text-xs text-medium leading-tight tracking-normal text-center lg:text-base lg:leading-5"
-        >
-          Leave a Review  
-        </button>
+        <Button
+          buttonText="Leave a Review"
+          href="https://search.google.com/local/writereview?placeid=ChIJfzXT_LJ2cVMRu37MPKSukhY"
+          openInNewTab={true}
+          className="w-36 h-11 gap-2 px-4 py-3 rounded-[41px] text-n-100 text-xs leading-tight tracking-normal text-center md:w-39 md:h-12 md:gap-2.5 md:px-5 md:py-3.5 md:text-sm lg:w-41.5 lg:h-13 lg:gap-2.5 lg:px-6 lg:py-4 lg:text-base lg:leading-5"
+        />
 
       </div>
       <!-- /review-rating -->
