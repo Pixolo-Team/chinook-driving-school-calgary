@@ -4,7 +4,8 @@ import type { TestimonialData } from "@/types/testimonial";
 
 // COMPONENTS //
 import { Image } from "astro:assets";
-import { Icon } from "astro-icon/components";
+import Avatar from "@/components/Avatar.astro";
+import RatingStars from "@/components/RatingStars.astro";
 
 // IMAGES //
 import googleLogo from "@/../public/images/google-logo.png";
@@ -15,14 +16,11 @@ interface Props {
 }
 
 const { testimonial, rating } = Astro.props;
-
-// Keep ratings within the expected 5-star scale so the UI stays predictable.
-const activeStarCount = Math.min(Math.max(Math.floor(rating), 0), 5);
 ---
 
 <!-- TestimonialCard Component -->
 <div
-  class="relative overflow-hidden rounded-4xl w-full justify-self-center bg-n-900"  
+  class="relative flex w-full flex-col overflow-hidden rounded-4xl border border-n-900 bg-n-900 justify-self-center min-h-[320px] md:min-h-[400px] lg:aspect-[32/31]"
 >
   <!-- Only render the background photo for the highlighted testimonial variant. -->
   {testimonial.customReview && testimonial.backgroundImage && (
@@ -41,30 +39,16 @@ const activeStarCount = Math.min(Math.max(Math.floor(rating), 0), 5);
 
   <div
     class:list={[
-      "relative z-10 flex flex-col items-start gap-5 overflow-hidden rounded-4xl px-6 pb-6 pt-36",
+      "relative z-10 flex min-h-full flex-1 flex-col items-start justify-between gap-5 overflow-hidden rounded-4xl px-6 pb-6",
       testimonial.customReview
-        ? "bg-gradient-to-b from-transparent from-8% to-n-900"
-        : "bg-n-50",
+        ? "bg-gradient-to-b from-transparent from-8% to-n-900 pt-36"
+        : "bg-n-50 pt-6 md:pt-8",
     ]}
   >
-    <!-- Render a fixed 5-star row and highlight only the stars included in the rating. -->
-    <div class="flex items-center gap-1" aria-label={`${activeStarCount} out of 5 stars`}>
-      {
-        Array.from({ length: 5 }, (_, index) => (
-          <Icon
-            name="star"
-            class:list={[
-              "size-5",
-              index < activeStarCount ? "text-yellow-500" : "text-n-300",
-            ]}
-            aria-hidden="true"
-          />
-        ))
-      }
-    </div>
+    <RatingStars rating={rating} starClass="size-5" />
 
     <!-- Testimonial text -->
-    <div class="w-full">
+    <div class="w-full flex-1">
       <p
         class:list={[
           "text-base leading-tight",
@@ -77,23 +61,17 @@ const activeStarCount = Math.min(Math.max(Math.floor(rating), 0), 5);
 
     <div class="flex w-full items-center justify-center gap-2.5">
       <div class="flex flex-1 items-center gap-2.5">
-        <!-- Match the avatar border color to the card theme for consistent contrast. -->
-        <div
-          class:list={[
+        <Avatar
+          src={testimonial.profilePhoto}
+          alt={`${testimonial.name} profile photo`}
+          wrapperClass={[
             "size-10 overflow-hidden rounded-4xl border-2",
             testimonial.customReview ? "border-n-50" : "border-n-900",
           ]}
-        >
-          <Image
-            src={testimonial.profilePhoto}
-            alt={`${testimonial.name} profile photo`}
-            class="size-full rounded-4xl object-cover"
-            loading="lazy"
-            referrerpolicy="no-referrer"
-            width={40}
-            height={40}
-          />
-        </div>
+          imageClass="size-full rounded-4xl object-cover"
+          width={40}
+          height={40}
+        />
 
         <!-- Name and role -->
         <div
