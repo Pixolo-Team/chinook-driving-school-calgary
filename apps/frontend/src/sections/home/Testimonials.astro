@@ -1,24 +1,187 @@
 ---
 // COMPONENTS //
 import TestimonialCard from "@/components/TestimonialCard.astro";
+import RatingStars from "@/components/RatingStars.astro";
 
 // DATA //
 import { testimonialSectionDetails } from "@/data/testimonials";
 
+const { testimonials } = testimonialSectionDetails;
 ---
 
-<section class="bg-n-500">
-  <!-- Container -->
-  <div class="mx-auto w-full container px-4 sm:px-6 lg:px-8 py-10 sm:py-12 lg:py-16">
-    <div class="grid grid-cols-1 gap-8 lg:grid-cols-3 lg:gap-10">
-      {
-        testimonialSectionDetails.testimonials.map((testimonial) => (
-          <TestimonialCard
-            testimonial={testimonial}
-            rating={testimonial.rating}
-          />
-        ))
-      }
+
+<section class="review-section w-full">
+
+  <!-- container -->
+  <div class="container mx-auto px-6 py-11 flex flex-col gap-7 lg:px-40 lg:py-32 lg:gap-16">
+
+    <!-- ── header ─────────────────────────────────────────── -->
+    <div class="header flex flex-col items-center gap-1">
+
+      <!-- "Google Reviews" label -->
+      <p class="font-poppins font-bold text-xs leading-4 tracking-normal text-center uppercase align-center lg:text-sm text-blue-500">
+        Google Reviews
+      </p>
+
+      <!-- Heading -->
+      <h2 class="font-poppins font-bold text-3xl leading-tight tracking-normal text-center lg:text-5xl">
+        Trusted by 100s of Calgary Learners
+      </h2>
+
     </div>
+   
+
+    <!-- ── content-wrap ───────────────────────────────────── -->
+    <div class="flex flex-col gap-5 lg:gap-12">
+
+      <!-- ── review-rating ──────────────────────────────── -->
+      <div class="review-rating flex flex-col gap-2.5 lg:justify-between lg:flex-row ">
+
+        <!-- Left: label + stars + count -->
+        <div class="flex flex-col gap-0.5 lg:gap-4 self-start ">
+          <div class="font-inter font-medium text-lg leading-tight tracking-normal">
+            Customer reviews on Google
+          </div>
+
+          <div class="flex items-center gap-1">
+            <RatingStars rating={5} starClass="size-4" />
+
+            <span class="font-inter font-medium text-xs leading-tight tracking-normal text-center">
+              5.0 rating of 12 reviews
+            </span>
+          </div>
+        </div>
+
+        <!-- Right: CTA button -->
+        <button
+          class="hover:cursor-pointer font-inter w-fit py-2 px-4 rounded-lg opacity-100 lg:py-4 lg:px-6 lg:gap-2.5 bg-blue-500 text-n-100 text-xs text-medium leading-tight tracking-normal text-center lg:text-base lg:leading-5"
+        >
+          Leave a Review  
+        </button>
+
+      </div>
+      <!-- /review-rating -->
+
+      <!-- ── cards-wrap ─────────────────────────────────── -->
+      <div class="testimonial-carousel-wrapper relative flex flex-col gap-5 lg:gap-10">
+        <div class="relative mx-auto w-full lg:max-w-[76rem]">
+          <!-- Scrollable track -->
+          <div class="testimonial-embla mx-auto overflow-hidden cursor-grab active:cursor-grabbing">
+            <div class="testimonial-embla__container flex items-stretch gap-5">
+            {testimonials.map((testimonial) => (
+                <div class="testimonial-embla__slide min-w-0 flex-[0_0_100%] md:flex-[0_0_calc((100%-1.25rem)/2)] lg:flex-[0_0_calc((100%-2.5rem)/3)]">
+                <TestimonialCard
+                  testimonial={testimonial}
+                  rating={testimonial.rating}
+                />
+              </div>
+            ))}
+            </div>
+          </div>
+ 
+          <div class="pointer-events-none absolute inset-y-0 left-0 right-0 hidden items-center lg:flex">
+            <button
+              type="button"
+              data-embla-prev
+              class="pointer-events-auto absolute left-0 -translate-x-1/2 rounded-full bg-n-50 p-3 text-n-900 shadow-md hover:cursor-pointer"
+              aria-label="Previous review"
+            >
+              <img src="/icons/arrow.svg" alt="previous" class="size-4 mr-1 rotate-90" />
+            </button>
+
+            <button
+              type="button"
+              data-embla-next
+              class="pointer-events-auto absolute right-0 translate-x-1/2 rounded-full bg-n-50 p-3 text-n-900 shadow-md hover:cursor-pointer"
+              aria-label="Next review"
+            >
+              <img src="/icons/arrow.svg" alt="next" class="size-4 ml-1 rounded-xl -rotate-90" />
+            </button>
+          </div>
+        </div>
+
+        <!-- Mobile prev/next buttons -->
+        <div class="flex items-center justify-end gap-6 lg:hidden">
+ 
+          <!-- Prev button -->
+          <button
+            type="button"
+            data-embla-prev
+            class="w-11 h-11 rounded-full bg-n-50 shadow-md
+                   flex items-center justify-center text-n-900 hover:cursor-pointer"
+            aria-label="Previous review"
+          >
+            <img src="/icons/arrow.svg" alt="previous" class="size-4 mr-1 rotate-90" />
+          </button>
+
+          <!-- Next button -->
+          <button
+            type="button"
+            data-embla-next
+            class="w-11 h-11 rounded-full bg-n-50 shadow-md
+                   flex items-center justify-center
+                   text-n-900 z-10 hover:cursor-pointer"
+            aria-label="Next review"
+          >
+            <img src="/icons/arrow.svg" alt="next" class="size-4 ml-1 rounded-xl  -rotate-90" />
+          </button>
+
+ 
+        </div>
+        <!-- /mobile buttons -->
+ 
+      </div>
+      <!-- /cards-wrap -->
+
+      <!-- /cards-wrap -->
+
+    </div>
+    <!-- /content-wrap -->
+
   </div>
+  <!-- /container -->
+
 </section>
+<!-- /review-section -->
+
+<script>
+  import EmblaCarousel from "embla-carousel";
+
+  const initTestimonialCarousels = () => {
+    const wrappers = document.querySelectorAll(".testimonial-carousel-wrapper");
+
+    wrappers.forEach((wrapper) => {
+      if (wrapper instanceof HTMLElement && wrapper.dataset.emblaInitialized === "true") return;
+
+      const viewport = wrapper.querySelector(".testimonial-embla");
+      if (!(viewport instanceof HTMLElement)) return;
+
+      const emblaApi = EmblaCarousel(viewport, {
+        loop: false,
+        align: "start",
+        containScroll: "trimSnaps",
+        dragFree: false,
+        slidesToScroll: 1,
+        breakpoints: {
+          "(min-width: 768px)": { slidesToScroll: 2 },
+          "(min-width: 1280px)": { slidesToScroll: 3 },
+        },
+      });
+
+      wrapper.querySelectorAll("[data-embla-prev]").forEach((btn) => {
+        btn.addEventListener("click", () => emblaApi.scrollPrev());
+      });
+
+      wrapper.querySelectorAll("[data-embla-next]").forEach((btn) => {
+        btn.addEventListener("click", () => emblaApi.scrollNext());
+      });
+
+      if (wrapper instanceof HTMLElement) {
+        wrapper.dataset.emblaInitialized = "true";
+      }
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", initTestimonialCarousels);
+  document.addEventListener("astro:page-load", initTestimonialCarousels);
+</script>
