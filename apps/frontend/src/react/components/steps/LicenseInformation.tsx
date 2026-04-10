@@ -19,6 +19,9 @@ import {
   LICENSE_TYPES,
 } from "@/react/constants/form-items";
 
+// UTILS //
+import { getLocalTodayDateValue } from "@/react/utils/date.util";
+
 // COMPONENT PROPS //
 type LicenseInformationPropsData = Readonly<{
   value: LicenseInformationValueData;
@@ -36,6 +39,7 @@ type LicenseInformationTouchedFieldsData = {
   number: boolean;
   issuing_region: boolean;
   type: boolean;
+  issue_date: boolean;
   experience: boolean;
 };
 
@@ -61,8 +65,10 @@ export default function LicenseInformation({
     number: false,
     issuing_region: false,
     type: false,
+    issue_date: false,
     experience: false,
   });
+  const todayDateValue: string = getLocalTodayDateValue();
   const isLicenseDetailsVisible: boolean =
     value.status.trim().length > 0 && value.status !== "none";
 
@@ -90,6 +96,7 @@ export default function LicenseInformation({
       number: true,
       issuing_region: true,
       type: true,
+      issue_date: true,
       experience: true,
     });
   };
@@ -123,6 +130,21 @@ export default function LicenseInformation({
     return (value.type ?? "").trim().length > 0 ? null : "Please select your license type.";
   };
 
+  const getLicenseIssueDateError = (): string | null => {
+    if (!isLicenseDetailsVisible) {
+      return null;
+    }
+
+    const issueDateValue = (value.issue_date ?? "").trim();
+    if (!issueDateValue) {
+      return null;
+    }
+
+    return issueDateValue > todayDateValue
+      ? "License issue date cannot be in the future."
+      : null;
+  };
+
   const getDrivingExperienceError = (): string | null =>
     value.experience.trim().length > 0 ? null : "Please select your driving experience.";
 
@@ -134,6 +156,7 @@ export default function LicenseInformation({
       !getLicenseNumberError() &&
       !getIssuingRegionError() &&
       !getLicenseTypeError() &&
+      !getLicenseIssueDateError() &&
       !getDrivingExperienceError()
       ? "completed"
       : "pending";
@@ -158,11 +181,14 @@ export default function LicenseInformation({
   const licenseNumberError = getLicenseNumberError();
   const issuingRegionError = getIssuingRegionError();
   const licenseTypeError = getLicenseTypeError();
+  const licenseIssueDateError = getLicenseIssueDateError();
   const drivingExperienceError = getDrivingExperienceError();
   const shouldShowLicenseStatusError = touchedFields.status && Boolean(licenseStatusError);
   const shouldShowLicenseNumberError = touchedFields.number && Boolean(licenseNumberError);
   const shouldShowIssuingRegionError = touchedFields.issuing_region && Boolean(issuingRegionError);
   const shouldShowLicenseTypeError = touchedFields.type && Boolean(licenseTypeError);
+  const shouldShowLicenseIssueDateError =
+    touchedFields.issue_date && Boolean(licenseIssueDateError);
   const shouldShowDrivingExperienceError =
     touchedFields.experience && Boolean(drivingExperienceError);
 
@@ -266,9 +292,13 @@ export default function LicenseInformation({
                 label="License Issue Date"
                 value={value.issue_date ?? ""}
                 onChange={(event) => handleFieldChange("issue_date", event.target.value)}
+                onBlur={() => markFieldAsTouched("issue_date")}
                 placeholder="MM / DD / YYYY"
                 caption="Enter the Issue date printed on your license."
                 containerClassName="w-full"
+                isError={shouldShowLicenseIssueDateError}
+                errorMessage={licenseIssueDateError ?? undefined}
+                max={todayDateValue}
               />
 
               {/* Expiry Date */}
