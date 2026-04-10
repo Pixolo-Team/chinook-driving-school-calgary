@@ -20,7 +20,7 @@ const { testimonial, rating } = Astro.props;
 
 <!-- TestimonialCard Component -->
 <div
-  class="relative w-full overflow-hidden rounded-4xl border border-n-900 bg-n-900 justify-self-center min-h-[320px] md:min-h-[400px] lg:aspect-[32/31]"  
+  class="relative flex w-full flex-col overflow-hidden rounded-4xl border border-n-900 bg-n-900 justify-self-center min-h-[320px] md:min-h-[400px] lg:aspect-[32/31]"
 >
   <!-- Only render the background photo for the highlighted testimonial variant. -->
   {testimonial.customReview && testimonial.backgroundImage && (
@@ -39,16 +39,16 @@ const { testimonial, rating } = Astro.props;
 
   <div
     class:list={[
-      "relative z-10 flex h-full flex-col items-start gap-5 overflow-hidden rounded-4xl px-6 pb-6 pt-36",
+      "relative z-10 flex min-h-full flex-1 flex-col items-start justify-between gap-5 overflow-hidden rounded-4xl px-6 pb-6",
       testimonial.customReview
-        ? "bg-gradient-to-b from-transparent from-8% to-n-900"
-        : "bg-n-50",
+        ? "bg-gradient-to-b from-transparent from-8% to-n-900 pt-36"
+        : "bg-n-50 pt-6 md:pt-8",
     ]}
   >
     <RatingStars rating={rating} starClass="size-5" />
 
     <!-- Testimonial text -->
-    <div class="w-full">
+    <div class="w-full flex-1">
       <p
         class:list={[
           "text-base leading-tight",
