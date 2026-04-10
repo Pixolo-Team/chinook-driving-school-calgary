@@ -54,14 +54,22 @@ export default function SelectCourse({
   // Define Refs
 
   // Define States
+<<<<<<< HEAD
   const [selectedCourseTypeValue, setSelectedCourseTypeValue] = useState<string>(courses[0]?.id ?? "");
+=======
+  const [selectedCourseTypeValue, setSelectedCourseTypeValue] = useState<string>("");
+>>>>>>> development
   const [touchedFields, setTouchedFields] = useState<SelectCourseTouchedFieldsData>({
     session_type: false,
     course: false,
   });
 
   const activeSessionValue: string = value.session_type ?? "";
+<<<<<<< HEAD
   const activeCourseTypeValue: string = selectedCourseTypeValue || (courses[0]?.id ?? "");
+=======
+  const activeCourseTypeValue: string = selectedCourseTypeValue;
+>>>>>>> development
   const activeCourseValue: string = value.course.course_id ?? "";
 
   /** Change the Courses when the Course Type changes */

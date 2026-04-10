@@ -130,7 +130,7 @@ const fieldRows: FormField[][] = [
               
 
               <!-- Success Message -->
-              <div id="success-message" class="hidden absolute inset-0 flex flex-col items-center justify-center text-center space-y-4 bg-n-50 rounded-3xl animate-fade-in z-10">
+              <div id="success-message" class="hidden h-full py-16 md:py-24 flex-col items-center justify-center text-center space-y-4 bg-n-50 rounded-3xl animate-fade-in">
                 <div class="size-20 rounded-full bg-green-100 flex items-center justify-center text-green-600 mb-2">
                   <svg xmlns="http://www.w3.org/2000/svg" class="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
@@ -213,9 +213,10 @@ const fieldRows: FormField[][] = [
       submitBtn.disabled = true;
 
       setTimeout(() => {
-        formContainer.classList.add("opacity-0", "pointer-events-none", "hidden");
+        formContainer.classList.add("hidden");
         successMessage.classList.remove("hidden");
-        
+        successMessage.classList.add("flex");
+
         submitBtn.innerText = originalText;
         submitBtn.disabled = false;
         form.reset();
@@ -225,6 +226,7 @@ const fieldRows: FormField[][] = [
 
   if (resetBtn && formContainer && successMessage) {
     resetBtn.addEventListener("click", () => {
+      successMessage.classList.remove("flex");
       successMessage.classList.add("hidden");
       formContainer.classList.remove("hidden", "opacity-0", "pointer-events-none");
     });
