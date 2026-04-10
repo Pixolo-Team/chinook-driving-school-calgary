@@ -7,6 +7,7 @@ import BrandLogo from "@/components/common/BrandLogo.astro";
 import { menuItems } from "@/data/menu";
 
 const navigationItems = menuItems.filter((menuItem) => menuItem.url !== "/enroll");
+const currentPath = Astro.url.pathname;
 ---
 
 <!-- Keep the opened panel isolated here so the header owns the trigger while this component owns the overlay content. -->
@@ -55,7 +56,10 @@ const navigationItems = menuItems.filter((menuItem) => menuItem.url !== "/enroll
               data-mobile-menu-section
               data-mobile-menu-link
               class:list={[
-                "text-n-800 flex items-center justify-between py-6 text-2xl leading-none",
+                "flex items-center justify-between py-6 text-2xl leading-none transition-colors",
+                currentPath === menuItem.url
+                  ? "text-blue-500 font-semibold"
+                  : "text-n-800",
                 menuItemIndex < navigationItems.length - 1 && "border-n-200 border-b",
               ]}
             >
