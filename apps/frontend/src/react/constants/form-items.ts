@@ -7,6 +7,32 @@ import type {
 
 export const TOTAL_ENROLLMENT_STEPS = 6;
 
+export const COURSE_CATEGORY_IMAGE_BY_ID: Record<string, string> = {
+  "driving-courses": "/images/driving-course.png",
+  "brush-up-lessons": "/images/brush-up-lesson.png",
+  "car-rental": "/images/car-rental.png",
+};
+
+export const COURSE_CATEGORY_IMAGE_BY_NAME: Record<string, string> = {
+  "driving courses": "/images/driving-course.png",
+  "brush up lessons": "/images/brush-up-lesson.png",
+  "car rental": "/images/car-rental.png",
+};
+
+export function resolveCourseCategoryImage(
+  categoryId?: string | null,
+  categoryName?: string | null,
+): string | undefined {
+  const normalizedId = (categoryId ?? "").trim().toLowerCase();
+  const normalizedName = (categoryName ?? "").trim().toLowerCase();
+
+  return (
+    COURSE_CATEGORY_IMAGE_BY_ID[normalizedId] ??
+    COURSE_CATEGORY_IMAGE_BY_NAME[normalizedName] ??
+    undefined
+  );
+}
+
 export const SESSION_TYPE_OPTIONS: SessionOptionData[] = [
   { label: "In Person", value: "in_person" },
   { label: "Online", value: "online" },
@@ -18,7 +44,7 @@ export const COURSES: CourseCategoryData[] = [
     id: "driving-courses",
     name: "Driving Courses",
     description: "Structured beginner-friendly driving lessons with insurance reduction.",
-    image: "https://www.figma.com/api/mcp/asset/44d18bfb-aa51-40fb-978d-4fe2146080e7",
+    image: COURSE_CATEGORY_IMAGE_BY_ID["driving-courses"],
     courses: [
       {
         id: "30a15f9e-56e0-4d00-9480-5a0a132d5b91",
@@ -28,7 +54,7 @@ export const COURSES: CourseCategoryData[] = [
         total_amount: 837.9,
         hours_in_car: 10,
         hours_in_classroom: 15,
-        image: "https://www.figma.com/api/mcp/asset/44d18bfb-aa51-40fb-978d-4fe2146080e7",
+        image: "/images/driving-course.png",
         features: [
           { title: "Insurance reduction certificate" },
           { title: "10 hours in-car training" },
@@ -71,7 +97,7 @@ export const COURSES: CourseCategoryData[] = [
     id: "brush-up-lessons",
     name: "Brush Up Lessons",
     description: "Short focused lessons for nervous drivers and test preparation.",
-    image: "https://www.figma.com/api/mcp/asset/ff7d5666-f216-493e-b1bb-66a6ed45ee91",
+    image: COURSE_CATEGORY_IMAGE_BY_ID["brush-up-lessons"],
     courses: [
       {
         id: "brush-up-2h",
@@ -101,7 +127,7 @@ export const COURSES: CourseCategoryData[] = [
     id: "car-rental",
     name: "Car Rental",
     description: "Use an instructor vehicle for your road test or practice session.",
-    image: "",
+    image: COURSE_CATEGORY_IMAGE_BY_ID["car-rental"],
     courses: [
       {
         id: "road-test-rental",

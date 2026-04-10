@@ -15,7 +15,10 @@ import RadioCustomGroup from "@/react/components/ui/RadioCustomGroup";
 import RadioGroup from "@/react/components/ui/RadioGroup";
 
 // CONSTANTS //
-import { SESSION_TYPE_OPTIONS } from "@/react/constants/form-items";
+import {
+  resolveCourseCategoryImage,
+  SESSION_TYPE_OPTIONS,
+} from "@/react/constants/form-items";
 
 type SelectCoursePropsData = Readonly<{
   courses: CourseCategoryData[];
@@ -79,7 +82,10 @@ export default function SelectCourse({
       courses.map((courseCategoryItem: CourseCategoryData) => ({
         value: courseCategoryItem.id,
         title: courseCategoryItem.name,
-        imageSrc: courseCategoryItem.image || undefined,
+        imageSrc: (
+          resolveCourseCategoryImage(courseCategoryItem.id, courseCategoryItem.name) ??
+          courseCategoryItem.image
+        ) || undefined,
         imageAlt: courseCategoryItem.name,
       })),
     [courses],

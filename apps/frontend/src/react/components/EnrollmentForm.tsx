@@ -31,7 +31,10 @@ import { fetchCoursesRequest } from "@/react/services/api/courses.api.service";
 import { submitEnrollmentRequest } from "@/react/services/api/enrollment.api.service";
 
 // CONSTANTS //
-import { TOTAL_ENROLLMENT_STEPS } from "@/react/constants/form-items";
+import {
+  COURSE_CATEGORY_IMAGE_BY_ID,
+  TOTAL_ENROLLMENT_STEPS,
+} from "@/react/constants/form-items";
 
 // UTILS //
 import { transformEnrollmentPayload } from "@/react/utils/api.util";
@@ -69,6 +72,14 @@ const LEGACY_LICENSE_TYPE_MAP: Record<string, string> = {
   "class-5-full": "CLASS_5",
   international: "OTHER",
 };
+
+const withLocalCourseCategoryImages = (
+  courseCategories: CourseCategoryData[],
+): CourseCategoryData[] =>
+  courseCategories.map((courseCategoryItem) => ({
+    ...courseCategoryItem,
+    image: COURSE_CATEGORY_IMAGE_BY_ID[courseCategoryItem.id] ?? courseCategoryItem.image,
+  }));
 
 /**
  * Coordinates the multi-step enrollment flow and stores the shared form state.
@@ -615,7 +626,7 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
           return;
         }
 
-        setCourseCategories(coursesResponseInfo.data);
+        setCourseCategories(withLocalCourseCategoryImages(coursesResponseInfo.data));
       } catch (error) {
         if (!isMounted) {
           return;
