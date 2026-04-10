@@ -2,6 +2,55 @@
 import FeatureCard from "@/components/FeatureCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { FeaturesSectionDetails } from "@/data/features";
+import { fetchContentSection } from "@/data/site-content-api";
+
+type FeaturesApiSection = {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  feature_cards?: Array<{
+    title?: string;
+    description?: string;
+    image?: string;
+  }>;
+};
+
+const apiFeaturesSection = await fetchContentSection<FeaturesApiSection>("features");
+
+const sectionContent = {
+  eyebrow:
+    typeof apiFeaturesSection?.eyebrow === "string" && apiFeaturesSection.eyebrow.trim() !== ""
+      ? apiFeaturesSection.eyebrow
+      : FeaturesSectionDetails.content.eyebrow,
+  title:
+    typeof apiFeaturesSection?.title === "string" && apiFeaturesSection.title.trim() !== ""
+      ? apiFeaturesSection.title
+      : FeaturesSectionDetails.content.title,
+  description:
+    typeof apiFeaturesSection?.description === "string" &&
+    apiFeaturesSection.description.trim() !== ""
+      ? apiFeaturesSection.description
+      : FeaturesSectionDetails.content.description,
+};
+
+const featureCards =
+  Array.isArray(apiFeaturesSection?.feature_cards) && apiFeaturesSection.feature_cards.length > 0
+    ? apiFeaturesSection.feature_cards.map((card, index) => ({
+        title:
+          typeof card.title === "string" && card.title.trim() !== ""
+            ? card.title
+            : FeaturesSectionDetails.cards[index]?.title ?? "",
+        description:
+          typeof card.description === "string" && card.description.trim() !== ""
+            ? card.description
+            : FeaturesSectionDetails.cards[index]?.description ?? "",
+        imageAlt: FeaturesSectionDetails.cards[index]?.imageAlt ?? "Driving school feature",
+        imageSrc:
+          typeof card.image === "string" && card.image.trim() !== ""
+            ? card.image
+            : FeaturesSectionDetails.cards[index]?.imageSrc ?? "",
+      }))
+    : FeaturesSectionDetails.cards;
 ---
 
 <section class="bg-n-50">
@@ -10,16 +59,16 @@ import { FeaturesSectionDetails } from "@/data/features";
   >
     <!-- Section Header -->
     <SectionHeader
-      eyebrow={FeaturesSectionDetails.content.eyebrow}
-      heading={FeaturesSectionDetails.content.title}
-      description={FeaturesSectionDetails.content.description}
+      eyebrow={sectionContent.eyebrow}
+      heading={sectionContent.title}
+      description={sectionContent.description}
     />
 
     <!-- Feature Cards -->
     <div
       class="grid grid-cols-1 place-items-center gap-9 md:grid-cols-2 xl:grid-cols-3 xl:place-items-start 2xl:grid-cols-4"
     >
-      {FeaturesSectionDetails.cards.map((cardItem) => <FeatureCard cardItem={cardItem} />)}
+      {featureCards.map((cardItem) => <FeatureCard cardItem={cardItem} />)}
     </div>
   </div>
 </section>

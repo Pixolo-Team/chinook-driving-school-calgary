@@ -3,6 +3,57 @@ import InstructorCard from "@/components/InstructorCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { instructorsSectionData } from "@/data/instructors-section-data";
 import SliderArrows from "@/components/SliderArrows.astro";
+import { fetchContentSection } from "@/data/site-content-api";
+
+type InstructorsApiSection = {
+  eyebrow?: string;
+  heading?: string;
+  description?: string;
+  instructor_cards?: Array<{
+    name?: string;
+    role?: string;
+    description?: string;
+  }>;
+};
+
+const apiInstructorsSection = await fetchContentSection<InstructorsApiSection>("instructors");
+
+const sectionContent = {
+  eyebrow:
+    typeof apiInstructorsSection?.eyebrow === "string" &&
+    apiInstructorsSection.eyebrow.trim() !== ""
+      ? apiInstructorsSection.eyebrow
+      : instructorsSectionData.eyebrow,
+  heading:
+    typeof apiInstructorsSection?.heading === "string" &&
+    apiInstructorsSection.heading.trim() !== ""
+      ? apiInstructorsSection.heading
+      : instructorsSectionData.heading,
+  description:
+    typeof apiInstructorsSection?.description === "string" &&
+    apiInstructorsSection.description.trim() !== ""
+      ? apiInstructorsSection.description
+      : instructorsSectionData.description,
+};
+
+const instructors =
+  Array.isArray(apiInstructorsSection?.instructor_cards) &&
+  apiInstructorsSection.instructor_cards.length > 0
+    ? apiInstructorsSection.instructor_cards.map((instructor, index) => ({
+        name:
+          typeof instructor.name === "string" && instructor.name.trim() !== ""
+            ? instructor.name
+            : instructorsSectionData.instructors[index]?.name ?? "",
+        role:
+          typeof instructor.role === "string" && instructor.role.trim() !== ""
+            ? instructor.role
+            : instructorsSectionData.instructors[index]?.role ?? "",
+        description:
+          typeof instructor.description === "string" && instructor.description.trim() !== ""
+            ? instructor.description
+            : instructorsSectionData.instructors[index]?.description ?? "",
+      }))
+    : instructorsSectionData.instructors;
 
 ---
 
@@ -11,9 +62,9 @@ import SliderArrows from "@/components/SliderArrows.astro";
 
     <!-- Section Header -->
     <SectionHeader
-      eyebrow={instructorsSectionData.eyebrow}
-      heading={instructorsSectionData.heading}
-      description={instructorsSectionData.description}
+      eyebrow={sectionContent.eyebrow}
+      heading={sectionContent.heading}
+      description={sectionContent.description}
     />
 
     <!-- Instructor Card Section -->
@@ -22,7 +73,7 @@ import SliderArrows from "@/components/SliderArrows.astro";
         <div class="embla__container flex -ml-3">
 
           <!-- Instructor Cards -->
-          {instructorsSectionData.instructors.map((instructor) => (
+          {instructors.map((instructor) => (
             <div class="embla__slide pl-3 cursor-default min-w-0 flex-[0_0_100%] md:flex-[0_0_50%] lg:pl-5 xl:flex-[0_0_33.33%]">
               <InstructorCard
                 name={instructor.name}

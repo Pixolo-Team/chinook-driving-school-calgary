@@ -5,6 +5,43 @@ import SectionHeader from "@/components/SectionHeader.astro";
 // DATA //
 import { founderSectionData } from "@/data/founder-section-data";
 import { Image } from "astro:assets";
+import { fetchContentSection } from "@/data/site-content-api";
+
+type AboutFounderApiSection = {
+  eyebrow?: string;
+  heading?: string;
+  paragraphs?: string[];
+  name?: string;
+  title?: string;
+};
+
+const apiFounderSection = await fetchContentSection<AboutFounderApiSection>("about_founder");
+
+const founderContent = {
+  eyebrow:
+    typeof apiFounderSection?.eyebrow === "string" && apiFounderSection.eyebrow.trim() !== ""
+      ? apiFounderSection.eyebrow
+      : founderSectionData.eyebrow,
+  heading:
+    typeof apiFounderSection?.heading === "string" && apiFounderSection.heading.trim() !== ""
+      ? apiFounderSection.heading
+      : founderSectionData.heading,
+  paragraphs:
+    Array.isArray(apiFounderSection?.paragraphs) && apiFounderSection.paragraphs.length > 0
+      ? apiFounderSection.paragraphs.filter(
+          (paragraph): paragraph is string =>
+            typeof paragraph === "string" && paragraph.trim() !== "",
+        )
+      : founderSectionData.paragraphs,
+  name:
+    typeof apiFounderSection?.name === "string" && apiFounderSection.name.trim() !== ""
+      ? apiFounderSection.name
+      : founderSectionData.name,
+  title:
+    typeof apiFounderSection?.title === "string" && apiFounderSection.title.trim() !== ""
+      ? apiFounderSection.title
+      : founderSectionData.title,
+};
 
 ---
 
@@ -13,8 +50,8 @@ import { Image } from "astro:assets";
 
     <!-- Section Header -->
     <SectionHeader
-      eyebrow={founderSectionData.eyebrow}
-      heading={founderSectionData.heading}
+      eyebrow={founderContent.eyebrow}
+      heading={founderContent.heading}
     />
 
     <!-- Content -->
@@ -35,7 +72,7 @@ import { Image } from "astro:assets";
         
         <!-- Founder Story Paragraph -->
         <div class="flex w-full flex-col gap-4 text-sm text-n-800 md:gap-5 md:text-base lg:gap-6 lg:text-lg">
-          {founderSectionData.paragraphs.map((paragraph) => (
+          {founderContent.paragraphs.map((paragraph) => (
             <p>{paragraph}</p>
           ))}
         </div>
@@ -48,10 +85,10 @@ import { Image } from "astro:assets";
           <!-- Founder Name and Title -->
           <div class="flex flex-col items-start gap-1">
             <p class="text-lg font-bold text-n-700 md:text-xl">
-              {founderSectionData.name}
+              {founderContent.name}
             </p>
             <p class="text-xs font-semibold uppercase tracking-[1.4px] text-n-400 md:text-sm">
-              {founderSectionData.title}
+              {founderContent.title}
             </p>
           </div>
         </div>

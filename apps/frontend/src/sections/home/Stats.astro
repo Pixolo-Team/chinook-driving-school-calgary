@@ -6,6 +6,46 @@ import SectionHeader from "@/components/SectionHeader.astro";
 // DATA //
 import { numberStatsData } from "@/data/numberSection";
 import { statHeaderData } from "@/data/numberSection";
+import { fetchContentSection } from "@/data/site-content-api";
+
+type StatsApiSection = {
+  eyebrow?: string;
+  title?: string;
+  stat_cards?: Array<{
+    icon?: string;
+    stat_number?: string;
+    stat_suffix?: string;
+    description?: string;
+  }>;
+};
+
+const apiStatsSection = await fetchContentSection<StatsApiSection>("stats");
+
+const statsHeader = {
+  eyebrow:
+    typeof apiStatsSection?.eyebrow === "string" && apiStatsSection.eyebrow.trim() !== ""
+      ? apiStatsSection.eyebrow
+      : statHeaderData.eyebrow,
+  heading:
+    typeof apiStatsSection?.title === "string" && apiStatsSection.title.trim() !== ""
+      ? apiStatsSection.title
+      : statHeaderData.heading,
+};
+
+const statsCards =
+  Array.isArray(apiStatsSection?.stat_cards) && apiStatsSection.stat_cards.length > 0
+    ? apiStatsSection.stat_cards.map((stat, index) => ({
+        icon:
+          typeof stat.icon === "string" && stat.icon.trim() !== ""
+            ? stat.icon
+            : numberStatsData[index]?.icon ?? "user-check-validate",
+        value: `${stat.stat_number ?? ""}${stat.stat_suffix ?? ""}`.trim() || numberStatsData[index]?.value || "",
+        label:
+          typeof stat.description === "string" && stat.description.trim() !== ""
+            ? stat.description
+            : numberStatsData[index]?.label ?? "",
+      }))
+    : numberStatsData;
 
 ---
 
@@ -14,13 +54,13 @@ import { statHeaderData } from "@/data/numberSection";
     
     <!-- Section Header -->
     <SectionHeader
-      eyebrow={statHeaderData.eyebrow}
-      heading={statHeaderData.heading}
+      eyebrow={statsHeader.eyebrow}
+      heading={statsHeader.heading}
     />
 
     <!-- StatCard -->
     <div class="grid w-70 grid-cols-1 gap-3.5 px-6 md:w-full md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-      {numberStatsData.map((stat) => (
+      {statsCards.map((stat) => (
         <StatCard icon={stat.icon} value={stat.value} label={stat.label} />
       ))}
     </div>

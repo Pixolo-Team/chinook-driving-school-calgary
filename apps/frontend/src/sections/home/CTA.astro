@@ -4,6 +4,30 @@ import { Image } from "astro:assets";
 import Button from "@/components/ui/Button.astro";
 
 import { ctaData } from "@/data/cta";
+import { fetchContentSection } from "@/data/site-content-api";
+
+type CtaApiSection = {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+};
+
+const apiCtaSection = await fetchContentSection<CtaApiSection>("cta");
+
+const ctaContent = {
+  eyebrow:
+    typeof apiCtaSection?.eyebrow === "string" && apiCtaSection.eyebrow.trim() !== ""
+      ? apiCtaSection.eyebrow
+      : ctaData.eyebrow,
+  heading:
+    typeof apiCtaSection?.title === "string" && apiCtaSection.title.trim() !== ""
+      ? apiCtaSection.title
+      : ctaData.heading,
+  description:
+    typeof apiCtaSection?.description === "string" && apiCtaSection.description.trim() !== ""
+      ? apiCtaSection.description
+      : ctaData.description,
+};
 
 ---
 
@@ -27,13 +51,13 @@ import { ctaData } from "@/data/cta";
       <div class="flex flex-col gap-5 md:gap-7 lg:gap-10">
         <div class="flex flex-col gap-1 md:gap-2 lg:gap-3">
           <p class="text-xs font-bold uppercase tracking-[0.6px] text-blue-500">
-            {ctaData.eyebrow}
+            {ctaContent.eyebrow}
           </p>
           <p class="text-3xl font-bold leading-tight text-n-800 md:text-4xl lg:text-5xl">
-            {ctaData.heading}
+            {ctaContent.heading}
           </p>
         </div>
-        <p set:html={ctaData.description} class="text-sm leading-relaxed text-n-600 md:text-base lg:text-lg">
+        <p set:html={ctaContent.description} class="text-sm leading-relaxed text-n-600 md:text-base lg:text-lg">
         </p>
       </div>
 

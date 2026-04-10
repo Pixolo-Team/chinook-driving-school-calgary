@@ -4,13 +4,33 @@ import HeroCard from "@/components/HeroCard.astro";
 
 // DATA //
 import { coursesHeroSectionData } from "@/data/courses";
+import { fetchContentSection } from "@/data/site-content-api";
+
+type CoursesHeroApiSection = {
+  title?: string;
+  description?: string;
+};
+
+const apiCoursesHeroSection = await fetchContentSection<CoursesHeroApiSection>("courses_hero");
+
+const heroContent = {
+  title:
+    typeof apiCoursesHeroSection?.title === "string" && apiCoursesHeroSection.title.trim() !== ""
+      ? apiCoursesHeroSection.title
+      : coursesHeroSectionData.title,
+  description:
+    typeof apiCoursesHeroSection?.description === "string" &&
+    apiCoursesHeroSection.description.trim() !== ""
+      ? apiCoursesHeroSection.description
+      : coursesHeroSectionData.description,
+};
 
 ---
 
 <section class="bg-n-100 overflow-hidden">
   <HeroCard
-    title={coursesHeroSectionData.title}
-    description={coursesHeroSectionData.description}
+    title={heroContent.title}
+    description={heroContent.description}
     illustration={coursesHeroSectionData.illustration}
     illustrationAlt={coursesHeroSectionData.illustrationAlt}
   />

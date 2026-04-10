@@ -6,9 +6,65 @@ import Tabs from "@/components/ui/Tabs.astro";
 
 // DATA //
 import { processSectionData } from "@/data/process-data";
+import { fetchContentSection } from "@/data/site-content-api";
 
-const tabs = processSectionData.stepGroups.map((group) => group.category);
-const stepGroups = processSectionData.stepGroups;
+type CoursesProcessApiSection = {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  course_categories?: Array<{
+    title?: string;
+    steps?: Array<{
+      title?: string;
+      description?: string;
+    }>;
+  }>;
+};
+
+const apiProcessSection = await fetchContentSection<CoursesProcessApiSection>("courses_process");
+
+const sectionContent = {
+  eyebrow:
+    typeof apiProcessSection?.eyebrow === "string" && apiProcessSection.eyebrow.trim() !== ""
+      ? apiProcessSection.eyebrow
+      : processSectionData.eyebrow,
+  heading:
+    typeof apiProcessSection?.title === "string" && apiProcessSection.title.trim() !== ""
+      ? apiProcessSection.title
+      : processSectionData.heading,
+  description:
+    typeof apiProcessSection?.description === "string" &&
+    apiProcessSection.description.trim() !== ""
+      ? apiProcessSection.description
+      : processSectionData.description,
+};
+
+const stepGroups =
+  Array.isArray(apiProcessSection?.course_categories) &&
+  apiProcessSection.course_categories.length > 0
+    ? apiProcessSection.course_categories.map((category, categoryIndex) => ({
+        category:
+          typeof category.title === "string" && category.title.trim() !== ""
+            ? category.title
+            : processSectionData.stepGroups[categoryIndex]?.category ?? "",
+        steps:
+          Array.isArray(category.steps) && category.steps.length > 0
+            ? category.steps.map((step, stepIndex) => ({
+                title:
+                  typeof step.title === "string" && step.title.trim() !== ""
+                    ? step.title
+                    : processSectionData.stepGroups[categoryIndex]?.steps[stepIndex]?.title ?? "",
+                description:
+                  typeof step.description === "string" && step.description.trim() !== ""
+                    ? step.description
+                    : processSectionData.stepGroups[categoryIndex]?.steps[stepIndex]
+                        ?.description ?? "",
+              }))
+            : processSectionData.stepGroups[categoryIndex]?.steps ?? [],
+      }))
+    : processSectionData.stepGroups;
+
+const tabs = stepGroups.map((group) => group.category);
 ---
 
 <section class="bg-n-100" data-process-section>
@@ -17,9 +73,9 @@ const stepGroups = processSectionData.stepGroups;
   >
     <!-- Section Header -->
     <SectionHeader
-      eyebrow={processSectionData.eyebrow}
-      heading={processSectionData.heading}
-      description={processSectionData.description}
+      eyebrow={sectionContent.eyebrow}
+      heading={sectionContent.heading}
+      description={sectionContent.description}
     />
 
     <div class="flex w-full flex-col items-center gap-7 md:gap-8 md:px-20 lg:gap-12 xl:px-0">
