@@ -1,11 +1,5 @@
 ---
-// COMPONENTS //
-import { Image } from "astro:assets";
-
-// IMAGES //
-import arrowLeftMobile from "@/assets/instructor-arrow-left.png";
-import arrowRightMobile from "@/assets/instructor-arrow-right.png";
-import arrowIcon from "@/assets/instructor-arrow-icon.png";
+import { Icon } from "astro-icon/components";
 ---
 
 <div class="relative flex w-full items-center justify-end">
@@ -18,27 +12,37 @@ import arrowIcon from "@/assets/instructor-arrow-icon.png";
     <button
       type="button"
       data-embla-prev
-      class="animate-bouncy-hover relative z-10 flex cursor-pointer items-center justify-center rounded-3xl border border-n-300 bg-n-50 p-3.5 transition-colors hover:bg-n-100"
+      class="animate-bouncy-hover relative z-10 flex cursor-pointer items-center justify-center rounded-3xl border border-n-200 bg-blue-50 p-3.5 text-blue-700 transition-colors hover:bg-blue-100 hover:text-blue-800"
       aria-label="Previous instructor"
     >
-      <Image src={arrowIcon} alt="" width={20} height={20} class="pointer-events-none rotate-180" aria-hidden="true" />
+      <Icon name="carousel-arrow" class="pointer-events-none size-4 rotate-180" aria-hidden="true" />
     </button>
     <button
       type="button"
       data-embla-next
-      class="animate-bouncy-hover relative z-10 flex cursor-pointer items-center justify-center rounded-3xl border border-n-300 bg-n-50 p-3.5 transition-colors hover:bg-n-100"
+      class="animate-bouncy-hover relative z-10 flex cursor-pointer items-center justify-center rounded-3xl border border-n-200 bg-blue-50 p-3.5 text-blue-700 transition-colors hover:bg-blue-100 hover:text-blue-800"
       aria-label="Next instructor"
     >
-      <Image src={arrowIcon} alt="" width={20} height={20} class="pointer-events-none" aria-hidden="true" />
+      <Icon name="carousel-arrow" class="pointer-events-none size-4" aria-hidden="true" />
     </button>
   </div>
 
   <div class="flex items-center gap-3 lg:hidden">
-    <button type="button" data-embla-prev aria-label="Previous instructor" class="animate-bouncy-hover relative z-10 cursor-pointer">
-      <Image src={arrowLeftMobile} alt="" width={36} height={36} class="pointer-events-none rotate-180" aria-hidden="true" />
+    <button
+      type="button"
+      data-embla-prev
+      aria-label="Previous instructor"
+      class="animate-bouncy-hover relative z-10 flex h-11 w-11 cursor-pointer items-center justify-center rounded-3xl border border-blue-200 bg-blue-50 p-1.5 text-blue-700 transition-colors hover:bg-blue-100 hover:text-blue-800"
+    >
+      <Icon name="carousel-arrow" class="pointer-events-none size-4 rotate-180" aria-hidden="true" />
     </button>
-    <button type="button" data-embla-next aria-label="Next instructor" class="animate-bouncy-hover relative z-10 cursor-pointer">
-      <Image src={arrowRightMobile} alt="" width={36} height={36} class="pointer-events-none" aria-hidden="true" />
+    <button
+      type="button"
+      data-embla-next
+      aria-label="Next instructor"
+      class="animate-bouncy-hover relative z-10 flex h-11 w-11 cursor-pointer items-center justify-center rounded-3xl border border-blue-200 bg-blue-50 p-1.5 text-blue-700 transition-colors hover:bg-blue-100 hover:text-blue-800"
+    >
+      <Icon name="carousel-arrow" class="pointer-events-none size-4" aria-hidden="true" />
     </button>
   </div>
 </div>
