@@ -167,3 +167,41 @@ body {
   --color-blue-900: #b4d6f9;
   --color-blue-950: #ffffff;
 }
+
+.whatsapp-btn {
+  position: fixed;
+  right: 1rem;
+  bottom: 1rem;
+  z-index: 70;
+  display: inline-flex;
+  height: 3.5rem;
+  width: 3.5rem;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  color: #ffffff;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.whatsapp-btn:hover {
+  transform: translateY(-2px) scale(1.03);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.24);
+}
+
+.whatsapp-btn:focus-visible {
+  outline: 3px solid var(--color-blue-400);
+  outline-offset: 3px;
+}
+
+.whatsapp-btn svg {
+  width: 1.9rem;
+  height: 1.9rem;
+}
+
+@media (min-width: 768px) {
+  .whatsapp-btn {
+    right: 1.5rem;
+    bottom: 1.5rem;
+  }
+}

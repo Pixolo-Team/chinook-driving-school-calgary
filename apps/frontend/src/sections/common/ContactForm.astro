@@ -94,7 +94,7 @@ const fieldRows: FormField[][] = [
                               minlength={field.minLength}
                               pattern={field.pattern}
                               title={field.title}
-                              class="bg-n-100 text-n-800 placeholder:text-n-400 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-shadow duration-300 outline-none focus:ring-2 focus:ring-blue-500 md:py-4 invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
+                              class="bg-n-100 text-n-800 placeholder:text-n-400 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-shadow duration-300 outline-none focus:ring-2 focus:ring-blue-500 md:py-4 invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--color-n-100)] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-n-800)]"
                             />
                           </label>
                         ))}
@@ -112,7 +112,7 @@ const fieldRows: FormField[][] = [
                       name="message"
                       required
                       placeholder="Tell us what's on your mind..."
-                      class="bg-n-100 text-n-800 placeholder:text-n-400 min-h-44 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-shadow duration-300 outline-none focus:ring-2 focus:ring-blue-500 md:py-4 invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500"
+                      class="bg-n-100 text-n-800 placeholder:text-n-400 min-h-44 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-shadow duration-300 outline-none focus:ring-2 focus:ring-blue-500 md:py-4 invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--color-n-100)] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-n-800)]"
                     ></textarea>
                   </label>
 
