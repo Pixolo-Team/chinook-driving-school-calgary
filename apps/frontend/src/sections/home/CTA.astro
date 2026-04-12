@@ -4,30 +4,7 @@ import { Image } from "astro:assets";
 import Button from "@/components/ui/Button.astro";
 
 import { ctaData } from "@/data/cta";
-import { fetchContentSection } from "@/data/site-content-api";
-
-type CtaApiSection = {
-  eyebrow?: string;
-  title?: string;
-  description?: string;
-};
-
-const apiCtaSection = await fetchContentSection<CtaApiSection>("cta");
-
-const ctaContent = {
-  eyebrow:
-    typeof apiCtaSection?.eyebrow === "string" && apiCtaSection.eyebrow.trim() !== ""
-      ? apiCtaSection.eyebrow
-      : ctaData.eyebrow,
-  heading:
-    typeof apiCtaSection?.title === "string" && apiCtaSection.title.trim() !== ""
-      ? apiCtaSection.title
-      : ctaData.heading,
-  description:
-    typeof apiCtaSection?.description === "string" && apiCtaSection.description.trim() !== ""
-      ? apiCtaSection.description
-      : ctaData.description,
-};
+const ctaContent = ctaData;
 
 ---
 

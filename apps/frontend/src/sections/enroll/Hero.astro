@@ -4,25 +4,10 @@ import HeroCard from "@/components/HeroCard.astro";
 
 // DATA //
 import { enrollHeroData } from "@/data/enroll-hero-data";
-import { fetchContentSection } from "@/data/site-content-api";
-
-type EnrollHeroApiSection = {
-  title?: string;
-  description?: string;
-};
-
-const apiEnrollHeroSection = await fetchContentSection<EnrollHeroApiSection>("enroll_hero");
 
 const heroContent = {
-  title:
-    typeof apiEnrollHeroSection?.title === "string" && apiEnrollHeroSection.title.trim() !== ""
-      ? apiEnrollHeroSection.title
-      : enrollHeroData.title,
-  description:
-    typeof apiEnrollHeroSection?.description === "string" &&
-    apiEnrollHeroSection.description.trim() !== ""
-      ? apiEnrollHeroSection.description
-      : enrollHeroData.description,
+  title: enrollHeroData.title,
+  description: enrollHeroData.description,
 };
 
 ---

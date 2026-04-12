@@ -1,48 +1,17 @@
 ---
 // DATA
 import { faqSectionData as faqs } from "@/data/faqSectionData";
-import { fetchContentSection } from "@/data/site-content-api";
 
 // COMPONENTS
 import FaqItem from "@/components/FaqItem.astro";
 
-type FaqApiSection = {
-  title?: string;
-  description?: string;
-  faq_cards?: Array<{
-    question?: string;
-    answer?: string;
-  }>;
-};
-
-const apiFaqSection = await fetchContentSection<FaqApiSection>("faq");
-
 const faqHeader = {
   eyebrow: "Got Questions ?",
-  title:
-    typeof apiFaqSection?.title === "string" && apiFaqSection.title.trim() !== ""
-      ? apiFaqSection.title
-      : "Frequently Asked Questions",
+  title: "Frequently Asked Questions",
 };
 
-const faqDescription =
-  typeof apiFaqSection?.description === "string" && apiFaqSection.description.trim() !== ""
-    ? apiFaqSection.description
-    : "";
-
-const faqCards =
-  Array.isArray(apiFaqSection?.faq_cards) && apiFaqSection.faq_cards.length > 0
-    ? apiFaqSection.faq_cards.map((faq, index) => ({
-        question:
-          typeof faq.question === "string" && faq.question.trim() !== ""
-            ? faq.question
-            : faqs[index]?.question ?? "",
-        answer:
-          typeof faq.answer === "string" && faq.answer.trim() !== ""
-            ? faq.answer
-            : faqs[index]?.answer ?? "",
-      }))
-    : faqs;
+const faqDescription = "";
+const faqCards = faqs;
 ---
 
 <section class="bg-n-100">

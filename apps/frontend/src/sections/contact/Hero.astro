@@ -4,25 +4,10 @@ import HeroCard from "@/components/HeroCard.astro";
 
 // DATA //
 import { contactHeroSectionData } from "@/data/contact";
-import { fetchContentSection } from "@/data/site-content-api";
-
-type ContactHeroApiSection = {
-  title?: string;
-  description?: string;
-};
-
-const apiContactHeroSection = await fetchContentSection<ContactHeroApiSection>("contact_hero");
 
 const heroContent = {
-  title:
-    typeof apiContactHeroSection?.title === "string" && apiContactHeroSection.title.trim() !== ""
-      ? apiContactHeroSection.title
-      : contactHeroSectionData.title,
-  description:
-    typeof apiContactHeroSection?.description === "string" &&
-    apiContactHeroSection.description.trim() !== ""
-      ? apiContactHeroSection.description
-      : contactHeroSectionData.description,
+  title: contactHeroSectionData.title,
+  description: contactHeroSectionData.description,
 };
 ---
 

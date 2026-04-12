@@ -1,122 +1,19 @@
 ---
 // DATA //
 import { contactSectionData } from "@/data/contact-section-data";
-import { fetchContentSection } from "@/data/site-content-api";
 
 // COMPONENTS //
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import SectionHeader from "@/components/SectionHeader.astro";
 
-type ContactApiSection = {
-  eyebrow?: string;
-  heading?: string;
-  description?: string;
-  opening_hours?: Array<{
-    day?: string;
-    time?: string;
-  }>;
-};
-
-type MetaApiSection = {
-  contact?: {
-    email?: string;
-    locations?: Array<{
-      title?: string;
-      address?: string;
-      service_area?: string;
-    }>;
-  };
-};
-
-const [apiContactSection, apiMetaSection] = await Promise.all([
-  fetchContentSection<ContactApiSection>("contact"),
-  fetchContentSection<MetaApiSection>("meta"),
-]);
-
 const sectionContent = {
-  eyebrow:
-    typeof apiContactSection?.eyebrow === "string" && apiContactSection.eyebrow.trim() !== ""
-      ? apiContactSection.eyebrow
-      : contactSectionData.eyebrow,
-  heading:
-    typeof apiContactSection?.heading === "string" && apiContactSection.heading.trim() !== ""
-      ? apiContactSection.heading
-      : contactSectionData.heading,
-  description:
-    typeof apiContactSection?.description === "string" &&
-    apiContactSection.description.trim() !== ""
-      ? apiContactSection.description
-      : contactSectionData.description,
+  eyebrow: contactSectionData.eyebrow,
+  heading: contactSectionData.heading,
+  description: contactSectionData.description,
 };
 
-const apiEmail = apiMetaSection?.contact?.email?.trim();
-const apiServiceArea = apiMetaSection?.contact?.locations?.[0]?.service_area?.trim();
-const cards = {
-  ...contactSectionData.cards,
-  getInTouch: {
-    ...contactSectionData.cards.getInTouch,
-    details: contactSectionData.cards.getInTouch.details.map((detail) => {
-      if (detail.icon !== "mail-send-envelope" || !apiEmail) {
-        return detail;
-      }
-
-      return {
-        ...detail,
-        value: apiEmail,
-        href: `mailto:${apiEmail}`,
-      };
-    }),
-  },
-  openingHours: {
-    ...contactSectionData.cards.openingHours,
-    details:
-      Array.isArray(apiContactSection?.opening_hours) && apiContactSection.opening_hours.length > 0
-        ? apiContactSection.opening_hours.map((item, index) => ({
-            icon: "clock",
-            label:
-              typeof item.day === "string" && item.day.trim() !== ""
-                ? `${item.day}:`
-                : contactSectionData.cards.openingHours.details[index]?.label ?? "",
-            value:
-              typeof item.time === "string" && item.time.trim() !== ""
-                ? item.time
-                : contactSectionData.cards.openingHours.details[index]?.value ?? "",
-          }))
-        : contactSectionData.cards.openingHours.details,
-  },
-  officeDetails: {
-    ...contactSectionData.cards.officeDetails,
-    locations:
-      Array.isArray(apiMetaSection?.contact?.locations) && apiMetaSection.contact.locations.length > 0
-        ? apiMetaSection.contact.locations.map((location, index) => {
-            const fallback = contactSectionData.cards.officeDetails.locations[index];
-            const address =
-              typeof location.address === "string" && location.address.trim() !== ""
-                ? location.address
-                : fallback?.address ?? "";
-
-            return {
-              icon: fallback?.icon ?? "location-pin",
-              name:
-                typeof location.title === "string" && location.title.trim() !== ""
-                  ? location.title
-                  : fallback?.name ?? "",
-              address,
-              actionLabel: fallback?.actionLabel ?? "Get Directions",
-              href: `https://maps.google.com/?q=${encodeURIComponent(address)}`,
-            };
-          })
-        : contactSectionData.cards.officeDetails.locations,
-    serviceArea: {
-      ...contactSectionData.cards.officeDetails.serviceArea,
-      value:
-        typeof apiServiceArea === "string" && apiServiceArea !== ""
-          ? apiServiceArea
-          : contactSectionData.cards.officeDetails.serviceArea.value,
-    },
-  },
-};
+const cards = contactSectionData.cards;
 ---
 
 <section class="bg-n-50">

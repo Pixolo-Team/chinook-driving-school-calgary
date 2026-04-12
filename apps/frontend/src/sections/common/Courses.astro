@@ -2,7 +2,6 @@
 // DATA //
 import { courseSectionData } from "@/data/courses";
 import { getCourseSectionData } from "@/data/course-cards";
-import { fetchContentSection } from "@/data/site-content-api";
 import type { CourseCardData, CourseGroupData } from "@/types/course";
 
 // COMPONENTS //
@@ -16,29 +15,12 @@ interface CoursesProps {
   courseGroups?: CourseGroupData[];
 }
 
-type CoursesApiSection = {
-  eyebrow?: string;
-  title?: string;
-  description?: string;
-};
-
 const courseData = await getCourseSectionData();
-const apiCoursesSection = await fetchContentSection<CoursesApiSection>("courses");
 
 const sectionContent = {
-  eyebrow:
-    typeof apiCoursesSection?.eyebrow === "string" && apiCoursesSection.eyebrow.trim() !== ""
-      ? apiCoursesSection.eyebrow
-      : courseSectionData.eyebrow,
-  heading:
-    typeof apiCoursesSection?.title === "string" && apiCoursesSection.title.trim() !== ""
-      ? apiCoursesSection.title
-      : courseSectionData.heading,
-  description:
-    typeof apiCoursesSection?.description === "string" &&
-    apiCoursesSection.description.trim() !== ""
-      ? apiCoursesSection.description
-      : courseSectionData.description,
+  eyebrow: courseSectionData.eyebrow,
+  heading: courseSectionData.heading,
+  description: courseSectionData.description,
 };
 
 const {

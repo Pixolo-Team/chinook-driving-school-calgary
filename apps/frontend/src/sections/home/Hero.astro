@@ -1,27 +1,13 @@
 ---
 // DATA //
 import { heroSectionData } from "@/data/hero-section-data";
-import { fetchContentSection } from "@/data/site-content-api";
 
 // COMPONENTS //
 import { Image } from "astro:assets";
 
-type HeroApiSection = {
-  title?: string;
-  description?: string;
-};
-
-const apiHeroSection = await fetchContentSection<HeroApiSection>("hero");
-
 const heroText = {
-  eyebrow:
-    typeof apiHeroSection?.title === "string" && apiHeroSection.title.trim() !== ""
-      ? apiHeroSection.title
-      : heroSectionData.eyebrow,
-  heading:
-    typeof apiHeroSection?.description === "string" && apiHeroSection.description.trim() !== ""
-      ? apiHeroSection.description
-      : heroSectionData.heading,
+  eyebrow: heroSectionData.eyebrow,
+  heading: heroSectionData.heading,
 };
 
 const heroSlides = heroSectionData.slides.map((image) => ({ image }));
