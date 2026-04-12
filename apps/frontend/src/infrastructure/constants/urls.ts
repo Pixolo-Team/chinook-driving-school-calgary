@@ -5,6 +5,7 @@ export const URLS = {
   ABOUT: "/about",
   COURSES: "/courses",
   CONTACT: "/contact",
+  PHONE: "tel:+14032818050",
   ENROLL: "/enroll",
   PRIVACY_POLICY: "/privacy-policy",
   TERMS_OF_SERVICE: "/terms",

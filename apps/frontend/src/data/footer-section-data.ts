@@ -15,12 +15,12 @@ export const footerSectionData = {
     {
       label: "Instagram",
       icon: "/images/footer-social-instagram.svg",
-      href: "https://www.instagram.com/",
+      href: "https://www.instagram.com/chinookdrivingacademy?igsh=OWljODU3YjF2cDR1",
     },
     {
       label: "LinkedIn",
       icon: "/images/footer-social-linkedin.svg",
-      href: "https://www.linkedin.com/",
+      href: "https://www.facebook.com/ChinookDrivingAcademy/",
     },
   ],
   legalLinks: [

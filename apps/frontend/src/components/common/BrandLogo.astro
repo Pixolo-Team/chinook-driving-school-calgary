@@ -1,7 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import logoMark from "@/../public/images/footer-logo-mark.svg";
-import logoText from "@/../public/images/footer-logo-text.svg";
+import logoTextInline from "@/assets/brand/footer-logo-text-current.svg?raw";
 
 interface Props {
   containerClass?: string;
@@ -28,12 +28,9 @@ const {
     loading="lazy"
     aria-hidden="true"
   />
-  <Image
-    src={logoText}
-    alt={textAlt}
-    width={144}
-    height={42}
-    class={textClass}
-    loading="lazy"
+  <div
+    class:list={[textClass, "text-[var(--color-brand-logo-wordmark)]"]}
+    aria-hidden="true"
+    set:html={logoTextInline}
   />
 </div>

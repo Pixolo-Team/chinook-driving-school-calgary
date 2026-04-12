@@ -4,6 +4,14 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import { instructorsSectionData } from "@/data/instructors-section-data";
 import SliderArrows from "@/components/SliderArrows.astro";
 
+const sectionContent = {
+  eyebrow: instructorsSectionData.eyebrow,
+  heading: instructorsSectionData.heading,
+  description: instructorsSectionData.description,
+};
+
+const instructors = instructorsSectionData.instructors;
+
 ---
 
 <section class="bg-n-100">
@@ -11,9 +19,9 @@ import SliderArrows from "@/components/SliderArrows.astro";
 
     <!-- Section Header -->
     <SectionHeader
-      eyebrow={instructorsSectionData.eyebrow}
-      heading={instructorsSectionData.heading}
-      description={instructorsSectionData.description}
+      eyebrow={sectionContent.eyebrow}
+      heading={sectionContent.heading}
+      description={sectionContent.description}
     />
 
     <!-- Instructor Card Section -->
@@ -22,7 +30,7 @@ import SliderArrows from "@/components/SliderArrows.astro";
         <div class="embla__container flex -ml-3">
 
           <!-- Instructor Cards -->
-          {instructorsSectionData.instructors.map((instructor) => (
+          {instructors.map((instructor) => (
             <div class="embla__slide pl-3 cursor-default min-w-0 flex-[0_0_100%] md:flex-[0_0_50%] lg:pl-5 xl:flex-[0_0_33.33%]">
               <InstructorCard
                 name={instructor.name}

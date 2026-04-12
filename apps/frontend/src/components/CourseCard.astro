@@ -112,7 +112,7 @@ const showDivider = hasPracticeHours && hasClassroomHours;
                 <!-- Car Practice Icon -->
                 <div
                   class:list={[
-                    "flex size-8 items-center justify-center rounded-2xl",
+                    "flex shrink-0 size-8 items-center justify-center rounded-2xl",
                     card.theme === "brand" ? "bg-n-50/13" : "bg-blue-500/10 text-blue-500",
                   ]}
                 >
@@ -176,13 +176,13 @@ const showDivider = hasPracticeHours && hasClassroomHours;
                   <!-- Classroom Icon -->
                   <div
                     class:list={[
-                      "flex size-8 items-center justify-center rounded-2xl",
+                      "flex shrink-0 size-8 items-center justify-center rounded-2xl",
                       card.theme === "brand" ? "bg-n-50/13" : "bg-blue-500/10 text-blue-500",
                     ]}
                   >
                     <Icon
                       name={card.theme === "brand"
-                        ? "whiteboard-classroom-course-inverse"
+                        ? "whiteboard-classroom-course"
                         : "whiteboard-classroom-course"}
                       class:list={["size-4", card.theme === "brand" ? "text-n-50" : "text-n-800"]}
                       aria-hidden="true"

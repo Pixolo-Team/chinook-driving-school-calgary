@@ -4,26 +4,30 @@ import { faqSectionData as faqs } from "@/data/faqSectionData";
 
 // COMPONENTS
 import FaqItem from "@/components/FaqItem.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+
+const faqHeader = {
+  eyebrow: "Got Questions ?",
+  heading: "Frequently Asked Questions",
+};
+
+const faqDescription = "";
+const faqCards = faqs;
 ---
 
 <section class="bg-n-100">
   <div class="container mx-auto flex w-full flex-col items-center gap-16 overflow-hidden px-5 py-24 lg:py-36 xl:px-0">
 
     <!-- Heading & Description -->
-    <div class="flex flex-col items-center gap-2.5">
-      <p class="text-sm font-bold uppercase tracking-[0.6px] text-blue-600">
-        Got Questions ?
-      </p>
-      <p
-        class="text-center text-3xl font-bold leading-tight text-n-800 md:text-5xl"
-      >
-        Frequently Asked Questions
-      </p>
-    </div>
+    <SectionHeader
+      eyebrow={faqHeader.eyebrow}
+      heading={faqHeader.heading}
+      description={faqDescription}
+    />
 
     <!-- FAQ Cards -->
     <div class="mx-auto flex w-full max-w-6xl flex-col gap-5">
-      {faqs.map((faqItem) => (
+      {faqCards.map((faqItem) => (
         <FaqItem question={faqItem.question} answer={faqItem.answer} />
       ))}
     </div>

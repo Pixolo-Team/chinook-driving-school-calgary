@@ -4,6 +4,7 @@ import { Image } from "astro:assets";
 import Button from "@/components/ui/Button.astro";
 
 import { ctaData } from "@/data/cta";
+const ctaContent = ctaData;
 
 ---
 
@@ -27,13 +28,13 @@ import { ctaData } from "@/data/cta";
       <div class="flex flex-col gap-5 md:gap-7 lg:gap-10">
         <div class="flex flex-col gap-1 md:gap-2 lg:gap-3">
           <p class="text-xs font-bold uppercase tracking-[0.6px] text-blue-500">
-            {ctaData.eyebrow}
+            {ctaContent.eyebrow}
           </p>
           <p class="text-3xl font-bold leading-tight text-n-800 md:text-4xl lg:text-5xl">
-            {ctaData.heading}
+            {ctaContent.heading}
           </p>
         </div>
-        <p set:html={ctaData.description} class="text-sm leading-relaxed text-n-600 md:text-base lg:text-lg">
+        <p set:html={ctaContent.description} class="text-sm leading-relaxed text-n-600 md:text-base lg:text-lg">
         </p>
       </div>
 

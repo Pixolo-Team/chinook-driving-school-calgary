@@ -7,6 +7,7 @@ import "@/styles/global.css";
 // COMPONENTS //
 import Header from "@/components/layout/Header.astro";
 import Footer from "@/components/layout/Footer.astro";
+import { Icon } from "astro-icon/components";
 
 interface Props {
   title?: string;
@@ -48,5 +49,16 @@ const {
 
     <!-- Footer -->
     <Footer />
+
+    <!-- WhatsApp Floating Chat Button -->
+    <a
+      href="https://wa.me/5879719393?text=Hey%20there%2C%20I%27m%20interested%20in%20Chinook%20Driving%20School.%20Can%20you%20guide%20me%20%3F"
+      class="whatsapp-btn"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="Chat on WhatsApp"
+    >
+      <Icon name="whatsapp" aria-hidden="true" />
+    </a>
   </body>
 </html>

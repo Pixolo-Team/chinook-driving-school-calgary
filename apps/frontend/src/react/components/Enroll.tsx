@@ -1,12 +1,29 @@
 // REACT //
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+// TYPES //
+import type { CourseCategoryData } from "@/react/types/enrollment.type";
 
 // COMPONENTS //
 import EnrollmentForm from "./EnrollmentForm";
 import EnrollSuccess from "./steps/EnrollSuccess";
 import EnrollmentInfo from "./steps/EnrollmentInfo";
 
+// API SERVICES //
+import { fetchCoursesRequest } from "@/react/services/api/courses.api.service";
+
+// CONSTANTS //
+import { COURSE_CATEGORY_IMAGE_BY_ID } from "@/react/constants/form-items";
+
 type EnrollViewData = "start" | "form" | "success";
+
+const withLocalCourseCategoryImages = (
+  courseCategories: CourseCategoryData[],
+): CourseCategoryData[] =>
+  courseCategories.map((courseCategoryItem) => ({
+    ...courseCategoryItem,
+    image: COURSE_CATEGORY_IMAGE_BY_ID[courseCategoryItem.id] ?? courseCategoryItem.image,
+  }));
 
 /**
  * Coordinates the enrollment entry flow between start, form, and success screens.
@@ -20,6 +37,9 @@ export default function EnrollForm(): React.JSX.Element {
 
   // Define States
   const [activeView, setActiveView] = useState<EnrollViewData>("start");
+  const [courseCategories, setCourseCategories] = useState<CourseCategoryData[]>([]);
+  const [isCoursesLoading, setIsCoursesLoading] = useState<boolean>(true);
+  const [coursesErrorMessage, setCoursesErrorMessage] = useState<string | null>(null);
 
   // Helper Functions
   /**
@@ -48,9 +68,62 @@ export default function EnrollForm(): React.JSX.Element {
       return renderSuccessScreen();
     }
 
-    return <EnrollmentForm onSuccess={() => setActiveView("success")} />;
+    return (
+      <EnrollmentForm
+        courseCategories={courseCategories}
+        isCoursesLoading={isCoursesLoading}
+        coursesErrorMessage={coursesErrorMessage}
+        onSuccess={() => setActiveView("success")}
+      />
+    );
   };
 
   // Use Effects
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadCourses = async (): Promise<void> => {
+      setIsCoursesLoading(true);
+      setCoursesErrorMessage(null);
+
+      try {
+        const coursesResponseInfo = await fetchCoursesRequest();
+
+        if (!isMounted) {
+          return;
+        }
+
+        if (!coursesResponseInfo.status || !coursesResponseInfo.data) {
+          setCourseCategories([]);
+          setCoursesErrorMessage(
+            coursesResponseInfo.message || "Unable to load courses right now.",
+          );
+          return;
+        }
+
+        setCourseCategories(withLocalCourseCategoryImages(coursesResponseInfo.data));
+      } catch (error) {
+        if (!isMounted) {
+          return;
+        }
+
+        setCourseCategories([]);
+        setCoursesErrorMessage(
+          error instanceof Error ? error.message : "Unable to load courses right now.",
+        );
+      } finally {
+        if (isMounted) {
+          setIsCoursesLoading(false);
+        }
+      }
+    };
+
+    void loadCourses();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
   return renderActiveView();
 }

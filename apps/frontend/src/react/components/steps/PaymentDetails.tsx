@@ -177,11 +177,16 @@ export default function PaymentDetails({
             I agree to the{" "}
             <a
               href={URLS.TERMS_OF_SERVICE}
+              target="_blank"
+              rel="noopener noreferrer"
               className="font-semibold underline underline-offset-2"
               style={{ color: "var(--color-blue-500)" }}
             >
               Terms and Conditions
             </a>
+            <span className="ml-1" style={{ color: "var(--color-error-500, #ef4444)" }}>
+              *
+            </span>
           </span>
         </label>
 

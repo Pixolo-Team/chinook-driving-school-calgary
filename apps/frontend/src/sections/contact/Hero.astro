@@ -4,12 +4,17 @@ import HeroCard from "@/components/HeroCard.astro";
 
 // DATA //
 import { contactHeroSectionData } from "@/data/contact";
+
+const heroContent = {
+  title: contactHeroSectionData.title,
+  description: contactHeroSectionData.description,
+};
 ---
 
 <section class="bg-n-100 overflow-hidden">
   <HeroCard
-    title={contactHeroSectionData.title}
-    description={contactHeroSectionData.description}
+    title={heroContent.title}
+    description={heroContent.description}
     illustration={contactHeroSectionData.illustration}
     illustrationAlt={contactHeroSectionData.illustrationAlt}
     flipImage={true}
