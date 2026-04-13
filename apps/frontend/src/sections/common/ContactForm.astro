@@ -125,6 +125,12 @@ const fieldRows: FormField[][] = [
                       Send Message
                     </button>
                   </div>
+
+                  <p
+                    id="contact-form-error"
+                    class="hidden rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+                    role="alert"
+                  ></p>
                 </form>
               </div>
               
@@ -201,26 +207,66 @@ const fieldRows: FormField[][] = [
   const formContainer = document.getElementById("form-container");
   const successMessage = document.getElementById("success-message");
   const resetBtn = document.getElementById("reset-form-btn");
+  const errorMessage = document.getElementById("contact-form-error");
+  const CONTACT_API_URL = "http://127.0.0.1:8000/contact.php";
 
   if (form && formContainer && successMessage) {
-    form.addEventListener("submit", (e) => {
-      e.preventDefault(); 
-      
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (errorMessage) {
+        errorMessage.textContent = "";
+        errorMessage.classList.add("hidden");
+      }
+
+      const formData = new FormData(form);
+      const payload = {
+        name: String(formData.get("name") ?? "").trim(),
+        email: String(formData.get("email") ?? "").trim(),
+        contact_number: String(formData.get("phone") ?? "").trim(),
+        query: String(formData.get("message") ?? "").trim(),
+        reason: String(formData.get("reason") ?? "").trim(),
+      };
+
       const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
       const originalText = submitBtn.innerText;
-      
+
       submitBtn.innerText = "Sending...";
       submitBtn.disabled = true;
 
-      setTimeout(() => {
+      try {
+        const response = await fetch(CONTACT_API_URL, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await response.json().catch(() => null);
+        const isSuccess = response.ok && result?.status === true;
+
+        if (!isSuccess) {
+          throw new Error(result?.error || result?.message || "Something went wrong while sending your message.");
+        }
+
         formContainer.classList.add("hidden");
         successMessage.classList.remove("hidden");
         successMessage.classList.add("flex");
-
+        form.reset();
+      } catch (error) {
+        if (errorMessage) {
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Something went wrong while sending your message. Please try again.";
+          errorMessage.textContent = message;
+          errorMessage.classList.remove("hidden");
+        }
+      } finally {
         submitBtn.innerText = originalText;
         submitBtn.disabled = false;
-        form.reset();
-      }, 600); 
+      }
     });
   }
 
