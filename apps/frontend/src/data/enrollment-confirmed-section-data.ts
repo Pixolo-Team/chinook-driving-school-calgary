@@ -1,5 +1,5 @@
 export const enrollmentConfirmedSectionData = {
-  image: "/icons/enrollment-confirmed.png",
+  image: "/icons/enrollment-confirm.png",
   eyebrow: "Enrollment Complete",
   heading: "Enrollment Confirmed 🎉",
   nextTitle: "What Happens Next",
