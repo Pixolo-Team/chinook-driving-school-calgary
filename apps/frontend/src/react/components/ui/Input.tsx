@@ -148,7 +148,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           aria-invalid={isError}
           aria-describedby={helperTextId}
           className={joinClasses(
-            "block w-full border-0 bg-transparent px-4 pt-4 pb-[17.6px] text-xl leading-normal font-medium outline-none placeholder:opacity-100",
+            "block w-full border-0 bg-transparent px-4 pt-4 pb-[17.6px] text-xl leading-normal font-medium outline-none placeholder:opacity-100 [&:-webkit-autofill]:[border:0] [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--color-n-100)] [&:-webkit-autofill:hover]:shadow-[inset_0_0_0_1000px_var(--color-n-100)] [&:-webkit-autofill:focus]:shadow-[inset_0_0_0_1000px_var(--color-n-100)]",
             type === "date" && "custom-date-input appearance-none pr-16",
             isError
               ? "placeholder:text-[var(--color-error-500,_#dc2626)]"
@@ -158,6 +158,8 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
           )}
           style={{
             color: isError ? "var(--color-error-500, #dc2626)" : "var(--color-n-700)",
+            WebkitTextFillColor: isError ? "var(--color-error-500, #dc2626)" : "var(--color-n-700)",
+            transition: "background-color 9999s ease-out 0s",
             appearance: type === "date" ? "none" : undefined,
             WebkitAppearance: type === "date" ? "none" : undefined,
           }}

@@ -157,9 +157,8 @@ const { testimonials } = testimonialSectionDetails;
       if (!(viewport instanceof HTMLElement)) return;
 
       const emblaApi = EmblaCarousel(viewport, {
-        loop: false,
+        loop: true,
         align: "start",
-        containScroll: "trimSnaps",
         dragFree: false,
         slidesToScroll: 1,
         breakpoints: {
