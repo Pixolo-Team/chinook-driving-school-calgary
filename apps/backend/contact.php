@@ -79,27 +79,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 // Step 2: Read and decode the JSON request body
 // ---------------------------------------------------------------------------
 
-$raw = file_get_contents('php://input');
-if (!$raw) {
-    respond(400, [
-        'status'      => false,
-        'status_code' => 400,
-        'data'        => false,
-        'message'     => 'Empty request body',
-        'error'       => 'Request body must not be empty',
-    ]);
-}
-
-$input = json_decode($raw, true);
-if (!is_array($input)) {
-    respond(400, [
-        'status'      => false,
-        'status_code' => 400,
-        'data'        => false,
-        'message'     => 'Invalid JSON body',
-        'error'       => 'Request body must be valid JSON',
-    ]);
-}
+$input = getJsonInput();
 
 // ---------------------------------------------------------------------------
 // Step 3: Validate required fields
@@ -107,31 +87,45 @@ if (!is_array($input)) {
 
 $errors = [];
 
+/**
+ * Validate and sanitize a field that must be a string (or null for optional fields).
+ */
+$readSanitizedString = static function (array $source, string $field, array &$validationErrors, bool $required = true): ?string {
+    if (!array_key_exists($field, $source) || $source[$field] === null) {
+        if ($required) {
+            $validationErrors[] = "{$field} is required";
+        }
+        return null;
+    }
+
+    if (!is_string($source[$field])) {
+        $validationErrors[] = "{$field} must be a string";
+        return null;
+    }
+
+    $sanitized = sanitizeString($source[$field]);
+
+    if ($required && $sanitized === null) {
+        $validationErrors[] = "{$field} is required";
+    }
+
+    return $sanitized;
+};
+
 // name – required, must be a non-empty string
-$name = sanitizeString($input['name'] ?? null);
-if ($name === null) {
-    $errors[] = 'name is required';
-}
+$name = $readSanitizedString($input, 'name', $errors);
 
 // email – required, must be a valid email address
-$email = sanitizeString($input['email'] ?? null);
-if ($email === null) {
-    $errors[] = 'email is required';
-} elseif (!isValidEmail($email)) {
+$email = $readSanitizedString($input, 'email', $errors);
+if ($email !== null && !isValidEmail($email)) {
     $errors[] = 'email is invalid';
 }
 
 // contact_number – required, must be a non-empty string
-$contactNumber = sanitizeString($input['contact_number'] ?? null);
-if ($contactNumber === null) {
-    $errors[] = 'contact_number is required or invalid';
-}
+$contactNumber = $readSanitizedString($input, 'contact_number', $errors);
 
 // query – required, must be a non-empty string
-$query = sanitizeString($input['query'] ?? null);
-if ($query === null) {
-    $errors[] = 'message is required';
-}
+$query = $readSanitizedString($input, 'query', $errors);
 
 if (!empty($errors)) {
     respond(422, [
@@ -147,7 +141,17 @@ if (!empty($errors)) {
 // Step 4: Collect optional fields
 // ---------------------------------------------------------------------------
 
-$reason = sanitizeString($input['reason'] ?? null) ?? '';
+$reason = $readSanitizedString($input, 'reason', $errors, false) ?? '';
+
+if (!empty($errors)) {
+    respond(422, [
+        'status'      => false,
+        'status_code' => 422,
+        'data'        => false,
+        'message'     => 'Validation failed',
+        'error'       => implode('; ', $errors),
+    ]);
+}
 
 // ---------------------------------------------------------------------------
 // Step 5: Build payload and insert into Supabase
