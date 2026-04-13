@@ -2,19 +2,9 @@
 // COMPONENTS //
 import { Image } from "astro:assets";
 import Button from "@/components/ui/Button.astro";
+import { getHomeCtaViewModel } from "@/data/site-content-mappers";
 
-import { ctaData } from "@/data/cta";
-import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
-
-const siteContentData = await getSiteContentData();
-const ctaApiData = siteContentData?.cta;
-const ctaContent = {
-  eyebrow: isNonEmptyString(ctaApiData?.eyebrow) ? ctaApiData.eyebrow : ctaData.eyebrow,
-  heading: isNonEmptyString(ctaApiData?.title) ? ctaApiData.title : ctaData.heading,
-  description: isNonEmptyString(ctaApiData?.description)
-    ? ctaApiData.description
-    : ctaData.description,
-};
+const ctaContent = await getHomeCtaViewModel();
 
 ---
 
@@ -26,8 +16,8 @@ const ctaContent = {
       class="bg-n-50 relative h-[240px] w-full overflow-hidden rounded-3xl md:h-[387px] lg:h-[449px] lg:w-[595px] lg:shrink-0"
     >
       <Image
-        src={ctaData.imageSrc}
-        alt={ctaData.imageAlt}
+        src={ctaContent.imageSrc}
+        alt={ctaContent.imageAlt}
         width={822}
         height={548}
         class="h-full w-full object-cover object-[68%_center]"

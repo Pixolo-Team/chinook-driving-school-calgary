@@ -1,9 +1,8 @@
 ---
 // DATA //
-import { courseSectionData } from "@/data/courses";
 import { getCourseSectionData } from "@/data/course-cards";
 import type { CourseCardData, CourseGroupData } from "@/types/course";
-import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
+import { getCoursesSectionViewModel } from "@/data/site-content-mappers";
 
 // COMPONENTS //
 import CourseCard from "@/components/CourseCard.astro";
@@ -17,20 +16,7 @@ interface CoursesProps {
 }
 
 const courseData = await getCourseSectionData();
-const siteContentData = await getSiteContentData();
-const coursesApiData = siteContentData?.courses;
-
-const sectionContent = {
-  eyebrow: isNonEmptyString(coursesApiData?.eyebrow)
-    ? coursesApiData.eyebrow
-    : courseSectionData.eyebrow,
-  heading: isNonEmptyString(coursesApiData?.title)
-    ? coursesApiData.title
-    : courseSectionData.heading,
-  description: isNonEmptyString(coursesApiData?.description)
-    ? coursesApiData.description
-    : courseSectionData.description,
-};
+const sectionContent = await getCoursesSectionViewModel();
 
 const {
   tabs = courseData.tabs,

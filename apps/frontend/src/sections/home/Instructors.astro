@@ -1,41 +1,16 @@
 ---
 import InstructorCard from "@/components/InstructorCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
-import { instructorsSectionData } from "@/data/instructors-section-data";
 import SliderArrows from "@/components/SliderArrows.astro";
-import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
+import { getHomeInstructorsViewModel } from "@/data/site-content-mappers";
 
-const siteContentData = await getSiteContentData();
-const instructorsApiData = siteContentData?.instructors;
-
+const instructorsViewModel = await getHomeInstructorsViewModel();
 const sectionContent = {
-  eyebrow: isNonEmptyString(instructorsApiData?.eyebrow)
-    ? instructorsApiData.eyebrow
-    : instructorsSectionData.eyebrow,
-  heading: isNonEmptyString(instructorsApiData?.heading)
-    ? instructorsApiData.heading
-    : instructorsSectionData.heading,
-  description: isNonEmptyString(instructorsApiData?.description)
-    ? instructorsApiData.description
-    : instructorsSectionData.description,
+  eyebrow: instructorsViewModel.eyebrow,
+  heading: instructorsViewModel.heading,
+  description: instructorsViewModel.description,
 };
-
-const instructorsFromApi =
-  instructorsApiData?.instructor_cards
-    ?.filter(
-      (instructorCard) =>
-        isNonEmptyString(instructorCard.name) &&
-        isNonEmptyString(instructorCard.role) &&
-        isNonEmptyString(instructorCard.description),
-    )
-    .map((instructorCard) => ({
-      name: instructorCard.name,
-      role: instructorCard.role,
-      description: instructorCard.description,
-    })) ?? [];
-
-const instructors =
-  instructorsFromApi.length > 0 ? instructorsFromApi : instructorsSectionData.instructors;
+const instructors = instructorsViewModel.instructors;
 
 ---
 

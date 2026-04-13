@@ -4,33 +4,14 @@ import StatCard from "@/components/StatCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 
 // DATA //
-import { numberStatsData } from "@/data/numberSection";
-import { statHeaderData } from "@/data/numberSection";
-import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
+import { getHomeStatsViewModel } from "@/data/site-content-mappers";
 
-const siteContentData = await getSiteContentData();
-const statsApiData = siteContentData?.stats;
-
+const statsViewModel = await getHomeStatsViewModel();
 const statsHeader = {
-  eyebrow: isNonEmptyString(statsApiData?.eyebrow) ? statsApiData.eyebrow : statHeaderData.eyebrow,
-  heading: isNonEmptyString(statsApiData?.title) ? statsApiData.title : statHeaderData.heading,
+  eyebrow: statsViewModel.eyebrow,
+  heading: statsViewModel.heading,
 };
-
-const statsCardsFromApi =
-  statsApiData?.stat_cards
-    ?.filter(
-      (statCard) =>
-        isNonEmptyString(statCard.icon) &&
-        isNonEmptyString(statCard.stat_number) &&
-        isNonEmptyString(statCard.description),
-    )
-    .map((statCard) => ({
-      icon: statCard.icon,
-      value: `${statCard.stat_number}${statCard.stat_suffix ?? ""}`,
-      label: statCard.description,
-    })) ?? [];
-
-const statsCards = statsCardsFromApi.length > 0 ? statsCardsFromApi : numberStatsData;
+const statsCards = statsViewModel.cards;
 
 ---
 

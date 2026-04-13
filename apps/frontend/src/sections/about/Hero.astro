@@ -3,25 +3,16 @@
 import HeroCard from "@/components/HeroCard.astro";
 
 // DATA //
-import { aboutHeroSectionData } from "@/data/about";
-import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
+import { getAboutHeroViewModel } from "@/data/site-content-mappers";
 
-const siteContentData = await getSiteContentData();
-const aboutHomeApiData = siteContentData?.about_home;
-
-const aboutHeroContent = {
-  title: isNonEmptyString(aboutHomeApiData?.title) ? aboutHomeApiData.title : aboutHeroSectionData.title,
-  description: isNonEmptyString(aboutHomeApiData?.description)
-    ? aboutHomeApiData.description
-    : aboutHeroSectionData.description,
-};
+const aboutHeroContent = await getAboutHeroViewModel();
 ---
 
 <section class="bg-n-100 overflow-hidden">
   <HeroCard
     title={aboutHeroContent.title}
     description={aboutHeroContent.description}
-    illustration={aboutHeroSectionData.illustration}
-    illustrationAlt={aboutHeroSectionData.illustrationAlt}
+    illustration={aboutHeroContent.illustration}
+    illustrationAlt={aboutHeroContent.illustrationAlt}
   />
 </section>

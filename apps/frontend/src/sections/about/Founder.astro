@@ -3,32 +3,10 @@
 import SectionHeader from "@/components/SectionHeader.astro";
 
 // DATA //
-import { founderSectionData } from "@/data/founder-section-data";
-import {
-  getSiteContentData,
-  isNonEmptyString,
-  normalizeApiImagePath,
-} from "@/data/site-content-api";
+import { getAboutFounderViewModel } from "@/data/site-content-mappers";
 import { Image } from "astro:assets";
 
-const siteContentData = await getSiteContentData();
-const founderApiData = siteContentData?.about_founder;
-
-const founderContent = {
-  eyebrow: isNonEmptyString(founderApiData?.eyebrow)
-    ? founderApiData.eyebrow
-    : founderSectionData.eyebrow,
-  heading: isNonEmptyString(founderApiData?.heading)
-    ? founderApiData.heading
-    : founderSectionData.heading,
-  paragraphs:
-    founderApiData?.paragraphs?.filter((paragraph) => isNonEmptyString(paragraph)) ??
-    founderSectionData.paragraphs,
-  name: isNonEmptyString(founderApiData?.name) ? founderApiData.name : founderSectionData.name,
-  title: isNonEmptyString(founderApiData?.title) ? founderApiData.title : founderSectionData.title,
-};
-
-const founderImageSrc = normalizeApiImagePath(founderApiData?.image) ?? founderSectionData.imageSrc;
+const founderContent = await getAboutFounderViewModel();
 
 ---
 
@@ -47,8 +25,8 @@ const founderImageSrc = normalizeApiImagePath(founderApiData?.image) ?? founderS
       <!-- Founder Image -->
       <div class="h-71 md:h-114 lg:h-135">
         <Image
-          src={founderImageSrc}
-          alt={founderSectionData.imageAlt}
+          src={founderContent.imageSrc}
+          alt={founderContent.imageAlt}
           height={537}
           width={465}
           class="h-full w-full rounded-3xl object-cover md:rounded-4xl" 

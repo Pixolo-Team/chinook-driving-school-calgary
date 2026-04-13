@@ -3,20 +3,9 @@
 import HeroCard from "@/components/HeroCard.astro";
 
 // DATA //
-import { coursesHeroSectionData } from "@/data/courses";
-import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
+import { getCoursesHeroViewModel } from "@/data/site-content-mappers";
 
-const siteContentData = await getSiteContentData();
-const coursesHeroApiData = siteContentData?.courses_hero;
-
-const heroContent = {
-  title: isNonEmptyString(coursesHeroApiData?.title)
-    ? coursesHeroApiData.title
-    : coursesHeroSectionData.title,
-  description: isNonEmptyString(coursesHeroApiData?.description)
-    ? coursesHeroApiData.description
-    : coursesHeroSectionData.description,
-};
+const heroContent = await getCoursesHeroViewModel();
 
 ---
 
@@ -24,7 +13,7 @@ const heroContent = {
   <HeroCard
     title={heroContent.title}
     description={heroContent.description}
-    illustration={coursesHeroSectionData.illustration}
-    illustrationAlt={coursesHeroSectionData.illustrationAlt}
+    illustration={heroContent.illustration}
+    illustrationAlt={heroContent.illustrationAlt}
   />
 </section>

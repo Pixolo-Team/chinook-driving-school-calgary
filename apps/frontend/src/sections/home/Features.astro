@@ -1,41 +1,15 @@
 ---
 import FeatureCard from "@/components/FeatureCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
-import { FeaturesSectionDetails } from "@/data/features";
-import {
-  getSiteContentData,
-  isNonEmptyString,
-  normalizeApiImagePath,
-} from "@/data/site-content-api";
+import { getHomeFeaturesViewModel } from "@/data/site-content-mappers";
 
-const siteContentData = await getSiteContentData();
-const featuresApiData = siteContentData?.features;
+const featuresViewModel = await getHomeFeaturesViewModel();
 const sectionContent = {
-  eyebrow: isNonEmptyString(featuresApiData?.eyebrow)
-    ? featuresApiData.eyebrow
-    : FeaturesSectionDetails.content.eyebrow,
-  title: isNonEmptyString(featuresApiData?.title)
-    ? featuresApiData.title
-    : FeaturesSectionDetails.content.title,
-  description: isNonEmptyString(featuresApiData?.description)
-    ? featuresApiData.description
-    : FeaturesSectionDetails.content.description,
+  eyebrow: featuresViewModel.eyebrow,
+  title: featuresViewModel.heading,
+  description: featuresViewModel.description,
 };
-
-const featureCardsFromApi =
-  featuresApiData?.feature_cards
-    ?.filter(
-      (featureCard) =>
-        isNonEmptyString(featureCard.title) && isNonEmptyString(featureCard.description),
-    )
-    .map((featureCard) => ({
-      title: featureCard.title,
-      description: featureCard.description,
-      imageAlt: featureCard.title,
-      imageSrc: normalizeApiImagePath(featureCard.image) ?? "/images/features/certified-driving.png",
-    })) ?? [];
-
-const featureCards = featureCardsFromApi.length > 0 ? featureCardsFromApi : FeaturesSectionDetails.cards;
+const featureCards = featuresViewModel.cards;
 ---
 
 <section class="bg-n-50">

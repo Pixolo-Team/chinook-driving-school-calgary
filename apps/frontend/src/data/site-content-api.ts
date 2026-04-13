@@ -180,6 +180,7 @@ type SiteContentApiResponse = {
 let siteContentRequestPromise: Promise<SiteContentData | null> | null = null;
 
 export async function getSiteContentData(): Promise<SiteContentData | null> {
+  // Reuse the same request during one render/build cycle.
   if (siteContentRequestPromise) {
     return siteContentRequestPromise;
   }
@@ -203,6 +204,7 @@ export function isNonEmptyString(value: unknown): value is string {
 }
 
 export function normalizeApiImagePath(value: unknown): string | null {
+  // Keep only web-safe paths/URLs we can render directly.
   if (!isNonEmptyString(value)) {
     return null;
   }
