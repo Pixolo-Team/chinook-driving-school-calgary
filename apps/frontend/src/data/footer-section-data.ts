@@ -18,8 +18,8 @@ export const footerSectionData = {
       href: "https://www.instagram.com/chinookdrivingacademy?igsh=OWljODU3YjF2cDR1",
     },
     {
-      label: "LinkedIn",
-      icon: "/images/footer-social-linkedin.svg",
+      label: "Facebook",
+      icon: "/images/footer-social-facebook.svg",
       href: "https://www.facebook.com/ChinookDrivingAcademy/",
     },
   ],
