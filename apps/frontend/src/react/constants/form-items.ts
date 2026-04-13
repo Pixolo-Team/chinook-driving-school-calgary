@@ -34,7 +34,7 @@ export function resolveCourseCategoryImage(
 }
 
 export const SESSION_TYPE_OPTIONS: SessionOptionData[] = [
-  { label: "In Person", value: "in_person" },
+  { label: "In Person ($55+GST extra charges)", value: "in_person" },
   { label: "Online", value: "online" },
   { label: "Not Applicable", value: "not_applicable" },
 ];

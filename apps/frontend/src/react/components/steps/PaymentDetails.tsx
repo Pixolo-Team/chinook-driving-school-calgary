@@ -11,7 +11,6 @@ import Input from "@/react/components/ui/Input";
 
 // CONSTANTS //
 import { PAYMENT_METHOD_ITEMS } from "@/react/constants/form-items";
-import { URLS } from "@/infrastructure/constants/urls";
 
 // COMPONENT PROPS //
 type PaymentDetailsPropsData = Readonly<{
@@ -176,13 +175,14 @@ export default function PaymentDetails({
           <span className="text-sm leading-6" style={{ color: "var(--color-n-700)" }}>
             I agree to the{" "}
             <a
-              href={URLS.TERMS_OF_SERVICE}
+              href="https://drive.google.com/uc?export=download&id=1lF3ghbzu1NLVCdZTlsgd9Srn31AkCyB8"
+              download=""
               target="_blank"
               rel="noopener noreferrer"
               className="font-semibold underline underline-offset-2"
               style={{ color: "var(--color-blue-500)" }}
             >
-              Terms and Conditions
+              Conditions of Enrollment
             </a>
             <span className="ml-1" style={{ color: "var(--color-error-500, #ef4444)" }}>
               *
