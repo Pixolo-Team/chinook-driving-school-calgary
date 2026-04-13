@@ -7,6 +7,13 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import { numberStatsData } from "@/data/numberSection";
 import { statHeaderData } from "@/data/numberSection";
 
+const statsHeader = {
+  eyebrow: statHeaderData.eyebrow,
+  heading: statHeaderData.heading,
+};
+
+const statsCards = numberStatsData;
+
 ---
 
 <section class="bg-n-100">
@@ -14,13 +21,13 @@ import { statHeaderData } from "@/data/numberSection";
     
     <!-- Section Header -->
     <SectionHeader
-      eyebrow={statHeaderData.eyebrow}
-      heading={statHeaderData.heading}
+      eyebrow={statsHeader.eyebrow}
+      heading={statsHeader.heading}
     />
 
     <!-- StatCard -->
     <div class="grid w-70 grid-cols-1 gap-3.5 px-6 md:w-full md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-      {numberStatsData.map((stat) => (
+      {statsCards.map((stat) => (
         <StatCard icon={stat.icon} value={stat.value} label={stat.label} />
       ))}
     </div>

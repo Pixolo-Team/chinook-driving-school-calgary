@@ -15,9 +15,15 @@ import RadioCustomGroup from "@/react/components/ui/RadioCustomGroup";
 import RadioGroup from "@/react/components/ui/RadioGroup";
 
 // CONSTANTS //
-import { COURSES, SESSION_TYPE_OPTIONS } from "@/react/constants/form-items";
+import {
+  resolveCourseCategoryImage,
+  SESSION_TYPE_OPTIONS,
+} from "@/react/constants/form-items";
 
 type SelectCoursePropsData = Readonly<{
+  courses: CourseCategoryData[];
+  isLoadingCourses?: boolean;
+  coursesErrorMessage?: string | null;
   value: SelectCourseValueData;
   onChange: (
     fieldKey: keyof SelectCourseValueData,
@@ -36,6 +42,9 @@ type SelectCourseTouchedFieldsData = {
  * Renders the Course selection step and validates selections before proceeding.
  */
 export default function SelectCourse({
+  courses,
+  isLoadingCourses = false,
+  coursesErrorMessage = null,
   value,
   onChange,
   registerValidator,
@@ -48,35 +57,38 @@ export default function SelectCourse({
   // Define Refs
 
   // Define States
-  const [selectedCourseTypeValue, setSelectedCourseTypeValue] = useState<string>("");
+  const [selectedCourseTypeValue, setSelectedCourseTypeValue] = useState<string>(courses[0]?.id ?? "");
   const [touchedFields, setTouchedFields] = useState<SelectCourseTouchedFieldsData>({
     session_type: false,
     course: false,
   });
 
   const activeSessionValue: string = value.session_type ?? "";
-  const activeCourseTypeValue: string = selectedCourseTypeValue;
+  const activeCourseTypeValue: string = selectedCourseTypeValue || (courses[0]?.id ?? "");
   const activeCourseValue: string = value.course.course_id ?? "";
 
   /** Change the Courses when the Course Type changes */
   const selectedCourseCategoryInfo: CourseCategoryData | undefined = useMemo(
     () =>
-      COURSES.find(
+      courses.find(
         (courseCategoryItem: CourseCategoryData) => courseCategoryItem.id === activeCourseTypeValue,
       ),
-    [activeCourseTypeValue],
+    [activeCourseTypeValue, courses],
   );
 
   /** Set the Course Type options data as needed by the component */
   const courseTypeOptions = useMemo(
     () =>
-      COURSES.map((courseCategoryItem: CourseCategoryData) => ({
+      courses.map((courseCategoryItem: CourseCategoryData) => ({
         value: courseCategoryItem.id,
         title: courseCategoryItem.name,
-        imageSrc: courseCategoryItem.image || undefined,
+        imageSrc: (
+          resolveCourseCategoryImage(courseCategoryItem.id, courseCategoryItem.name) ??
+          courseCategoryItem.image
+        ) || undefined,
         imageAlt: courseCategoryItem.name,
       })),
-    [],
+    [courses],
   );
 
   /** Set the Available Courses, as needed by the Radio Component */
@@ -109,7 +121,13 @@ export default function SelectCourse({
     activeSessionValue ? null : "Please select a session type.";
 
   const getCourseError = (): string | null =>
-    activeCourseValue ? null : "Please select a course before continuing.";
+    isLoadingCourses
+      ? "Courses are loading. Please wait a moment."
+      : coursesErrorMessage
+        ? coursesErrorMessage
+        : activeCourseValue
+          ? null
+          : "Please select a course before continuing.";
 
   /**
    * Updates the selected Course Type and clears the selected Course.
@@ -181,6 +199,27 @@ export default function SelectCourse({
   const shouldShowSessionTypeError = touchedFields.session_type && Boolean(sessionTypeError);
   const shouldShowCourseError = touchedFields.course && Boolean(courseError);
 
+  // Use Effects
+  useEffect(() => {
+    if (!selectedCourseTypeValue && courses[0]?.id) {
+      setSelectedCourseTypeValue(courses[0].id);
+    }
+  }, [courses, selectedCourseTypeValue]);
+
+  useEffect(() => {
+    if (!activeCourseValue) {
+      return;
+    }
+
+    const selectedCategoryInfo = courses.find((courseCategoryItem) =>
+      courseCategoryItem.courses.some((courseItem) => courseItem.id === activeCourseValue),
+    );
+
+    if (selectedCategoryInfo && selectedCategoryInfo.id !== selectedCourseTypeValue) {
+      setSelectedCourseTypeValue(selectedCategoryInfo.id);
+    }
+  }, [activeCourseValue, courses, selectedCourseTypeValue]);
+
   useEffect(() => {
     // Register the Validator (so parent can use it)
     registerValidator?.(1, getStepState);
@@ -219,6 +258,9 @@ export default function SelectCourse({
             containerClassName="grid w-full grid-cols-1 gap-2 md:grid-cols-3 md:gap-4"
             itemContainerClassName="min-w-0"
           />
+          {coursesErrorMessage ? (
+            <p className="text-error-500 text-sm leading-5 font-normal">{coursesErrorMessage}</p>
+          ) : null}
         </div>
 
         {/* Enrollment Options */}

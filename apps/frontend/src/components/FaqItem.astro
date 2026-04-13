@@ -1,4 +1,6 @@
 ---
+import { Icon } from "astro-icon/components";
+
 interface Props {
   question: string;
   answer: string;
@@ -12,15 +14,15 @@ const { question, answer } = Astro.props;
   <button
     type="button"
     aria-expanded="false"
-    class="faq-trigger flex w-full cursor-pointer items-center justify-between gap-5 px-10 py-10 text-left">
+    class="faq-trigger flex w-full cursor-pointer items-center justify-between gap-5 px-10 py-6 text-left">
     <p class="text-2xl font-bold leading-tight text-n-800">
       {question}
     </p>
     {/* Dropdown Logo */}
-    <img
-      src="/icons/dropdown.svg"
-      alt="toggle"
-      class="faq-arrow h-3 w-3 shrink-0 transition-transform duration-300 ease-out"
+    <Icon
+      name="dropdown"
+      class="faq-arrow h-3 w-3 shrink-0 text-n-800 transition-transform duration-300 ease-out"
+      aria-hidden="true"
     />
   </button>
 

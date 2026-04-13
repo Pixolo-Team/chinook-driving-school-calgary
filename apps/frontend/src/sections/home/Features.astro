@@ -2,6 +2,8 @@
 import FeatureCard from "@/components/FeatureCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { FeaturesSectionDetails } from "@/data/features";
+const sectionContent = FeaturesSectionDetails.content;
+const featureCards = FeaturesSectionDetails.cards;
 ---
 
 <section class="bg-n-50">
@@ -10,16 +12,16 @@ import { FeaturesSectionDetails } from "@/data/features";
   >
     <!-- Section Header -->
     <SectionHeader
-      eyebrow={FeaturesSectionDetails.content.eyebrow}
-      heading={FeaturesSectionDetails.content.title}
-      description={FeaturesSectionDetails.content.description}
+      eyebrow={sectionContent.eyebrow}
+      heading={sectionContent.title}
+      description={sectionContent.description}
     />
 
     <!-- Feature Cards -->
     <div
       class="grid grid-cols-1 place-items-center gap-9 md:grid-cols-2 xl:grid-cols-3 xl:place-items-start 2xl:grid-cols-4"
     >
-      {FeaturesSectionDetails.cards.map((cardItem) => <FeatureCard cardItem={cardItem} />)}
+      {featureCards.map((cardItem) => <FeatureCard cardItem={cardItem} />)}
     </div>
   </div>
 </section>

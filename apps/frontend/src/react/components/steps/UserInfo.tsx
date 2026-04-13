@@ -12,6 +12,9 @@ import Input from "@/react/components/ui/Input";
 // CONSTANTS //
 import { PROVINCES } from "@/react/constants/form-items";
 
+// UTILS //
+import { getLocalTodayDateValue } from "@/react/utils/date.util";
+
 /** Props for Component */
 type UserInfoPropsData = Readonly<{
   value: UserInfoValueData;
@@ -59,7 +62,7 @@ export default function UserInfo({
     email: false,
     phone: false,
   });
-  const todayDateValue: string = new Date().toISOString().split("T")[0] ?? "";
+  const todayDateValue: string = getLocalTodayDateValue();
 
   // Helper Functions
   const markFieldAsTouched = (fieldKey: keyof UserInfoTouchedFieldsData): void => {
@@ -85,8 +88,19 @@ export default function UserInfo({
   const getLastNameError = (): string | null =>
     value.last_name.trim().length > 0 ? null : "Please enter your last name.";
 
-  const getDateOfBirthError = (): string | null =>
-    value.date_of_birth.trim().length > 0 ? null : "Please enter your date of birth.";
+  const getDateOfBirthError = (): string | null => {
+    const dateOfBirthValue = value.date_of_birth.trim();
+
+    if (dateOfBirthValue.length === 0) {
+      return "Please enter your date of birth.";
+    }
+
+    if (dateOfBirthValue > todayDateValue) {
+      return "Date of birth cannot be in the future.";
+    }
+
+    return null;
+  };
 
   const getEmailError = (): string | null => {
     const emailValue = value.email.trim();
@@ -194,6 +208,7 @@ export default function UserInfo({
           isError={shouldShowDateOfBirthError}
           errorMessage={dateOfBirthError ?? undefined}
           containerClassName="w-full"
+          max={todayDateValue}
         />
 
         {/* Email */}

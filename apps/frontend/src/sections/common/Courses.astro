@@ -17,6 +17,12 @@ interface CoursesProps {
 
 const courseData = await getCourseSectionData();
 
+const sectionContent = {
+  eyebrow: courseSectionData.eyebrow,
+  heading: courseSectionData.heading,
+  description: courseSectionData.description,
+};
+
 const {
   tabs = courseData.tabs,
   cards = courseData.cards,
@@ -31,9 +37,9 @@ const {
   >
     <!-- Section Header -->
     <SectionHeader
-      eyebrow={courseSectionData.eyebrow}
-      heading={courseSectionData.heading}
-      description={courseSectionData.description}
+      eyebrow={sectionContent.eyebrow}
+      heading={sectionContent.heading}
+      description={sectionContent.description}
     />
 
     <!-- Courses Category Tabs -->

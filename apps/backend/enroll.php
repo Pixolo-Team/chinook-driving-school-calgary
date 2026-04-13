@@ -159,10 +159,6 @@ if (
     $errors['availability_date'] = 'availability_date must be in Y-m-d format';
 }
 
-if (isset($input['expiry_date']) && $input['expiry_date'] !== null && $input['expiry_date'] !== '' && !isValidDate($input['expiry_date'])) {
-    $errors['expiry_date'] = 'expiry_date must be in Y-m-d format';
-}
-
 // ---------------------------------------------------------------------------
 // Step 6: Validate enum fields against their allowed value sets
 // ---------------------------------------------------------------------------
@@ -290,6 +286,7 @@ if ($courseTotal !== null && $inputAmount !== null && round($courseTotal, 2) !==
 
 // Card fields are required only for card payments
 $requiresCard = isset($input['payment_method']) && $input['payment_method'] === 'card';
+$normalizedCardExpiryDate = null;
 
 if ($requiresCard) {
     if (!isNonEmptyString($input['name_on_card'] ?? null)) {
@@ -300,8 +297,12 @@ if ($requiresCard) {
         $errors['card_number'] = 'Valid card_number is required for card payments';
     }
 
-    if (!isNonEmptyString($input['expiry_date'] ?? null) || !isValidDate($input['expiry_date'])) {
-        $errors['expiry_date'] = 'expiry_date is required for card payments and must be Y-m-d';
+    $rawExpiryDate = isset($input['expiry_date']) ? trim((string)$input['expiry_date']) : '';
+    $isSupportedCardExpiryFormat = preg_match('/^(0[1-9]|1[0-2])\s*\/\s*(\d{2}|\d{4})$/', $rawExpiryDate) === 1;
+    if (!$isSupportedCardExpiryFormat) {
+        $errors['expiry_date'] = 'expiry_date is required for card payments and must be MM/YY or MM/YYYY';
+    } else {
+        $normalizedCardExpiryDate = preg_replace('/\s*\/\s*/', '/', $rawExpiryDate);
     }
 }
 
@@ -382,7 +383,7 @@ if ($requiresCard) {
     $cardInfoRow = [
         'name_on_card'  => sanitizeString($input['name_on_card']),
         'card_number'   => preg_replace('/\D/', '', (string)$input['card_number']),
-        'expiry_date'   => $input['expiry_date'],
+        'expiry_date'   => $normalizedCardExpiryDate,
         'enrollment_id' => null, // filled after enrollment insert
     ];
 }

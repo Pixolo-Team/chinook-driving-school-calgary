@@ -5,12 +5,17 @@ import HeroCard from "@/components/HeroCard.astro";
 // DATA //
 import { enrollHeroData } from "@/data/enroll-hero-data";
 
+const heroContent = {
+  title: enrollHeroData.title,
+  description: enrollHeroData.description,
+};
+
 ---
 
 <section class="bg-n-100 overflow-hidden">
   <HeroCard
-    title={enrollHeroData.title}
-    description={enrollHeroData.description}
+    title={heroContent.title}
+    description={heroContent.description}
     illustration={enrollHeroData.illustration}
     illustrationAlt={enrollHeroData.illustrationAlt}
   />

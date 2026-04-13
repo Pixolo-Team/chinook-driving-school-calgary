@@ -12,6 +12,9 @@ import RadioTab from "@/react/components/ui/RadioTab";
 // CONSTANTS //
 import { PREFERRED_DAYS_ITEMS, TIME_SLOT_ITEMS } from "@/react/constants/form-items";
 
+// UTILS //
+import { getLocalTodayDateValue } from "@/react/utils/date.util";
+
 // COMPONENT PROPS //
 type AvailabilityPropsData = Readonly<{
   value: AvailabilityValueData;
@@ -52,6 +55,7 @@ export default function Availability({
     days: false,
     time_slots: false,
   });
+  const todayDateValue: string = getLocalTodayDateValue();
 
   // Helper Functions
   /**
@@ -79,8 +83,19 @@ export default function Availability({
     });
   };
 
-  const getDateError = (): string | null =>
-    value.date.trim().length > 0 ? null : "Please select an available from date.";
+  const getDateError = (): string | null => {
+    const availabilityDateValue = value.date.trim();
+
+    if (availabilityDateValue.length === 0) {
+      return "Please select an available from date.";
+    }
+
+    if (availabilityDateValue < todayDateValue) {
+      return "Available from date cannot be in the past.";
+    }
+
+    return null;
+  };
 
   const getPreferredDaysError = (): string | null =>
     value.days.length > 0 ? null : "Please select at least one preferred day.";
@@ -127,6 +142,7 @@ export default function Availability({
               isError={shouldShowDateError}
               errorMessage={dateError ?? undefined}
               containerClassName="w-full"
+              min={todayDateValue}
             />
 
             {/* Preferred Days */}

@@ -7,7 +7,13 @@ import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import SectionHeader from "@/components/SectionHeader.astro";
 
-const { cards } = contactSectionData;
+const sectionContent = {
+  eyebrow: contactSectionData.eyebrow,
+  heading: contactSectionData.heading,
+  description: contactSectionData.description,
+};
+
+const cards = contactSectionData.cards;
 ---
 
 <section class="bg-n-50">
@@ -17,9 +23,9 @@ const { cards } = contactSectionData;
     <!-- Section Header -->
     <div class="max-w-3xl">
       <SectionHeader
-        eyebrow={contactSectionData.eyebrow}
-        heading={contactSectionData.heading}
-        description={contactSectionData.description}
+        eyebrow={sectionContent.eyebrow}
+        heading={sectionContent.heading}
+        description={sectionContent.description}
       />
     </div>
 
@@ -38,7 +44,7 @@ const { cards } = contactSectionData;
 
           <!-- Image Container -->
           <div
-            class="absolute inset-y-0 -bottom-10 left-4 hidden md:block md:w-[118px] lg:left-6 lg:w-[128px]"
+            class="absolute inset-y-0 -bottom-10 left-4 hidden md:block md:w-[118px] lg:left-6 lg:w-[120px]"
           >
             <Image
               src={cards.getInTouch.image}
@@ -51,7 +57,7 @@ const { cards } = contactSectionData;
 
           <!-- Get In Touch Content -->
           <div
-            class="relative z-10 flex flex-col gap-4 sm:gap-5 md:h-full md:pl-[150px] lg:pl-[170px]"
+            class="relative z-10 flex flex-col gap-4 sm:gap-5 md:h-full md:pl-[128px] lg:pl-[150px]"
           >
             <div class="flex w-fit flex-col gap-3">
               <p class="text-n-800 text-lg font-bold sm:text-xl">
@@ -62,13 +68,13 @@ const { cards } = contactSectionData;
             <div class="flex flex-col gap-3">
               {
                 cards.getInTouch.details.map((detail) => (
-                  <div class="flex items-center gap-4">
-                    <div class="bg-n-100 flex size-8 items-center justify-center rounded-full sm:size-9">
+                  <div class="flex items-center gap-3 sm:gap-4">
+                    <div class="bg-n-100 flex size-8 shrink-0 items-center justify-center rounded-full sm:size-9">
                       <Icon name={detail.icon} class="text-n-800 size-4" aria-hidden="true" />
                     </div>
                     <a
                       href={detail.href}
-                      class="text-n-800 text-sm font-medium transition-colors hover:text-blue-500 sm:text-base"
+                      class="text-n-800 text-sm font-medium leading-tight transition-colors hover:text-blue-500 md:text-[15px] lg:text-base"
                     >
                       {detail.value}
                     </a>
@@ -116,7 +122,7 @@ const { cards } = contactSectionData;
               {
                 cards.openingHours.details.map((detail) => (
                   <div class="flex items-center gap-4">
-                    <div class="bg-n-100 flex size-8 items-center justify-center rounded-full sm:size-9">
+                    <div class="bg-n-100 flex size-8 shrink-0 items-center justify-center rounded-full sm:size-9">
                       <Icon name={detail.icon} class="text-n-800 size-4" aria-hidden="true" />
                     </div>
                     <p class="text-n-800 text-sm sm:text-base">
@@ -166,7 +172,7 @@ const { cards } = contactSectionData;
               cards.officeDetails.locations.map((location, index) => (
                 <div class="flex flex-col gap-4">
                   <div class="flex items-start gap-4">
-                    <div class="bg-n-100 flex size-9 items-center justify-center rounded-full">
+                    <div class="bg-n-100 flex size-9 shrink-0 items-center justify-center rounded-full">
                       <Icon name={location.icon} class="text-n-800 size-4" aria-hidden="true" />
                     </div>
                     <div class="flex flex-1 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
@@ -181,7 +187,7 @@ const { cards } = contactSectionData;
                         class="text-n-50 inline-flex h-auto w-fit items-center gap-2 rounded-full bg-blue-500 px-4 py-1.5 text-sm font-semibold transition-all duration-200 hover:scale-[1.04] hover:bg-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-200"
                       >
                         <span>{location.actionLabel}</span>
-                        <Icon name="diagonal-line-arrow-upper-right" class="size-4" />
+                        <Icon name="diagonal-line-arrow-upper-right" class="text-n-50 size-4" />
                       </a>
                     </div>
                   </div>
@@ -193,7 +199,7 @@ const { cards } = contactSectionData;
             }
             <div class="bg-n-200 h-px w-full"></div>
             <div class="flex items-start gap-4">
-              <div class="bg-n-100 flex size-9 items-center justify-center rounded-full">
+              <div class="bg-n-100 flex size-9 shrink-0 items-center justify-center rounded-full">
                 <Icon
                   name={cards.officeDetails.serviceArea.icon}
                   class="text-n-800 size-4"
