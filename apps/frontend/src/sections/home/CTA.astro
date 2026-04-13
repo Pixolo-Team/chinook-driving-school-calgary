@@ -4,7 +4,17 @@ import { Image } from "astro:assets";
 import Button from "@/components/ui/Button.astro";
 
 import { ctaData } from "@/data/cta";
-const ctaContent = ctaData;
+import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
+
+const siteContentData = await getSiteContentData();
+const ctaApiData = siteContentData?.cta;
+const ctaContent = {
+  eyebrow: isNonEmptyString(ctaApiData?.eyebrow) ? ctaApiData.eyebrow : ctaData.eyebrow,
+  heading: isNonEmptyString(ctaApiData?.title) ? ctaApiData.title : ctaData.heading,
+  description: isNonEmptyString(ctaApiData?.description)
+    ? ctaApiData.description
+    : ctaData.description,
+};
 
 ---
 

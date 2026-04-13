@@ -4,10 +4,18 @@ import HeroCard from "@/components/HeroCard.astro";
 
 // DATA //
 import { contactHeroSectionData } from "@/data/contact";
+import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
+
+const siteContentData = await getSiteContentData();
+const contactHeroApiData = siteContentData?.contact_hero;
 
 const heroContent = {
-  title: contactHeroSectionData.title,
-  description: contactHeroSectionData.description,
+  title: isNonEmptyString(contactHeroApiData?.title)
+    ? contactHeroApiData.title
+    : contactHeroSectionData.title,
+  description: isNonEmptyString(contactHeroApiData?.description)
+    ? contactHeroApiData.description
+    : contactHeroSectionData.description,
 };
 ---
 

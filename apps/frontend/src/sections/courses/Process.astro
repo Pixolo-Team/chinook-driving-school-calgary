@@ -6,14 +6,39 @@ import Tabs from "@/components/ui/Tabs.astro";
 
 // DATA //
 import { processSectionData } from "@/data/process-data";
+import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
+
+const siteContentData = await getSiteContentData();
+const coursesProcessApiData = siteContentData?.courses_process;
 
 const sectionContent = {
-  eyebrow: processSectionData.eyebrow,
-  heading: processSectionData.heading,
-  description: processSectionData.description,
+  eyebrow: isNonEmptyString(coursesProcessApiData?.eyebrow)
+    ? coursesProcessApiData.eyebrow
+    : processSectionData.eyebrow,
+  heading: isNonEmptyString(coursesProcessApiData?.title)
+    ? coursesProcessApiData.title
+    : processSectionData.heading,
+  description: isNonEmptyString(coursesProcessApiData?.description)
+    ? coursesProcessApiData.description
+    : processSectionData.description,
 };
 
-const stepGroups = processSectionData.stepGroups;
+const stepGroupsFromApi =
+  coursesProcessApiData?.course_categories
+    ?.filter((category) => isNonEmptyString(category.title))
+    .map((category) => ({
+      category: category.title ?? "",
+      steps:
+        category.steps
+          ?.filter((step) => isNonEmptyString(step.title) && isNonEmptyString(step.description))
+          .map((step) => ({
+            title: step.title ?? "",
+            description: step.description ?? "",
+          })) ?? [],
+    }))
+    .filter((category) => category.steps.length > 0) ?? [];
+
+const stepGroups = stepGroupsFromApi.length > 0 ? stepGroupsFromApi : processSectionData.stepGroups;
 
 const tabs = stepGroups.map((group) => group.category);
 ---

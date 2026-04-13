@@ -2,8 +2,40 @@
 import FeatureCard from "@/components/FeatureCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import { FeaturesSectionDetails } from "@/data/features";
-const sectionContent = FeaturesSectionDetails.content;
-const featureCards = FeaturesSectionDetails.cards;
+import {
+  getSiteContentData,
+  isNonEmptyString,
+  normalizeApiImagePath,
+} from "@/data/site-content-api";
+
+const siteContentData = await getSiteContentData();
+const featuresApiData = siteContentData?.features;
+const sectionContent = {
+  eyebrow: isNonEmptyString(featuresApiData?.eyebrow)
+    ? featuresApiData.eyebrow
+    : FeaturesSectionDetails.content.eyebrow,
+  title: isNonEmptyString(featuresApiData?.title)
+    ? featuresApiData.title
+    : FeaturesSectionDetails.content.title,
+  description: isNonEmptyString(featuresApiData?.description)
+    ? featuresApiData.description
+    : FeaturesSectionDetails.content.description,
+};
+
+const featureCardsFromApi =
+  featuresApiData?.feature_cards
+    ?.filter(
+      (featureCard) =>
+        isNonEmptyString(featureCard.title) && isNonEmptyString(featureCard.description),
+    )
+    .map((featureCard) => ({
+      title: featureCard.title,
+      description: featureCard.description,
+      imageAlt: featureCard.title,
+      imageSrc: normalizeApiImagePath(featureCard.image) ?? "/images/features/certified-driving.png",
+    })) ?? [];
+
+const featureCards = featureCardsFromApi.length > 0 ? featureCardsFromApi : FeaturesSectionDetails.cards;
 ---
 
 <section class="bg-n-50">

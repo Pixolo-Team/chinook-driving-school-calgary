@@ -4,10 +4,16 @@ import HeroCard from "@/components/HeroCard.astro";
 
 // DATA //
 import { enrollHeroData } from "@/data/enroll-hero-data";
+import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
+
+const siteContentData = await getSiteContentData();
+const enrollHeroApiData = siteContentData?.enroll_hero;
 
 const heroContent = {
-  title: enrollHeroData.title,
-  description: enrollHeroData.description,
+  title: isNonEmptyString(enrollHeroApiData?.title) ? enrollHeroApiData.title : enrollHeroData.title,
+  description: isNonEmptyString(enrollHeroApiData?.description)
+    ? enrollHeroApiData.description
+    : enrollHeroData.description,
 };
 
 ---

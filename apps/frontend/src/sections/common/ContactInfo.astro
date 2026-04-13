@@ -1,19 +1,87 @@
 ---
 // DATA //
 import { contactSectionData } from "@/data/contact-section-data";
+import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
 
 // COMPONENTS //
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import SectionHeader from "@/components/SectionHeader.astro";
 
+const siteContentData = await getSiteContentData();
+const contactApiData = siteContentData?.contact;
+const contactMetaData = siteContentData?.meta?.contact;
+
 const sectionContent = {
-  eyebrow: contactSectionData.eyebrow,
-  heading: contactSectionData.heading,
-  description: contactSectionData.description,
+  eyebrow: isNonEmptyString(contactApiData?.eyebrow)
+    ? contactApiData.eyebrow
+    : contactSectionData.eyebrow,
+  heading: isNonEmptyString(contactApiData?.heading)
+    ? contactApiData.heading
+    : contactSectionData.heading,
+  description: isNonEmptyString(contactApiData?.description)
+    ? contactApiData.description
+    : contactSectionData.description,
 };
 
-const cards = contactSectionData.cards;
+const mappedOpeningHours =
+  contactApiData?.opening_hours
+    ?.filter((openingHour) => isNonEmptyString(openingHour.day) && isNonEmptyString(openingHour.time))
+    .map((openingHour) => ({
+      icon: "clock",
+      label: `${openingHour.day}:`,
+      value: openingHour.time,
+    })) ?? [];
+
+const mappedLocations =
+  contactMetaData?.locations
+    ?.filter((location) => isNonEmptyString(location.title) && isNonEmptyString(location.address))
+    .map((location) => ({
+      icon: "location-pin",
+      name: location.title,
+      address: location.address,
+      actionLabel: "Get Directions",
+      href: `https://maps.google.com/?q=${encodeURIComponent(location.address)}`,
+    })) ?? [];
+
+const firstServiceAreaLocation = contactMetaData?.locations?.find((location) =>
+  isNonEmptyString(location.service_area),
+);
+
+const cards = {
+  getInTouch: {
+    ...contactSectionData.cards.getInTouch,
+    details: [
+      {
+        icon: "mail-send-envelope",
+        value: isNonEmptyString(contactMetaData?.email)
+          ? contactMetaData.email.trim()
+          : contactSectionData.cards.getInTouch.details[0].value,
+        href: isNonEmptyString(contactMetaData?.email)
+          ? `mailto:${contactMetaData.email.trim()}`
+          : contactSectionData.cards.getInTouch.details[0].href,
+      },
+      contactSectionData.cards.getInTouch.details[1],
+    ],
+  },
+  openingHours: {
+    ...contactSectionData.cards.openingHours,
+    details:
+      mappedOpeningHours.length > 0
+        ? mappedOpeningHours
+        : contactSectionData.cards.openingHours.details,
+  },
+  officeDetails: {
+    ...contactSectionData.cards.officeDetails,
+    locations: mappedLocations.length > 0 ? mappedLocations : contactSectionData.cards.officeDetails.locations,
+    serviceArea: {
+      ...contactSectionData.cards.officeDetails.serviceArea,
+      value: isNonEmptyString(firstServiceAreaLocation?.service_area)
+        ? firstServiceAreaLocation.service_area
+        : contactSectionData.cards.officeDetails.serviceArea.value,
+    },
+  },
+};
 ---
 
 <section class="bg-n-50">

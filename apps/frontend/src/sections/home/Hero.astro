@@ -1,16 +1,31 @@
 ---
 // DATA //
 import { heroSectionData } from "@/data/hero-section-data";
+import {
+  getSiteContentData,
+  isNonEmptyString,
+  normalizeApiImagePath,
+} from "@/data/site-content-api";
 
 // COMPONENTS //
 import { Image } from "astro:assets";
 
+const siteContentData = await getSiteContentData();
+const heroApiData = siteContentData?.hero;
+
 const heroText = {
-  eyebrow: heroSectionData.eyebrow,
-  heading: heroSectionData.heading,
+  eyebrow:
+    isNonEmptyString(heroApiData?.title) ? heroApiData.title : heroSectionData.eyebrow,
+  heading:
+    isNonEmptyString(heroApiData?.description)
+      ? heroApiData.description
+      : heroSectionData.heading,
 };
 
-const heroSlides = heroSectionData.slides.map((image) => ({ image }));
+const heroApiImage = normalizeApiImagePath(heroApiData?.image);
+const heroSlides = (heroApiImage ? [heroApiImage, ...heroSectionData.slides] : heroSectionData.slides).map(
+  (image) => ({ image }),
+);
 
 ---
 

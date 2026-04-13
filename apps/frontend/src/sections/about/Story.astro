@@ -5,8 +5,34 @@ import StoryCard from "@/components/StoryCard.astro";
 
 // DATA //
 import { aboutStorySectionData } from "@/data/about-story";
+import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
 
-const { content, cards } = aboutStorySectionData;
+const siteContentData = await getSiteContentData();
+const aboutStoryApiData = siteContentData?.about_story;
+
+const content = {
+  eyebrow: isNonEmptyString(aboutStoryApiData?.eyebrow)
+    ? aboutStoryApiData.eyebrow
+    : aboutStorySectionData.content.eyebrow,
+  heading:
+    isNonEmptyString(aboutStoryApiData?.title) && typeof aboutStoryApiData.title === "string"
+      ? aboutStoryApiData.title
+      : aboutStorySectionData.content.heading,
+  story: isNonEmptyString(aboutStoryApiData?.description)
+    ? aboutStoryApiData.description
+    : aboutStorySectionData.content.story,
+};
+
+const cardsFromApi =
+  aboutStoryApiData?.story_cards
+    ?.filter((storyCard) => isNonEmptyString(storyCard.title) && isNonEmptyString(storyCard.description))
+    .map((storyCard, index) => ({
+      icon: aboutStorySectionData.cards[index]?.icon ?? "badge-award-star",
+      title: storyCard.title,
+      description: storyCard.description,
+    })) ?? [];
+
+const cards = cardsFromApi.length > 0 ? cardsFromApi : aboutStorySectionData.cards;
 ---
 
 <section class="bg-n-50">

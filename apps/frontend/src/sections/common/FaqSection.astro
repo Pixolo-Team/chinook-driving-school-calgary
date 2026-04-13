@@ -1,18 +1,30 @@
 ---
 // DATA
 import { faqSectionData as faqs } from "@/data/faqSectionData";
+import { getSiteContentData, isNonEmptyString } from "@/data/site-content-api";
 
 // COMPONENTS
 import FaqItem from "@/components/FaqItem.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 
+const siteContentData = await getSiteContentData();
+const faqApiData = siteContentData?.faq;
+
 const faqHeader = {
   eyebrow: "Got Questions ?",
-  heading: "Frequently Asked Questions",
+  heading: isNonEmptyString(faqApiData?.title) ? faqApiData.title : "Frequently Asked Questions",
 };
 
-const faqDescription = "";
-const faqCards = faqs;
+const faqDescription = isNonEmptyString(faqApiData?.description) ? faqApiData.description : "";
+const faqCardsFromApi =
+  faqApiData?.faq_cards
+    ?.filter((faqCard) => isNonEmptyString(faqCard.question) && isNonEmptyString(faqCard.answer))
+    .map((faqCard) => ({
+      question: faqCard.question,
+      answer: faqCard.answer,
+    })) ?? [];
+
+const faqCards = faqCardsFromApi.length > 0 ? faqCardsFromApi : faqs;
 ---
 
 <section class="bg-n-100">
