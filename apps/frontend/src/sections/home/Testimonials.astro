@@ -70,9 +70,9 @@ const { testimonials } = testimonialSectionDetails;
         <div class="relative mx-auto w-full lg:max-w-[76rem]">
           <!-- Scrollable track -->
           <div class="testimonial-embla mx-auto overflow-hidden cursor-grab active:cursor-grabbing">
-            <div class="testimonial-embla__container flex items-stretch gap-5">
+            <div class="testimonial-embla__container flex -ml-5 items-stretch">
             {testimonials.map((testimonial) => (
-                <div class="testimonial-embla__slide min-w-0 flex-[0_0_100%] md:flex-[0_0_calc((100%-1.25rem)/2)] lg:flex-[0_0_calc((100%-2.5rem)/3)]">
+                <div class="testimonial-embla__slide min-w-0 pl-5 flex-[0_0_100%] md:flex-[0_0_50%] lg:flex-[0_0_33.3333%]">
                 <TestimonialCard
                   testimonial={testimonial}
                   rating={testimonial.rating}
@@ -82,23 +82,23 @@ const { testimonials } = testimonialSectionDetails;
             </div>
           </div>
  
-          <div class="pointer-events-none absolute inset-y-0 left-0 right-0 hidden items-center lg:flex">
+          <div class="pointer-events-none absolute inset-y-0 left-0 right-0 z-20 hidden lg:block">
             <button
               type="button"
               data-embla-prev
-              class="pointer-events-auto absolute left-0 -translate-x-1/2 rounded-3xl border border-n-300 bg-n-50 p-3.5 text-n-900 transition-colors hover:cursor-pointer hover:bg-n-100"
+              class="pointer-events-auto absolute left-0 top-1/2 flex h-11 w-11 -translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-3xl border border-n-300 bg-n-50 text-n-900 transition-colors hover:cursor-pointer hover:bg-n-100"
               aria-label="Previous review"
             >
-              <Icon name="dropdown" class="size-4 rotate-90" aria-hidden="true" />
+              <Icon name="dropdown" class="pointer-events-none size-4 rotate-90" aria-hidden="true" />
             </button>
 
             <button
               type="button"
               data-embla-next
-              class="pointer-events-auto absolute right-0 translate-x-1/2 rounded-3xl border border-n-300 bg-n-50 p-3.5 text-n-900 transition-colors hover:cursor-pointer hover:bg-n-100"
+              class="pointer-events-auto absolute right-0 top-1/2 flex h-11 w-11 translate-x-1/2 -translate-y-1/2 items-center justify-center rounded-3xl border border-n-300 bg-n-50 text-n-900 transition-colors hover:cursor-pointer hover:bg-n-100"
               aria-label="Next review"
             >
-              <Icon name="dropdown" class="size-4 -rotate-90" aria-hidden="true" />
+              <Icon name="dropdown" class="pointer-events-none size-4 rotate-270" aria-hidden="true" />
             </button>
           </div>
         </div>
@@ -113,7 +113,7 @@ const { testimonials } = testimonialSectionDetails;
             class="animate-bouncy-hover relative z-10 flex h-11 w-11 items-center justify-center rounded-3xl border border-n-300 bg-n-50 p-1.5 text-n-900 transition-colors hover:cursor-pointer hover:bg-n-100"
             aria-label="Previous review"
           >
-            <Icon name="dropdown" class="size-4 rotate-90" aria-hidden="true" />
+            <Icon name="carousel-arrow" class="pointer-events-none size-4 rotate-180" aria-hidden="true" />
           </button>
 
           <!-- Next button -->
@@ -123,7 +123,7 @@ const { testimonials } = testimonialSectionDetails;
             class="animate-bouncy-hover relative z-10 flex h-11 w-11 items-center justify-center rounded-3xl border border-n-300 bg-n-50 p-1.5 text-n-900 transition-colors hover:cursor-pointer hover:bg-n-100"
             aria-label="Next review"
           >
-            <Icon name="dropdown" class="size-4 -rotate-90" aria-hidden="true" />
+            <Icon name="carousel-arrow" class="pointer-events-none size-4" aria-hidden="true" />
           </button>
 
  
@@ -157,9 +157,8 @@ const { testimonials } = testimonialSectionDetails;
       if (!(viewport instanceof HTMLElement)) return;
 
       const emblaApi = EmblaCarousel(viewport, {
-        loop: false,
+        loop: true,
         align: "start",
-        containScroll: "trimSnaps",
         dragFree: false,
         slidesToScroll: 1,
         breakpoints: {
