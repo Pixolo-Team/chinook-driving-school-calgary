@@ -2,35 +2,27 @@
 // COMPONENTS //
 import TestimonialCard from "@/components/TestimonialCard.astro";
 import RatingStars from "@/components/RatingStars.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
 import Button from "@/components/ui/Button.astro";
 import { Icon } from "astro-icon/components";
 
 // DATA //
 import { testimonialSectionDetails } from "@/data/testimonials";
 
-const { testimonials } = testimonialSectionDetails;
+const { eyebrow, heading, reviewSummary, testimonials } = testimonialSectionDetails;
 ---
 
 
-<section class="review-section w-full">
+<section class="review-section w-full bg-n-50">
 
   <!-- container -->
   <div class="container mx-auto px-6 py-11 flex flex-col gap-7 lg:px-40 lg:py-32 lg:gap-16">
 
     <!-- ── header ─────────────────────────────────────────── -->
-    <div class="header flex flex-col items-center gap-1">
-
-      <!-- "Google Reviews" label -->
-      <p class="font-poppins font-bold text-xs leading-4 tracking-normal text-center uppercase align-center lg:text-sm text-blue-500">
-        Google Reviews
-      </p>
-
-      <!-- Heading -->
-      <h2 class="font-poppins font-bold text-3xl leading-tight tracking-normal text-center lg:text-5xl">
-        Trusted by 100s of Calgary Learners
-      </h2>
-
-    </div>
+    <SectionHeader
+      eyebrow={eyebrow}
+      heading={heading}
+    />
    
 
     <!-- ── content-wrap ───────────────────────────────────── -->
@@ -40,16 +32,16 @@ const { testimonials } = testimonialSectionDetails;
       <div class="review-rating flex flex-col gap-2.5 lg:justify-between lg:flex-row ">
 
         <!-- Left: label + stars + count -->
-        <div class="flex flex-col gap-0.5 lg:gap-4 self-start ">
-          <div class="font-inter font-medium text-lg leading-tight tracking-normal">
-            Customer reviews on Google
+        <div class="flex flex-col gap-0.5 lg:gap-4 self-start text-n-950">
+          <div class=" font-medium text-lg leading-tight">
+            {reviewSummary.label}
           </div>
 
           <div class="flex items-center gap-1">
-            <RatingStars rating={5} starClass="size-4" />
+            <RatingStars rating={reviewSummary.rating} starClass="size-4" />
 
-            <span class="font-inter font-medium text-xs leading-tight tracking-normal text-center">
-              5.0 rating of 12 reviews
+            <span class=" font-medium text-xs leading-tight text-center">
+              {reviewSummary.summaryText}
             </span>
           </div>
         </div>
@@ -59,7 +51,7 @@ const { testimonials } = testimonialSectionDetails;
           buttonText="Leave a Review"
           href="https://search.google.com/local/writereview?placeid=ChIJfzXT_LJ2cVMRu37MPKSukhY"
           openInNewTab={true}
-          className="w-36 h-11 gap-2 px-4 py-3 rounded-[41px] text-n-100 text-xs leading-tight tracking-normal text-center md:w-39 md:h-12 md:gap-2.5 md:px-5 md:py-3.5 md:text-sm lg:w-41.5 lg:h-13 lg:gap-2.5 lg:px-6 lg:py-4 lg:text-base lg:leading-5"
+          className="w-36 h-11 text-n-950 gap-2 px-4 py-3 rounded-[41px] text-n-100 text-xs leading-tight tracking-normal text-center md:w-39 md:h-12 md:gap-2.5 md:px-5 md:py-3.5 md:text-sm lg:w-41.5 lg:h-13 lg:gap-2.5 lg:px-6 lg:py-4 lg:text-base lg:leading-5"
         />
 
       </div>
