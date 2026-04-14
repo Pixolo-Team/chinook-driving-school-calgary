@@ -346,6 +346,7 @@ const fieldRows: FormField[][] = [
         query: String(formData.get("message") ?? "").trim(),
         reason: String(formData.get("reason") ?? "").trim(),
       };
+      const requestBody = new URLSearchParams(payload);
 
       const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
       const originalText = submitBtn.innerText;
@@ -356,10 +357,7 @@ const fieldRows: FormField[][] = [
       try {
         const response = await fetch(CONTACT_API_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
+          body: requestBody,
         });
 
         const result = await response.json().catch(() => null);

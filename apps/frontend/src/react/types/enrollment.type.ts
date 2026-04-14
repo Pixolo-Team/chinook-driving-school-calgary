@@ -2,6 +2,7 @@ export interface EnrollmentPayloadData {
   session_type: string;
 
   course: Partial<CourseData>;
+  courses?: Array<Partial<CourseData>>;
 
   student_first_name: string;
   student_last_name: string;

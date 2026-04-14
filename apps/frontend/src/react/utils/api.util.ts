@@ -33,17 +33,31 @@ export function transformEnrollmentPayload(
   enrollmentFormValue: EnrollmentFormValueData,
   courseCategories: CourseCategoryData[],
 ): EnrollmentPayloadData {
+  const allCourses = courseCategories.flatMap((courseCategoryItem) => courseCategoryItem.courses);
+  const selectedCourseInfos = allCourses.filter((courseItem) =>
+    (enrollmentFormValue.select_course.course.selected_course_ids ?? []).includes(courseItem.id),
+  );
+
   const selectedCourseInfo =
-    courseCategories.flatMap((courseCategoryItem) => courseCategoryItem.courses).find(
-      (courseItem) =>
-        courseItem.id ===
-        (enrollmentFormValue.select_course.course.course_id ??
-          enrollmentFormValue.select_course.course.selected_course_ids?.[0]),
-    ) ?? null;
+    selectedCourseInfos.find(
+      (courseItem) => courseItem.id === enrollmentFormValue.select_course.course.course_id,
+    ) ??
+    selectedCourseInfos[0] ??
+    null;
+
+  const aggregatedCourseInfo = selectedCourseInfo
+    ? {
+        ...selectedCourseInfo,
+        course_price: enrollmentFormValue.select_course.course.course_price ?? selectedCourseInfo.course_price,
+        tax_amount: enrollmentFormValue.select_course.course.tax_amount ?? selectedCourseInfo.tax_amount,
+        total_amount: enrollmentFormValue.select_course.course.total_amount ?? selectedCourseInfo.total_amount,
+      }
+    : {};
 
   return {
     session_type: enrollmentFormValue.select_course.session_type ?? "",
-    course: selectedCourseInfo ?? {},
+    course: aggregatedCourseInfo,
+    courses: selectedCourseInfos,
     student_first_name: enrollmentFormValue.user_info.first_name,
     student_last_name: enrollmentFormValue.user_info.last_name,
     student_date_of_birth: enrollmentFormValue.user_info.date_of_birth,

@@ -117,6 +117,26 @@ function supabaseInsert(string $table, array $row): array
 }
 
 /**
+ * Insert multiple rows into a Supabase table and return the created records.
+ *
+ * @param string $table Name of the target database table.
+ * @param array  $rows  List of associative arrays to insert in one request.
+ *
+ * @return array Normalized response from {@see supabaseRequest()}.
+ */
+function supabaseInsertMany(string $table, array $rows): array
+{
+    $endpoint = '/rest/v1/' . $table;
+
+    return supabaseRequest(
+        'POST',
+        $endpoint,
+        $rows,
+        ['Prefer: return=representation']
+    );
+}
+
+/**
  * Delete a single row by its primary key from a Supabase table.
  *
  * Silently discards the Supabase response; intended for best-effort rollback
@@ -131,6 +151,24 @@ function supabaseDeleteById(string $table, string $id): void
 {
     // Build a PostgREST equality filter on the id column
     $endpoint = '/rest/v1/' . $table . '?id=eq.' . rawurlencode($id);
+    supabaseRequest('DELETE', $endpoint, null, ['Prefer: return=minimal']);
+}
+
+/**
+ * Delete rows from a Supabase table that match a single equality filter.
+ *
+ * Intended for best-effort cleanup during rollback flows.
+ *
+ * @param string               $table  Name of the target database table.
+ * @param string               $column Column name to filter on.
+ * @param string|int|float|bool $value Exact value the column must equal.
+ *
+ * @return void
+ */
+function supabaseDeleteWhereEquals(string $table, string $column, string|int|float|bool $value): void
+{
+    $normalizedValue = is_bool($value) ? ($value ? 'true' : 'false') : (string)$value;
+    $endpoint = '/rest/v1/' . $table . '?' . rawurlencode($column) . '=eq.' . rawurlencode($normalizedValue);
     supabaseRequest('DELETE', $endpoint, null, ['Prefer: return=minimal']);
 }
 
