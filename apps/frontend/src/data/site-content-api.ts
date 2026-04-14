@@ -194,7 +194,17 @@ export async function getSiteContentData(): Promise<SiteContentData | null> {
       const responseData = (await response.json()) as SiteContentApiResponse;
       return responseData.data ?? null;
     })
-    .catch(() => null);
+    .then((data) => {
+      if (data === null) {
+        siteContentRequestPromise = null;
+      }
+
+      return data;
+    })
+    .catch(() => {
+      siteContentRequestPromise = null;
+      return null;
+    });
 
   return siteContentRequestPromise;
 }
