@@ -3,14 +3,16 @@
 import HeroCard from "@/components/HeroCard.astro";
 
 // DATA //
-import { aboutHeroSectionData } from "@/data/about";
+import { getAboutHeroViewModel } from "@/data/site-content-mappers";
+
+const aboutHeroContent = await getAboutHeroViewModel();
 ---
 
 <section class="bg-n-100 overflow-hidden">
   <HeroCard
-    title={aboutHeroSectionData.title}
-    description={aboutHeroSectionData.description}
-    illustration={aboutHeroSectionData.illustration}
-    illustrationAlt={aboutHeroSectionData.illustrationAlt}
+    title={aboutHeroContent.title}
+    description={aboutHeroContent.description}
+    illustration={aboutHeroContent.illustration}
+    illustrationAlt={aboutHeroContent.illustrationAlt}
   />
 </section>

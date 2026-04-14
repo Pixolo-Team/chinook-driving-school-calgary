@@ -1,18 +1,18 @@
 ---
 // DATA
-import { faqSectionData as faqs } from "@/data/faqSectionData";
+import { getFaqViewModel } from "@/data/site-content-mappers";
 
 // COMPONENTS
 import FaqItem from "@/components/FaqItem.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 
+const faqViewModel = await getFaqViewModel();
 const faqHeader = {
-  eyebrow: "Got Questions ?",
-  heading: "Frequently Asked Questions",
+  eyebrow: faqViewModel.eyebrow,
+  heading: faqViewModel.heading,
 };
-
-const faqDescription = "";
-const faqCards = faqs;
+const faqDescription = faqViewModel.description;
+const faqCards = faqViewModel.cards;
 ---
 
 <section class="bg-n-100">

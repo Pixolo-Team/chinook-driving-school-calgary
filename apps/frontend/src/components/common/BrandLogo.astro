@@ -8,6 +8,7 @@ interface Props {
   markClass?: string;
   textClass?: string;
   textAlt?: string;
+  wordmarkColorClass?: string;
 }
 
 const {
@@ -15,6 +16,7 @@ const {
   markClass = "h-full w-auto shrink-0 object-contain",
   textClass = "h-8 w-auto shrink-0 object-contain",
   textAlt = "Chinook Driving Academy",
+  wordmarkColorClass = "text-[var(--color-brand-logo-wordmark)]",
 } = Astro.props as Props;
 ---
 
@@ -29,7 +31,7 @@ const {
     aria-hidden="true"
   />
   <div
-    class:list={[textClass, "text-[var(--color-brand-logo-wordmark)]"]}
+    class:list={[textClass, wordmarkColorClass]}
     aria-hidden="true"
     set:html={logoTextInline}
   />

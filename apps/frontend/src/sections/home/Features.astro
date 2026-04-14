@@ -1,9 +1,15 @@
 ---
 import FeatureCard from "@/components/FeatureCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
-import { FeaturesSectionDetails } from "@/data/features";
-const sectionContent = FeaturesSectionDetails.content;
-const featureCards = FeaturesSectionDetails.cards;
+import { getHomeFeaturesViewModel } from "@/data/site-content-mappers";
+
+const featuresViewModel = await getHomeFeaturesViewModel();
+const sectionContent = {
+  eyebrow: featuresViewModel.eyebrow,
+  title: featuresViewModel.heading,
+  description: featuresViewModel.description,
+};
+const featureCards = featuresViewModel.cards;
 ---
 
 <section class="bg-n-50">

@@ -3,20 +3,17 @@
 import HeroCard from "@/components/HeroCard.astro";
 
 // DATA //
-import { contactHeroSectionData } from "@/data/contact";
+import { getContactHeroViewModel } from "@/data/site-content-mappers";
 
-const heroContent = {
-  title: contactHeroSectionData.title,
-  description: contactHeroSectionData.description,
-};
+const heroContent = await getContactHeroViewModel();
 ---
 
 <section class="bg-n-100 overflow-hidden">
   <HeroCard
     title={heroContent.title}
     description={heroContent.description}
-    illustration={contactHeroSectionData.illustration}
-    illustrationAlt={contactHeroSectionData.illustrationAlt}
+    illustration={heroContent.illustration}
+    illustrationAlt={heroContent.illustrationAlt}
     flipImage={true}
   />
 </section>

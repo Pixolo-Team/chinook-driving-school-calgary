@@ -45,6 +45,7 @@ const SUPABASE_SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3Mi
 
 const STUDENTS_TABLE           = 'students';
 const ENROLLMENTS_TABLE        = 'enrollments';
+const ENROLLMENT_COURSES_TABLE = 'enrollment_course';
 const PAYMENTS_TABLE           = 'payments';
 const CARD_INFORMATION_TABLE   = 'card_information';
 const AVAILABILITY_SLOTS_TABLE = 'availability_slots';
@@ -129,6 +130,68 @@ if (!isset($errors['course'])) {
             }
         }
     }
+}
+
+// Validate the optional multi-course payload used by the enrollment_course junction table.
+$inputCourses = [];
+
+if (array_key_exists('courses', $input)) {
+    if (!is_array($input['courses'])) {
+        $errors['courses'] = 'courses must be an array';
+    } elseif (count($input['courses']) === 0) {
+        $errors['courses'] = 'courses must contain at least one course';
+    } else {
+        $seenCourseIds = [];
+
+        foreach ($input['courses'] as $index => $courseItem) {
+            if (!is_array($courseItem)) {
+                $errors["courses.$index"] = 'Each course entry must be an object';
+                continue;
+            }
+
+            if (!isset($courseItem['id']) || !isNonEmptyString((string)$courseItem['id'])) {
+                $errors["courses.$index.id"] = 'courses.' . $index . '.id is required';
+            } elseif (in_array($courseItem['id'], $seenCourseIds, true)) {
+                $errors["courses.$index.id"] = 'Duplicate course ids are not allowed';
+            } else {
+                $seenCourseIds[] = $courseItem['id'];
+            }
+
+            if (!isset($courseItem['course_price']) || !isValidAmount($courseItem['course_price'])) {
+                $errors["courses.$index.course_price"] = 'courses.' . $index . '.course_price must be a non-negative number';
+            }
+
+            if (!isset($courseItem['tax_amount']) || !isValidAmount($courseItem['tax_amount'])) {
+                $errors["courses.$index.tax_amount"] = 'courses.' . $index . '.tax_amount must be a non-negative number';
+            }
+
+            if (!isset($courseItem['total_amount']) || !isValidAmount($courseItem['total_amount'])) {
+                $errors["courses.$index.total_amount"] = 'courses.' . $index . '.total_amount must be a non-negative number';
+            }
+
+            if (
+                isset($courseItem['course_price'], $courseItem['tax_amount'], $courseItem['total_amount']) &&
+                is_numeric($courseItem['course_price']) &&
+                is_numeric($courseItem['tax_amount']) &&
+                is_numeric($courseItem['total_amount'])
+            ) {
+                $expectedTotal = round((float)$courseItem['course_price'] + (float)$courseItem['tax_amount'], 2);
+                $providedTotal = round((float)$courseItem['total_amount'], 2);
+
+                if ($expectedTotal !== $providedTotal) {
+                    $errors["courses.$index.total_amount"] = 'courses.' . $index . '.total_amount must equal course_price + tax_amount';
+                }
+            }
+        }
+
+        if (!isset($errors['courses'])) {
+            $inputCourses = $input['courses'];
+        }
+    }
+}
+
+if (count($inputCourses) === 0 && !isset($errors['course']) && is_array($input['course'])) {
+    $inputCourses = [$input['course']];
 }
 
 // ---------------------------------------------------------------------------
@@ -284,6 +347,38 @@ if ($courseTotal !== null && $inputAmount !== null && round($courseTotal, 2) !==
     $errors['amount'] = 'amount must equal course.total_amount';
 }
 
+if (count($inputCourses) > 0) {
+    $aggregatedCoursePrice = 0.0;
+    $aggregatedTaxAmount   = 0.0;
+    $aggregatedTotalAmount = 0.0;
+
+    foreach ($inputCourses as $courseItem) {
+        $aggregatedCoursePrice += (float)($courseItem['course_price'] ?? 0);
+        $aggregatedTaxAmount   += (float)($courseItem['tax_amount'] ?? 0);
+        $aggregatedTotalAmount += (float)($courseItem['total_amount'] ?? 0);
+    }
+
+    if ($courseTotal !== null && round($aggregatedTotalAmount, 2) !== round($courseTotal, 2)) {
+        $errors['courses'] = 'The sum of courses.total_amount must equal course.total_amount';
+    }
+
+    if (
+        isset($input['course']['course_price']) &&
+        is_numeric($input['course']['course_price']) &&
+        round($aggregatedCoursePrice, 2) !== round((float)$input['course']['course_price'], 2)
+    ) {
+        $errors['courses.course_price'] = 'The sum of courses.course_price must equal course.course_price';
+    }
+
+    if (
+        isset($input['course']['tax_amount']) &&
+        is_numeric($input['course']['tax_amount']) &&
+        round($aggregatedTaxAmount, 2) !== round((float)$input['course']['tax_amount'], 2)
+    ) {
+        $errors['courses.tax_amount'] = 'The sum of courses.tax_amount must equal course.tax_amount';
+    }
+}
+
 // Card fields are required only for card payments
 $requiresCard = isset($input['payment_method']) && $input['payment_method'] === 'card';
 $normalizedCardExpiryDate = null;
@@ -357,7 +452,7 @@ $studentRow = [
 
 $enrollmentRow = [
     'student_id'           => null, // filled after student insert
-    'course_id'            => $input['course']['id'],
+    'course_id'            => $inputCourses[0]['id'] ?? $input['course']['id'],
     'session_type'         => $input['session_type'],
     'course_price'         => (float)$input['course']['course_price'],
     'tax_amount'           => (float)$input['course']['tax_amount'],
@@ -385,6 +480,18 @@ if ($requiresCard) {
         'card_number'   => preg_replace('/\D/', '', (string)$input['card_number']),
         'expiry_date'   => $normalizedCardExpiryDate,
         'enrollment_id' => null, // filled after enrollment insert
+    ];
+}
+
+$enrollmentCourseRows = [];
+foreach ($inputCourses as $courseItem) {
+    $enrollmentCourseRows[] = [
+        'enrollment_id' => null, // filled after enrollment insert
+        'course_id'     => (string)$courseItem['id'],
+        'course_price'  => (float)$courseItem['course_price'],
+        'tax_amount'    => (float)$courseItem['tax_amount'],
+        'total_amount'  => (float)$courseItem['total_amount'],
+        'created_at'    => $createdAtTimestamp,
     ];
 }
 
@@ -418,6 +525,7 @@ if (count($availabilityTimeSlots) > 0) {
 
 $studentId      = null;
 $enrollmentId   = null;
+$enrollmentCourseCount = 0;
 $paymentId      = null;
 $cardInfoId     = null;
 $availabilityId = null;
@@ -437,6 +545,20 @@ try {
         throw new RuntimeException('Failed to insert enrollment: ' . $enrollmentInsert['error']);
     }
     $enrollmentId = (string)$enrollmentInsert['data'][0]['id'];
+
+    // Insert each selected course into the enrollment_course junction table.
+    if (count($enrollmentCourseRows) > 0) {
+        foreach ($enrollmentCourseRows as &$enrollmentCourseRow) {
+            $enrollmentCourseRow['enrollment_id'] = $enrollmentId;
+        }
+        unset($enrollmentCourseRow);
+
+        $enrollmentCoursesInsert = supabaseInsertMany(ENROLLMENT_COURSES_TABLE, $enrollmentCourseRows);
+        if (!$enrollmentCoursesInsert['ok']) {
+            throw new RuntimeException('Failed to insert enrollment courses: ' . $enrollmentCoursesInsert['error']);
+        }
+        $enrollmentCourseCount = is_array($enrollmentCoursesInsert['data']) ? count($enrollmentCoursesInsert['data']) : 0;
+    }
 
     // Insert the payment record, linked to the enrollment
     $paymentRow['enrollment_id'] = $enrollmentId;
@@ -474,6 +596,7 @@ try {
         'data'    => [
             'student_id'          => $studentId,
             'enrollment_id'       => $enrollmentId,
+            'enrollment_course_count' => $enrollmentCourseCount,
             'payment_id'          => $paymentId,
             'card_information_id' => $cardInfoId,
             'availability_id'     => $availabilityId,
@@ -493,6 +616,9 @@ try {
     }
     if ($paymentId !== null) {
         supabaseDeleteById(PAYMENTS_TABLE, $paymentId);
+    }
+    if ($enrollmentId !== null) {
+        supabaseDeleteWhereEquals(ENROLLMENT_COURSES_TABLE, 'enrollment_id', $enrollmentId);
     }
     if ($enrollmentId !== null) {
         supabaseDeleteById(ENROLLMENTS_TABLE, $enrollmentId);

@@ -12,6 +12,51 @@ import Input from "@/react/components/ui/Input";
 // CONSTANTS //
 import { PAYMENT_METHOD_ITEMS } from "@/react/constants/form-items";
 
+function getCardNumberErrorMessage(cardNumber: string | null): string | null {
+  const trimmedCardNumber = cardNumber?.trim() ?? "";
+
+  if (trimmedCardNumber.length === 0) {
+    return null;
+  }
+
+  const normalizedCardNumber = trimmedCardNumber.replace(/\D/g, "");
+
+  if (normalizedCardNumber.length < 12 || normalizedCardNumber.length > 19) {
+    return "Please enter a valid Credit Card Number";
+  }
+
+  return null;
+}
+
+function getExpiryDateErrorMessage(expiryDate: string | null): string | null {
+  const trimmedExpiryDate = expiryDate?.trim() ?? "";
+
+  if (trimmedExpiryDate.length === 0) {
+    return null;
+  }
+
+  const expiryMatch = trimmedExpiryDate.match(/^(0[1-9]|1[0-2])\s*\/\s*(\d{2})$/);
+
+  if (!expiryMatch) {
+    return "Please enter expiry date in MM/YY";
+  }
+
+  const expiryMonth = Number(expiryMatch[1]);
+  const expiryYear = Number(expiryMatch[2]);
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentYear = currentDate.getFullYear() % 100;
+
+  if (
+    expiryYear < currentYear ||
+    (expiryYear === currentYear && expiryMonth < currentMonth)
+  ) {
+    return "Please use an active card";
+  }
+
+  return null;
+}
+
 // COMPONENT PROPS //
 type PaymentDetailsPropsData = Readonly<{
   value: PaymentDetailsValueData;
@@ -42,12 +87,20 @@ export default function PaymentDetails({
 
   // Define States
   const requiresCardDetails: boolean = value.method === "card";
+  const requiresTransferInstructions: boolean =
+    value.method === "upi" || value.method === "bank_transfer";
+  const cardNumberErrorMessage = getCardNumberErrorMessage(value.card_number);
+  const expiryDateErrorMessage = getExpiryDateErrorMessage(value.expiry_date);
 
   // Helper Functions
   /**
    * Returns the current completion state for the Payment details step.
    */
   function getStepState(): StepStateData {
+    if (requiresCardDetails && (cardNumberErrorMessage || expiryDateErrorMessage)) {
+      return "pending";
+    }
+
     const requiredFieldValues: Array<string | number | boolean | null> = [
       value.method,
       value.did_agree_conditions,
@@ -130,6 +183,8 @@ export default function PaymentDetails({
                 onChange={(event) => handleFieldChange("card_number", event.target.value)}
                 placeholder="0000 0000 0000 0000"
                 caption="Enter the 16-digit number on your card."
+                isError={cardNumberErrorMessage !== null}
+                errorMessage={cardNumberErrorMessage ?? undefined}
                 containerClassName="w-full"
                 inputMode="numeric"
               />
@@ -142,6 +197,8 @@ export default function PaymentDetails({
                 onChange={(event) => handleFieldChange("expiry_date", event.target.value)}
                 placeholder="MM / YY"
                 caption="Month and year your card expires."
+                isError={expiryDateErrorMessage !== null}
+                errorMessage={expiryDateErrorMessage ?? undefined}
                 containerClassName="w-full"
               />
 
@@ -165,30 +222,38 @@ export default function PaymentDetails({
       </div>
 
       <div className="flex w-full flex-col items-start gap-5">
-        <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            checked={value.did_agree_conditions}
-            onChange={(event) => handleFieldChange("did_agree_conditions", event.target.checked)}
-            className="border-n-300 h-5 w-5 rounded border text-blue-500"
-          />
-          <span className="text-sm leading-6" style={{ color: "var(--color-n-700)" }}>
-            I agree to the{" "}
-            <a
-              href="https://drive.google.com/uc?export=download&id=1lF3ghbzu1NLVCdZTlsgd9Srn31AkCyB8"
-              download=""
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold underline underline-offset-2"
-              style={{ color: "var(--color-blue-500)" }}
-            >
-              Conditions of Enrollment
-            </a>
-            <span className="ml-1" style={{ color: "var(--color-error-500, #ef4444)" }}>
-              *
+        <div className="flex w-full flex-col gap-6">
+          {requiresTransferInstructions ? (
+            <p className="text-n-600 text-base leading-5 font-semibold">
+              Please send to chinookdriving@gmail.com
+            </p>
+          ) : null}
+
+          <label className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={value.did_agree_conditions}
+              onChange={(event) => handleFieldChange("did_agree_conditions", event.target.checked)}
+              className="border-n-300 h-5 w-5 rounded border text-blue-500"
+            />
+            <span className="text-sm leading-6" style={{ color: "var(--color-n-700)" }}>
+              I agree to the{" "}
+              <a
+                href="https://drive.google.com/uc?export=download&id=1lF3ghbzu1NLVCdZTlsgd9Srn31AkCyB8"
+                download=""
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold underline underline-offset-2"
+                style={{ color: "var(--color-blue-500)" }}
+              >
+                Conditions of Enrollment
+              </a>
+              <span className="ml-1" style={{ color: "var(--color-error-500, #ef4444)" }}>
+                *
+              </span>
             </span>
-          </span>
-        </label>
+          </label>
+        </div>
 
         <div className="flex w-full flex-row items-center justify-end gap-3 md:gap-4">
           <Button

@@ -1,6 +1,7 @@
 ---
 import { Image } from "astro:assets";
 import BrandLogo from "@/components/common/BrandLogo.astro";
+import pixoloLogoInline from "@/assets/brand/pixolo-logo-current.svg?raw";
 
 // DATA //
 import { footerSectionData } from "@/data/footer-section-data";
@@ -98,15 +99,12 @@ import { footerSectionData } from "@/data/footer-section-data";
             <p class="text-n-800 text-sm">{footerSectionData.craftedBy.label}</p>
             
             <!-- Pixolo Logo -->
-            <div class="h-9 w-32">
-              <Image
-                src={footerSectionData.craftedBy.logo}
-                alt={footerSectionData.craftedBy.alt}
-                width={144}
-                height={41}
-                class="size-full object-contain"
-                loading="lazy"
-              />
+            <div
+              class="h-9 w-32 [--pixolo-logo-mark-color:#4254D4] [--pixolo-logo-text-color:var(--color-n-800)] dark:[--pixolo-logo-text-color:var(--color-n-950)]"
+              role="img"
+              aria-label={footerSectionData.craftedBy.alt}
+              set:html={pixoloLogoInline}
+            >
             </div>
           </a>
         </div>

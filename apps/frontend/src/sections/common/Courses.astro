@@ -1,8 +1,8 @@
 ---
 // DATA //
-import { courseSectionData } from "@/data/courses";
 import { getCourseSectionData } from "@/data/course-cards";
 import type { CourseCardData, CourseGroupData } from "@/types/course";
+import { getCoursesSectionViewModel } from "@/data/site-content-mappers";
 
 // COMPONENTS //
 import CourseCard from "@/components/CourseCard.astro";
@@ -16,12 +16,7 @@ interface CoursesProps {
 }
 
 const courseData = await getCourseSectionData();
-
-const sectionContent = {
-  eyebrow: courseSectionData.eyebrow,
-  heading: courseSectionData.heading,
-  description: courseSectionData.description,
-};
+const sectionContent = await getCoursesSectionViewModel();
 
 const {
   tabs = courseData.tabs,

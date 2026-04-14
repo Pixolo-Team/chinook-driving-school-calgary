@@ -11,6 +11,9 @@ import { URLS } from "@/infrastructure/constants/urls";
 // DATA //
 import { menuItems } from "@/data/menu";
 
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === "/" || currentPath === "/index.html" || currentPath === "";
+const enrollButtonClassName = [isHome ? "w-26.5 text-white" : "w-26.5"].join(" ");
 ---
 
 <!-- FloatingMenu -->
@@ -42,7 +45,7 @@ import { menuItems } from "@/data/menu";
 
           <!-- Menu Button Group -->
           <div class="flex items-center gap-2 lg:gap-2.5">
-            <Button buttonText="Enroll Now" className="w-26.5" href={URLS.ENROLL} />
+            <Button buttonText="Enroll Now" className={enrollButtonClassName} href={URLS.ENROLL} />
             <Button
               buttonText="Call Us"
               rightIcon="phone-icon"

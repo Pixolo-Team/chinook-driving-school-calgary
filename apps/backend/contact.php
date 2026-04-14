@@ -42,7 +42,8 @@ declare(strict_types=1);
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Access-Control-Allow-Headers: Content-Type, Authorization, Accept');
+header('Vary: Origin');
 
 if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
     http_response_code(204);
@@ -76,10 +77,39 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 // ---------------------------------------------------------------------------
-// Step 2: Read and decode the JSON request body
+// Step 2: Read and decode the request body
 // ---------------------------------------------------------------------------
 
-$input = getJsonInput();
+/**
+ * Accept both JSON and simple form submissions.
+ *
+ * Supporting URL-encoded form data lets the frontend submit a "simple request",
+ * which avoids a CORS preflight in browsers during local development.
+ */
+$contentType = strtolower(trim(explode(';', $_SERVER['CONTENT_TYPE'] ?? '')[0]));
+
+if ($contentType === 'application/json' || $contentType === 'text/plain') {
+    $input = getJsonInput();
+} elseif ($contentType === 'application/x-www-form-urlencoded' || $contentType === 'multipart/form-data') {
+    $input = $_POST;
+} else {
+    $rawInput = file_get_contents('php://input');
+    $decodedInput = json_decode($rawInput ?: '', true);
+
+    if (is_array($decodedInput)) {
+        $input = $decodedInput;
+    } elseif (!empty($_POST)) {
+        $input = $_POST;
+    } else {
+        respond(415, [
+            'status'      => false,
+            'status_code' => 415,
+            'data'        => false,
+            'message'     => 'Unsupported Media Type',
+            'error'       => 'Send JSON or form-encoded data',
+        ]);
+    }
+}
 
 // ---------------------------------------------------------------------------
 // Step 3: Validate required fields

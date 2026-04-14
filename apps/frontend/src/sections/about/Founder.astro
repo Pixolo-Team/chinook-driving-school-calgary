@@ -3,16 +3,10 @@
 import SectionHeader from "@/components/SectionHeader.astro";
 
 // DATA //
-import { founderSectionData } from "@/data/founder-section-data";
+import { getAboutFounderViewModel } from "@/data/site-content-mappers";
 import { Image } from "astro:assets";
 
-const founderContent = {
-  eyebrow: founderSectionData.eyebrow,
-  heading: founderSectionData.heading,
-  paragraphs: founderSectionData.paragraphs,
-  name: founderSectionData.name,
-  title: founderSectionData.title,
-};
+const founderContent = await getAboutFounderViewModel();
 
 ---
 
@@ -31,8 +25,8 @@ const founderContent = {
       <!-- Founder Image -->
       <div class="h-71 md:h-114 lg:h-135">
         <Image
-          src={founderSectionData.imageSrc}
-          alt={founderSectionData.imageAlt}
+          src={founderContent.imageSrc}
+          alt={founderContent.imageAlt}
           height={537}
           width={465}
           class="h-full w-full rounded-3xl object-cover md:rounded-4xl" 

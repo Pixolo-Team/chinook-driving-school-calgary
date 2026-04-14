@@ -72,6 +72,11 @@ const LEGACY_LICENSE_TYPE_MAP: Record<string, string> = {
   international: "OTHER",
 };
 
+const LEGACY_PAYMENT_METHOD_MAP: Record<string, string> = {
+  online: "upi",
+  in_person: "cash",
+};
+
 /**
  * Coordinates the multi-step enrollment flow and stores the shared form state.
  */
@@ -105,6 +110,7 @@ export default function EnrollmentForm({
     select_course: {
       session_type: null,
       course: {
+        selected_course_ids: [],
         course_id: null,
         course_price: null,
         tax_amount: null,
@@ -174,6 +180,17 @@ export default function EnrollmentForm({
     storedValue: EnrollmentFormValueData,
   ): EnrollmentFormValueData => ({
     ...storedValue,
+    select_course: {
+      ...storedValue.select_course,
+      course: {
+        ...storedValue.select_course.course,
+        selected_course_ids:
+          storedValue.select_course.course.selected_course_ids ??
+          (storedValue.select_course.course.course_id
+            ? [storedValue.select_course.course.course_id]
+            : []),
+      },
+    },
     license_information: {
       ...storedValue.license_information,
       issuing_region: storedValue.license_information.issuing_region
@@ -184,6 +201,12 @@ export default function EnrollmentForm({
         ? (LEGACY_LICENSE_TYPE_MAP[storedValue.license_information.type] ??
           storedValue.license_information.type)
         : storedValue.license_information.type,
+    },
+    payment_details: {
+      ...storedValue.payment_details,
+      method:
+        LEGACY_PAYMENT_METHOD_MAP[storedValue.payment_details.method] ??
+        storedValue.payment_details.method,
     },
   });
 

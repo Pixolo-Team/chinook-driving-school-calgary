@@ -1,19 +1,19 @@
 ---
 // DATA //
-import { contactSectionData } from "@/data/contact-section-data";
+import { getContactInfoViewModel } from "@/data/site-content-mappers";
 
 // COMPONENTS //
 import { Image } from "astro:assets";
 import { Icon } from "astro-icon/components";
 import SectionHeader from "@/components/SectionHeader.astro";
 
+const contactInfoViewModel = await getContactInfoViewModel();
 const sectionContent = {
-  eyebrow: contactSectionData.eyebrow,
-  heading: contactSectionData.heading,
-  description: contactSectionData.description,
+  eyebrow: contactInfoViewModel.eyebrow,
+  heading: contactInfoViewModel.heading,
+  description: contactInfoViewModel.description,
 };
-
-const cards = contactSectionData.cards;
+const cards = contactInfoViewModel.cards;
 ---
 
 <section class="bg-n-50">

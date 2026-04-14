@@ -5,15 +5,15 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import Tabs from "@/components/ui/Tabs.astro";
 
 // DATA //
-import { processSectionData } from "@/data/process-data";
+import { getCoursesProcessViewModel } from "@/data/site-content-mappers";
 
+const processViewModel = await getCoursesProcessViewModel();
 const sectionContent = {
-  eyebrow: processSectionData.eyebrow,
-  heading: processSectionData.heading,
-  description: processSectionData.description,
+  eyebrow: processViewModel.eyebrow,
+  heading: processViewModel.heading,
+  description: processViewModel.description,
 };
-
-const stepGroups = processSectionData.stepGroups;
+const stepGroups = processViewModel.stepGroups;
 
 const tabs = stepGroups.map((group) => group.category);
 ---

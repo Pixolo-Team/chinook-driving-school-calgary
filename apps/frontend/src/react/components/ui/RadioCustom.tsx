@@ -14,6 +14,7 @@ type RadioCustomPropsData = Omit<InputHTMLAttributes<HTMLInputElement>, "type"> 
   value: string;
   data: RadioCustomData;
   containerClassName?: string;
+  highlighted?: boolean;
   onChange?: (event: ChangeEvent<HTMLInputElement>) => void;
 };
 
@@ -37,12 +38,13 @@ function renderCheckIcon(): React.JSX.Element {
 }
 
 /**
- * Renders the custom course-selection radio card.
+ * Renders the custom course-selection card.
  */
 export default function RadioCustom({
   value,
   data,
   checked = false,
+  highlighted = false,
   disabled = false,
   className,
   containerClassName,
@@ -68,7 +70,11 @@ export default function RadioCustom({
     <label
       className={joinClasses(
         "bg-n-50 relative flex w-full flex-col gap-3 rounded-2xl border-2 p-3.5 transition-[transform,border-color,box-shadow] duration-300 ease-[cubic-bezier(1,1.05,0.94,1)]",
-        checked ? "border-blue-500" : "border-n-300",
+        checked
+          ? "border-blue-500"
+          : highlighted
+            ? "border-blue-300 shadow-[0_10px_24px_rgba(59,130,246,0.08)]"
+            : "border-n-300",
         disabled
           ? "cursor-not-allowed opacity-60"
           : "cursor-pointer hover:animate-[radio-tab-bounce_300ms_cubic-bezier(1,1.05,0.94,1)] hover:cursor-pointer hover:shadow-[6px_9px_17.8px_rgba(0,0,0,0.09)]",
@@ -77,7 +83,7 @@ export default function RadioCustom({
     >
       <input
         {...props}
-        type="radio"
+        type="checkbox"
         value={value}
         checked={checked}
         disabled={disabled}

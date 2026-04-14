@@ -3,12 +3,9 @@
 import HeroCard from "@/components/HeroCard.astro";
 
 // DATA //
-import { enrollHeroData } from "@/data/enroll-hero-data";
+import { getEnrollHeroViewModel } from "@/data/site-content-mappers";
 
-const heroContent = {
-  title: enrollHeroData.title,
-  description: enrollHeroData.description,
-};
+const heroContent = await getEnrollHeroViewModel();
 
 ---
 
@@ -16,7 +13,7 @@ const heroContent = {
   <HeroCard
     title={heroContent.title}
     description={heroContent.description}
-    illustration={enrollHeroData.illustration}
-    illustrationAlt={enrollHeroData.illustrationAlt}
+    illustration={heroContent.illustration}
+    illustrationAlt={heroContent.illustrationAlt}
   />
 </section>

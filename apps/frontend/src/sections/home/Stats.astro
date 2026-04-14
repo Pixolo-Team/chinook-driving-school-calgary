@@ -4,15 +4,14 @@ import StatCard from "@/components/StatCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 
 // DATA //
-import { numberStatsData } from "@/data/numberSection";
-import { statHeaderData } from "@/data/numberSection";
+import { getHomeStatsViewModel } from "@/data/site-content-mappers";
 
+const statsViewModel = await getHomeStatsViewModel();
 const statsHeader = {
-  eyebrow: statHeaderData.eyebrow,
-  heading: statHeaderData.heading,
+  eyebrow: statsViewModel.eyebrow,
+  heading: statsViewModel.heading,
 };
-
-const statsCards = numberStatsData;
+const statsCards = statsViewModel.cards;
 
 ---
 

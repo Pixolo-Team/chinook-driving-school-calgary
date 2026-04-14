@@ -12,7 +12,7 @@ interface Props {
 const { name, role, description } = Astro.props;
 ---
 
-<div class="relative h-60 w-full overflow-hidden rounded-3xl border border-n-200 bg-n-50 px-9 py-7 lg:h-84 lg:px-11 lg:py-9">
+<div class="relative h-full min-h-60 w-full overflow-hidden rounded-3xl border border-n-200 bg-n-50 px-9 py-7 lg:min-h-84 lg:px-11 lg:py-9">
   
   <!-- Background Ellipse -->
   <div
@@ -55,8 +55,23 @@ const { name, role, description } = Astro.props;
     </div>
 
     <!-- Instructor Description -->
-    <p class="text-xs leading-relaxed text-n-600 lg:text-sm">
+    <p class="instructor-description break-words text-xs leading-relaxed text-n-600 lg:text-sm">
       {description}
     </p>
   </div>
 </div>
+
+<style>
+  .instructor-description {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 7;
+    overflow: hidden;
+  }
+
+  @media (min-width: 1024px) {
+    .instructor-description {
+      -webkit-line-clamp: 8;
+    }
+  }
+</style>

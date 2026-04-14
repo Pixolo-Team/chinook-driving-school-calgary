@@ -4,9 +4,10 @@ import SectionHeader from "@/components/SectionHeader.astro";
 import StoryCard from "@/components/StoryCard.astro";
 
 // DATA //
-import { aboutStorySectionData } from "@/data/about-story";
+import { getAboutStoryViewModel } from "@/data/site-content-mappers";
 
-const { content, cards } = aboutStorySectionData;
+const aboutStoryViewModel = await getAboutStoryViewModel();
+const { content, cards } = aboutStoryViewModel;
 ---
 
 <section class="bg-n-50">
