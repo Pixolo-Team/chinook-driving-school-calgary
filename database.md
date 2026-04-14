@@ -258,16 +258,37 @@ Stores inbound leads and queries.
 
 ---
 
+## 9. Enrollment Courses
+
+### `enrollment_courses`
+
+Junction table to support multiple courses per enrollment.
+
+Each enrollment can include multiple courses.  
+Uses a composite primary key (`enrollment_id`, `course_id`) to ensure uniqueness.
+
+| Column        | Type        | Description              | Default |
+|--------------|------------|--------------------------|---------|
+| enrollment_id| UUID       | FK → enrollments         | -       |
+| course_id    | UUID       | FK → courses             | -       |
+| course_price | NUMERIC    | Price at booking time    | 0       |
+| tax_amount   | NUMERIC    | Tax amount               | 0       |
+| total_amount | NUMERIC    | Total amount             | 0       |
+| created_at   | TIMESTAMPTZ| Record creation time     | now()   |
+
+---
+
 # 🔗 RELATIONSHIPS
 
 ```
-course_types → courses → enrollments → payments
-                              ↓
-                           students
-                              ↓
-                     availability_slots
-                              ↓
-                     card_information
+course_types → courses → enrollment_courses → enrollments → payments
+                                      ↓
+                                   students
+                                      ↓
+                             availability_slots
+                                      ↓
+                             card_information
+
 ```
 
 ---
