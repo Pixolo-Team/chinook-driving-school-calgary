@@ -6,6 +6,7 @@ import { Image } from "astro:assets";
 import contactIllustration from "@/assets/contact-illustration.png";
 
 type FormField = {
+  id: string;
   label: string;
   name: string;
   type: "text" | "email" | "tel";
@@ -14,11 +15,14 @@ type FormField = {
   minLength?: number;
   pattern?: string;
   title?: string;
+  requiredMessage?: string;
+  invalidMessage?: string;
 };
 
 const fieldRows: FormField[][] = [
   [
     {
+      id: "contact-name",
       label: "Name",
       name: "name",
       type: "text",
@@ -26,17 +30,23 @@ const fieldRows: FormField[][] = [
       required: true,
       minLength: 2,
       title: "Name must be at least 2 characters long.",
+      requiredMessage: "Please enter your name.",
+      invalidMessage: "Name must be at least 2 characters long.",
     },
   ],
   [
     {
+      id: "contact-email",
       label: "Email Address",
       name: "email",
       type: "email",
       placeholder: "you@email.com",
       required: true,
+      requiredMessage: "Please enter your email address.",
+      invalidMessage: "Please enter a valid email address.",
     },
     {
+      id: "contact-phone",
       label: "Phone Number",
       name: "phone",
       type: "tel",
@@ -44,15 +54,18 @@ const fieldRows: FormField[][] = [
       required: true,
       pattern: "^\\+?[0-9\\s\\-\\(\\)]{7,15}$",
       title: "Please enter a valid phone number between 7 and 15 digits.",
+      requiredMessage: "Please enter your phone number.",
+      invalidMessage: "Please enter a valid phone number between 7 and 15 digits.",
     },
   ],
   [
     {
+      id: "contact-reason",
       label: "Reason",
       name: "reason",
       type: "text",
       placeholder: "Reason for Contact",
-      required: false
+      required: false,
     },
   ],
 ];
@@ -82,11 +95,12 @@ const fieldRows: FormField[][] = [
                       >
                         {/* Iterating through Form Input fields */}
                         {fieldRow.map((field) => (
-                          <label class="block space-y-1">
+                          <label class="block space-y-1" for={field.id}>
                             <span class="text-n-950 block text-base leading-5 font-semibold">
                               {field.label} {field.required && <span class="text-red-500">*</span>}
                             </span>
                             <input
+                              id={field.id}
                               type={field.type}
                               name={field.name}
                               placeholder={field.placeholder}
@@ -94,26 +108,44 @@ const fieldRows: FormField[][] = [
                               minlength={field.minLength}
                               pattern={field.pattern}
                               title={field.title}
-                              class="bg-n-100 text-n-800 placeholder:text-n-400 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-shadow duration-300 outline-none focus:ring-2 focus:ring-blue-500 md:py-4 invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--color-n-100)] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-n-800)]"
+                              data-label={field.label}
+                              data-required-message={field.requiredMessage}
+                              data-invalid-message={field.invalidMessage ?? field.title}
+                              aria-describedby={`${field.id}-error`}
+                              class="bg-n-100 text-n-800 placeholder:text-n-400 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-[border-color,box-shadow] duration-300 outline-none focus:ring-2 focus:ring-blue-500 aria-[invalid=true]:border-red-500 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--color-n-100)] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-n-800)]"
                             />
+                            <p
+                              id={`${field.id}-error`}
+                              class="hidden text-sm leading-5 font-normal text-red-600"
+                              aria-live="polite"
+                            ></p>
                           </label>
                         ))}
                       </div>
                     ))
                   }
 
-                  <label class="block space-y-1">
+                  <label class="block space-y-1" for="contact-message">
                     <span class="text-n-950 block text-base leading-5 font-semibold">
                       Message <span class="text-red-500">*</span>
                     </span>
 
                     <!-- Message Section -->
                     <textarea
+                      id="contact-message"
                       name="message"
                       required
                       placeholder="Tell us what's on your mind..."
-                      class="bg-n-100 text-n-800 placeholder:text-n-400 min-h-44 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-shadow duration-300 outline-none focus:ring-2 focus:ring-blue-500 md:py-4 invalid:[&:not(:placeholder-shown):not(:focus)]:border-red-500 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--color-n-100)] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-n-800)]"
+                      data-label="Message"
+                      data-required-message="Please enter your message."
+                      aria-describedby="contact-message-error"
+                      class="bg-n-100 text-n-800 placeholder:text-n-400 min-h-44 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-[border-color,box-shadow] duration-300 outline-none focus:ring-2 focus:ring-blue-500 aria-[invalid=true]:border-red-500 md:py-4 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--color-n-100)] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-n-800)]"
                     ></textarea>
+                    <p
+                      id="contact-message-error"
+                      class="hidden text-sm leading-5 font-normal text-red-600"
+                      aria-live="polite"
+                    ></p>
                   </label>
 
                   <!-- Send Message Button -->
@@ -209,14 +241,101 @@ const fieldRows: FormField[][] = [
   const resetBtn = document.getElementById("reset-form-btn");
   const errorMessage = document.getElementById("contact-form-error");
   const CONTACT_API_URL = "https://api.pixoloproductions.com/chinook/calgary/contact.php";
+  const fieldElements = form
+    ? Array.from(
+        form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea"),
+      )
+    : [];
+
+  function getFieldErrorElement(
+    field: HTMLInputElement | HTMLTextAreaElement,
+  ): HTMLElement | null {
+    const describedBy = field.getAttribute("aria-describedby");
+
+    if (!describedBy) {
+      return null;
+    }
+
+    const errorId = describedBy
+      .split(" ")
+      .find((value) => value.endsWith("-error"));
+
+    return errorId ? document.getElementById(errorId) : null;
+  }
+
+  function getFieldErrorMessage(field: HTMLInputElement | HTMLTextAreaElement): string {
+    const { validity } = field;
+    const label = field.dataset.label?.toLowerCase() ?? "this field";
+
+    if (validity.valueMissing) {
+      return field.dataset.requiredMessage ?? `Please enter ${label}.`;
+    }
+
+    if (validity.typeMismatch || validity.patternMismatch || validity.tooShort) {
+      return field.dataset.invalidMessage ?? field.title ?? field.validationMessage;
+    }
+
+    return "";
+  }
+
+  function showFieldError(field: HTMLInputElement | HTMLTextAreaElement): boolean {
+    const message = getFieldErrorMessage(field);
+    const errorElement = getFieldErrorElement(field);
+    const hasError = Boolean(message);
+
+    field.setAttribute("aria-invalid", hasError ? "true" : "false");
+
+    if (errorElement) {
+      errorElement.textContent = message;
+      errorElement.classList.toggle("hidden", !hasError);
+    }
+
+    return hasError;
+  }
+
+  function clearFieldError(field: HTMLInputElement | HTMLTextAreaElement): void {
+    field.setAttribute("aria-invalid", "false");
+
+    const errorElement = getFieldErrorElement(field);
+
+    if (errorElement) {
+      errorElement.textContent = "";
+      errorElement.classList.add("hidden");
+    }
+  }
 
   if (form && formContainer && successMessage) {
+    fieldElements.forEach((field) => {
+      field.addEventListener("blur", () => {
+        showFieldError(field);
+      });
+
+      field.addEventListener("input", () => {
+        if (field.validity.valid) {
+          clearFieldError(field);
+          return;
+        }
+
+        if (field.getAttribute("aria-invalid") === "true") {
+          showFieldError(field);
+        }
+      });
+    });
+
     form.addEventListener("submit", async (e) => {
       e.preventDefault();
 
       if (errorMessage) {
         errorMessage.textContent = "";
         errorMessage.classList.add("hidden");
+      }
+
+      const hasValidationErrors = fieldElements
+        .map((field) => showFieldError(field))
+        .some(Boolean);
+
+      if (hasValidationErrors) {
+        return;
       }
 
       const formData = new FormData(form);
@@ -254,6 +373,7 @@ const fieldRows: FormField[][] = [
         successMessage.classList.remove("hidden");
         successMessage.classList.add("flex");
         form.reset();
+        fieldElements.forEach((field) => clearFieldError(field));
       } catch (error) {
         if (errorMessage) {
           const message =
