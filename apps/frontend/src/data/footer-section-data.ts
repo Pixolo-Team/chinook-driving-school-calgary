@@ -29,7 +29,6 @@ export const footerSectionData = {
   ],
   craftedBy: {
     label: "Crafted by",
-    logo: "/images/footer-crafted-by.svg",
     alt: "Pixolo logo",
   },
   copyright: "© 2026 Chinook Driving School Calgary.",
