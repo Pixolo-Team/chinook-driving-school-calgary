@@ -1,8 +1,16 @@
+import heroIllustration from "/public/images/courses-hero.png";
+
+export const coursesHeroSectionData = {
+  title: "Our Driving Programs",
+  description: "Flexible courses designed for beginners and learners at every stage.",
+  illustration: heroIllustration,
+  illustrationAlt: "Student driver training illustration",
+};
+
 export const courseSectionData = {
   eyebrow: "Training Programs",
   heading: "Our Driving Courses",
-  description:
-    "Professional lessons to help beginners learn fast and drive with confidence.",
+  description: "Professional lessons to help beginners learn fast and drive with confidence.",
   tabs: ["Driving Courses", "Brush Up Lessons", "Car Rental"],
   cards: [
     {
@@ -17,11 +25,7 @@ export const courseSectionData = {
         label: "Classroom Practice",
         value: "15 Hours",
       },
-      features: [
-        "15 Hours Online Theory",
-        "Insurance Certificate",
-        "Road Test Support",
-      ],
+      features: ["15 Hours Online Theory", "Insurance Certificate", "Road Test Support"],
       theme: "light",
       ellipse: "light",
     },
@@ -59,11 +63,7 @@ export const courseSectionData = {
         label: "Classroom Practice",
         value: "15 Hours",
       },
-      features: [
-        "15 Hours Online Theory",
-        "Insurance Certificate",
-        "Road Test Support",
-      ],
+      features: ["15 Hours Online Theory", "Insurance Certificate", "Road Test Support"],
       theme: "light",
       ellipse: "light-alt",
     },

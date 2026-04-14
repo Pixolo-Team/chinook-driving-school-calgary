@@ -1,12 +1,10 @@
 // TYPES //
 import type {
+  CourseCategoryData,
   EnrollmentFormValueData,
   EnrollmentPayloadData,
   TimeSlotData,
 } from "@/react/types/enrollment.type";
-
-// CONSTANTS //
-import { COURSES } from "@/react/constants/form-items";
 
 const TIME_SLOT_MAP: Record<string, TimeSlotData> = {
   morning: {
@@ -23,20 +21,43 @@ const TIME_SLOT_MAP: Record<string, TimeSlotData> = {
   },
 };
 
+const LEGACY_PAYMENT_METHOD_MAP: Record<string, string> = {
+  online: "upi",
+  in_person: "cash",
+};
+
 /**
  * Converts the section-based enrollment form value into the API payload shape.
  */
 export function transformEnrollmentPayload(
   enrollmentFormValue: EnrollmentFormValueData,
+  courseCategories: CourseCategoryData[],
 ): EnrollmentPayloadData {
+  const allCourses = courseCategories.flatMap((courseCategoryItem) => courseCategoryItem.courses);
+  const selectedCourseInfos = allCourses.filter((courseItem) =>
+    (enrollmentFormValue.select_course.course.selected_course_ids ?? []).includes(courseItem.id),
+  );
+
   const selectedCourseInfo =
-    COURSES.flatMap((courseCategoryItem) => courseCategoryItem.courses).find(
+    selectedCourseInfos.find(
       (courseItem) => courseItem.id === enrollmentFormValue.select_course.course.course_id,
-    ) ?? null;
+    ) ??
+    selectedCourseInfos[0] ??
+    null;
+
+  const aggregatedCourseInfo = selectedCourseInfo
+    ? {
+        ...selectedCourseInfo,
+        course_price: enrollmentFormValue.select_course.course.course_price ?? selectedCourseInfo.course_price,
+        tax_amount: enrollmentFormValue.select_course.course.tax_amount ?? selectedCourseInfo.tax_amount,
+        total_amount: enrollmentFormValue.select_course.course.total_amount ?? selectedCourseInfo.total_amount,
+      }
+    : {};
 
   return {
     session_type: enrollmentFormValue.select_course.session_type ?? "",
-    course: selectedCourseInfo ?? {},
+    course: aggregatedCourseInfo,
+    courses: selectedCourseInfos,
     student_first_name: enrollmentFormValue.user_info.first_name,
     student_last_name: enrollmentFormValue.user_info.last_name,
     student_date_of_birth: enrollmentFormValue.user_info.date_of_birth,
@@ -61,7 +82,9 @@ export function transformEnrollmentPayload(
     parent_full_name: enrollmentFormValue.parent_information.full_name,
     parent_email: enrollmentFormValue.parent_information.email,
     parent_contact_number: enrollmentFormValue.parent_information.contact_number,
-    payment_method: enrollmentFormValue.payment_details.method,
+    payment_method:
+      LEGACY_PAYMENT_METHOD_MAP[enrollmentFormValue.payment_details.method] ??
+      enrollmentFormValue.payment_details.method,
     amount:
       enrollmentFormValue.payment_details.amount ||
       enrollmentFormValue.select_course.course.total_amount ||

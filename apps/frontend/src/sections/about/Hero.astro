@@ -1,0 +1,18 @@
+---
+// COMPONENTS //
+import HeroCard from "@/components/HeroCard.astro";
+
+// DATA //
+import { getAboutHeroViewModel } from "@/data/site-content-mappers";
+
+const aboutHeroContent = await getAboutHeroViewModel();
+---
+
+<section class="bg-n-100 overflow-hidden">
+  <HeroCard
+    title={aboutHeroContent.title}
+    description={aboutHeroContent.description}
+    illustration={aboutHeroContent.illustration}
+    illustrationAlt={aboutHeroContent.illustrationAlt}
+  />
+</section>

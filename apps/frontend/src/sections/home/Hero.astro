@@ -1,43 +1,204 @@
 ---
 // DATA //
-import { heroSectionData } from "@/data/hero-section-data";
+import { getHomeHeroViewModel } from "@/data/site-content-mappers";
 
 // COMPONENTS //
 import { Image } from "astro:assets";
 
+const heroViewModel = await getHomeHeroViewModel();
+const heroText = {
+  eyebrow: heroViewModel.eyebrow,
+  heading: heroViewModel.heading,
+};
+const heroSlides = heroViewModel.slides.map((image) => ({ image }));
+
 ---
 
 <section
-  class="bg-n-900 relative flex h-[100dvh] max-h-[945px] w-full flex-col justify-end overflow-hidden"
+  class="bg-n-900 relative flex h-160 w-full flex-col justify-end overflow-hidden xl:h-185"
 >
-  <div class="absolute inset-0">
-    <Image
-      src={heroSectionData.image}
-      alt=""
-      width={1920}
-      height={945}
-      class="h-full w-full object-cover object-[68%_center] lg:object-top"
-      aria-hidden="true"
-    />
+  <div class="hero-carousel-wrapper absolute inset-0">
+    <div class="hero-embla h-full overflow-hidden">
+      <div class="hero-embla__container flex h-full">
+        {heroSlides.map((slide) => (
+          <div class="hero-embla__slide min-w-0 flex-[0_0_100%]">
+            {typeof slide.image === "string" ? (
+              <img
+                src={slide.image}
+                alt=""
+                class="h-full w-full object-cover lg:object-top"
+                aria-hidden="true"
+              />
+            ) : (
+              <Image
+                src={slide.image}
+                alt=""
+                width={1920}
+                height={1280}
+                class="h-full w-full object-cover lg:object-top"
+                aria-hidden="true"
+              />
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
   </div>
 
   <div
-    class="from-n-900/90 via-n-900/60 absolute inset-x-0 bottom-0 h-[70%] max-h-[600px] bg-gradient-to-t to-transparent"
+    class="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[linear-gradient(0deg,rgba(7,7,7,0)_0%,rgba(7,7,7,0.84)_100%)] sm:h-48 lg:h-56"
+  >
+  </div>
+
+  <div
+    class="pointer-events-none absolute inset-x-0 bottom-0 h-40 bg-[linear-gradient(180deg,rgba(7,7,7,0)_0%,rgba(7,7,7,0.84)_100%)] sm:h-48 lg:h-56"
   >
   </div>
 
   <div class="relative z-10 w-full pb-12 sm:pb-16 lg:pb-20">
     <div class="container mx-auto max-w-screen-2xl px-5">
-      <div class="text-n-50 flex max-w-3xl flex-col gap-1.5">
+      <div class="text-white flex max-w-3xl flex-col gap-1.5">
         <p
           class="text-base leading-[169%] lg:text-3xl"
         >
-          {heroSectionData.eyebrow}
+          {heroText.eyebrow}
         </p>
-        <p class="text-2xl leading-tight font-semibold lg:text-5xl">
-          {heroSectionData.heading}
+        <p class="text-2xl leading-tight md:text-4xl font-semibold lg:text-5xl">
+          {heroText.heading}
         </p>
       </div>
     </div>
   </div>
+
+  <div class="pointer-events-none absolute inset-x-0 bottom-6 z-10 flex justify-center sm:bottom-8 lg:bottom-10">
+    <div class="hero-embla__dots pointer-events-auto flex items-center justify-center gap-2.5"></div>
+  </div>
 </section>
+
+<script>
+  import EmblaCarousel from "embla-carousel";
+
+  const AUTO_SLIDE_DELAY = 5000;
+
+  const initHeroCarousel = () => {
+    const wrappers = document.querySelectorAll(".hero-carousel-wrapper");
+
+    wrappers.forEach((wrapper) => {
+      if (wrapper instanceof HTMLElement && wrapper.dataset.emblaInitialized === "true") {
+        return;
+      }
+
+      const viewport = wrapper.querySelector(".hero-embla") as HTMLElement | null;
+      if (!viewport) return;
+
+      const emblaApi = EmblaCarousel(viewport, {
+        loop: true,
+        align: "start",
+        duration: 32,
+      });
+      const dotsContainer = wrapper.parentElement?.querySelector(".hero-embla__dots");
+      let dotNodes: HTMLButtonElement[] = [];
+
+      let autoSlideId: number | undefined;
+
+      const clearAutoSlide = () => {
+        if (autoSlideId !== undefined) {
+          window.clearTimeout(autoSlideId);
+        }
+      };
+
+      const scheduleAutoSlide = () => {
+        clearAutoSlide();
+        autoSlideId = window.setTimeout(() => {
+          emblaApi.scrollNext();
+        }, AUTO_SLIDE_DELAY);
+      };
+
+      emblaApi.on("pointerDown", clearAutoSlide);
+
+      if (dotsContainer instanceof HTMLElement) {
+        const createDots = () => {
+          const snapList = emblaApi.scrollSnapList();
+
+          dotsContainer.innerHTML = snapList
+            .map(
+              (_, index) => `
+                <button
+                  type="button"
+                  class="relative h-2.5 w-2.5 overflow-hidden rounded-[9px] bg-n-50/95 cursor-pointer"
+                  aria-label="Go to slide ${index + 1}"
+                >
+                  <span
+                    class="hero-embla__dot-progress pointer-events-none absolute inset-y-0 left-0 w-0 rounded-[9px] bg-blue-600"
+                  ></span>
+                </button>
+              `,
+            )
+            .join("");
+
+          dotNodes = Array.from(dotsContainer.querySelectorAll("button"));
+
+          dotNodes.forEach((dot, index) => {
+            dot.addEventListener("click", () => {
+              emblaApi.scrollTo(index);
+            });
+          });
+        };
+
+        const updateDots = () => {
+          const selectedIndex = emblaApi.selectedScrollSnap();
+
+          dotNodes.forEach((dot, index) => {
+            const progressBar = dot.querySelector(".hero-embla__dot-progress");
+
+            if (index === selectedIndex) {
+              dot.classList.remove("w-2.5");
+              dot.classList.add("w-9", "bg-n-50/95");
+
+              if (progressBar instanceof HTMLElement) {
+                progressBar.style.transition = "none";
+                progressBar.style.width = "0";
+
+                requestAnimationFrame(() => {
+                  requestAnimationFrame(() => {
+                    progressBar.style.transition = `width ${AUTO_SLIDE_DELAY}ms linear`;
+                    progressBar.style.width = "100%";
+                  });
+                });
+              }
+            } else {
+              dot.classList.remove("w-9");
+              dot.classList.add("w-2.5", "bg-n-50/95");
+
+              if (progressBar instanceof HTMLElement) {
+                progressBar.style.transition = "none";
+                progressBar.style.width = "0";
+              }
+            }
+          });
+        };
+
+        createDots();
+        updateDots();
+        scheduleAutoSlide();
+
+        emblaApi.on("select", () => {
+          updateDots();
+          scheduleAutoSlide();
+        });
+        emblaApi.on("reInit", () => {
+          createDots();
+          updateDots();
+          scheduleAutoSlide();
+        });
+      }
+
+      if (wrapper instanceof HTMLElement) {
+        wrapper.dataset.emblaInitialized = "true";
+      }
+    });
+  };
+
+  document.addEventListener("DOMContentLoaded", initHeroCarousel);
+  document.addEventListener("astro:page-load", initHeroCarousel);
+</script>

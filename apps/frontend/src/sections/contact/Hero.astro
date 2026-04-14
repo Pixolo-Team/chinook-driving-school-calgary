@@ -1,0 +1,19 @@
+---
+// COMPONENTS //
+import HeroCard from "@/components/HeroCard.astro";
+
+// DATA //
+import { getContactHeroViewModel } from "@/data/site-content-mappers";
+
+const heroContent = await getContactHeroViewModel();
+---
+
+<section class="bg-n-100 overflow-hidden">
+  <HeroCard
+    title={heroContent.title}
+    description={heroContent.description}
+    illustration={heroContent.illustration}
+    illustrationAlt={heroContent.illustrationAlt}
+    flipImage={true}
+  />
+</section>

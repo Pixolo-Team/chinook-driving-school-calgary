@@ -5,38 +5,70 @@ import { Image } from "astro:assets";
 // IMAGES //
 import contactIllustration from "@/assets/contact-illustration.png";
 
-const fieldRows = [
+type FormField = {
+  id: string;
+  label: string;
+  name: string;
+  type: "text" | "email" | "tel";
+  placeholder: string;
+  required?: boolean;
+  minLength?: number;
+  pattern?: string;
+  title?: string;
+  requiredMessage?: string;
+  invalidMessage?: string;
+};
+
+const fieldRows: FormField[][] = [
   [
     {
+      id: "contact-name",
       label: "Name",
       name: "name",
       type: "text",
       placeholder: "Enter your Name",
+      required: true,
+      minLength: 2,
+      title: "Name must be at least 2 characters long.",
+      requiredMessage: "Please enter your name.",
+      invalidMessage: "Name must be at least 2 characters long.",
     },
   ],
   [
     {
+      id: "contact-email",
       label: "Email Address",
       name: "email",
       type: "email",
       placeholder: "you@email.com",
+      required: true,
+      requiredMessage: "Please enter your email address.",
+      invalidMessage: "Please enter a valid email address.",
     },
     {
+      id: "contact-phone",
       label: "Phone Number",
       name: "phone",
       type: "tel",
       placeholder: "+1 XXXX XXXX XX",
+      required: true,
+      pattern: "^\\+?[0-9\\s\\-\\(\\)]{7,15}$",
+      title: "Please enter a valid phone number between 7 and 15 digits.",
+      requiredMessage: "Please enter your phone number.",
+      invalidMessage: "Please enter a valid phone number between 7 and 15 digits.",
     },
   ],
   [
     {
+      id: "contact-reason",
       label: "Reason",
       name: "reason",
       type: "text",
       placeholder: "Reason for Contact",
+      required: false,
     },
   ],
-] as const;
+];
 ---
 
 <section class="bg-n-50">
@@ -44,15 +76,15 @@ const fieldRows = [
   <div class="container mx-auto max-w-screen-2xl px-6 py-8 md:py-9 xl:px-44">
     <!-- Outer Box -->
     <div class="rounded-3xl bg-blue-50 p-3 md:p-6">
-      <div class="grid gap-4 xl:grid-cols-12 xl:gap-6">
+      <div class="grid gap-4 xl:grid-cols-12 xl:items-stretch xl:gap-6">
         <div class="xl:col-span-8">
-          <div class="bg-n-50 rounded-3xl p-6 md:p-8">
-            <div class="">
-              <div class="space-y-5 md:space-y-6">
+          <div class="bg-n-50 h-full rounded-3xl p-6 md:p-8">
+            <div class="h-full relative">
+              <div id="form-container" class="flex h-full flex-col space-y-5 md:space-y-6 transition-opacity duration-300">
                 <!-- Form Title -->
                 <p class="text-n-900 text-xl leading-7 font-bold md:text-2xl">Reach out to us!</p>
 
-                <form method="post" action="" class="space-y-4 md:space-y-6">
+                <form id="contact-form" method="post" action="" class="flex flex-1 flex-col space-y-4 md:space-y-6">
                   {
                     fieldRows.map((fieldRow) => (
                       <div
@@ -63,44 +95,94 @@ const fieldRows = [
                       >
                         {/* Iterating through Form Input fields */}
                         {fieldRow.map((field) => (
-                          <label class="block space-y-1">
+                          <label class="block space-y-1" for={field.id}>
                             <span class="text-n-950 block text-base leading-5 font-semibold">
-                              {field.label}
+                              {field.label} {field.required && <span class="text-red-500">*</span>}
                             </span>
                             <input
+                              id={field.id}
                               type={field.type}
                               name={field.name}
                               placeholder={field.placeholder}
-                              class="bg-n-100 text-n-800 placeholder:text-n-400 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-shadow duration-300 outline-none focus:ring-2 focus:ring-blue-500 md:py-4"
+                              required={field.required}
+                              minlength={field.minLength}
+                              pattern={field.pattern}
+                              title={field.title}
+                              data-label={field.label}
+                              data-required-message={field.requiredMessage}
+                              data-invalid-message={field.invalidMessage ?? field.title}
+                              aria-describedby={`${field.id}-error`}
+                              class="bg-n-100 text-n-800 placeholder:text-n-400 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-[border-color,box-shadow] duration-300 outline-none focus:ring-2 focus:ring-blue-500 aria-[invalid=true]:border-red-500 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--color-n-100)] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-n-800)]"
                             />
+                            <p
+                              id={`${field.id}-error`}
+                              class="hidden text-sm leading-5 font-normal text-red-600"
+                              aria-live="polite"
+                            ></p>
                           </label>
                         ))}
                       </div>
                     ))
                   }
 
-                  <label class="block space-y-1">
+                  <label class="block space-y-1" for="contact-message">
                     <span class="text-n-950 block text-base leading-5 font-semibold">
-                      Message
+                      Message <span class="text-red-500">*</span>
                     </span>
 
                     <!-- Message Section -->
                     <textarea
+                      id="contact-message"
                       name="message"
+                      required
                       placeholder="Tell us what's on your mind..."
-                      class="bg-n-100 text-n-800 placeholder:text-n-400 min-h-44 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-shadow duration-300 outline-none focus:ring-2 focus:ring-blue-500 md:py-4"
+                      data-label="Message"
+                      data-required-message="Please enter your message."
+                      aria-describedby="contact-message-error"
+                      class="bg-n-100 text-n-800 placeholder:text-n-400 min-h-44 w-full rounded-xl border border-transparent px-4 py-3 text-lg leading-6 transition-[border-color,box-shadow] duration-300 outline-none focus:ring-2 focus:ring-blue-500 aria-[invalid=true]:border-red-500 md:py-4 [&:-webkit-autofill]:shadow-[inset_0_0_0_1000px_var(--color-n-100)] [&:-webkit-autofill]:[-webkit-text-fill-color:var(--color-n-800)]"
                     ></textarea>
+                    <p
+                      id="contact-message-error"
+                      class="hidden text-sm leading-5 font-normal text-red-600"
+                      aria-live="polite"
+                    ></p>
                   </label>
 
                   <!-- Send Message Button -->
-                  <button
-                    type="submit"
-                    class="animate-bouncy-hover text-n-50 w-full cursor-pointer rounded-full bg-blue-500 px-6 py-3 text-sm leading-6 font-bold transition-colors duration-300 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none"
-                  >
-                    Send Message
-                  </button>
+                  <div class="mt-auto pt-2">
+                    <button
+                      type="submit"
+                      class="animate-bouncy-hover text-n-50 w-full cursor-pointer rounded-full bg-blue-500 px-6 py-3 text-sm leading-6 font-bold transition-colors duration-300 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed"
+                    >
+                      Send Message
+                    </button>
+                  </div>
+
+                  <p
+                    id="contact-form-error"
+                    class="hidden rounded-xl bg-red-50 px-4 py-3 text-sm font-medium text-red-700"
+                    role="alert"
+                  ></p>
                 </form>
               </div>
+              
+
+              <!-- Success Message -->
+              <div id="success-message" class="hidden h-full py-16 md:py-24 flex-col items-center justify-center text-center space-y-4 bg-n-50 rounded-3xl animate-fade-in">
+                <div class="size-20 rounded-full bg-green-100 flex items-center justify-center text-green-600 mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" class="size-10" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <h3 class="text-n-900 text-2xl font-bold md:text-3xl">Thank You!</h3>
+                <p class="text-n-600 max-w-sm mx-auto text-lg">
+                  Your message has been successfully sent. We'll get back to you within 24 hours.
+                </p>
+                <button id="reset-form-btn" type="button" class="mt-6 text-blue-500 font-semibold hover:text-blue-600 transition-colors cursor-pointer">
+                  Send another message
+                </button>
+              </div>
+
             </div>
           </div>
         </div>
@@ -151,3 +233,166 @@ const fieldRows = [
     </div>
   </div>
 </section>
+
+<script>
+  const form = document.getElementById("contact-form") as HTMLFormElement;
+  const formContainer = document.getElementById("form-container");
+  const successMessage = document.getElementById("success-message");
+  const resetBtn = document.getElementById("reset-form-btn");
+  const errorMessage = document.getElementById("contact-form-error");
+  const CONTACT_API_URL = "https://api.pixoloproductions.com/chinook/calgary/send-inquiry.php";
+  const fieldElements = form
+    ? Array.from(
+        form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea"),
+      )
+    : [];
+
+  function getFieldErrorElement(
+    field: HTMLInputElement | HTMLTextAreaElement,
+  ): HTMLElement | null {
+    const describedBy = field.getAttribute("aria-describedby");
+
+    if (!describedBy) {
+      return null;
+    }
+
+    const errorId = describedBy
+      .split(" ")
+      .find((value) => value.endsWith("-error"));
+
+    return errorId ? document.getElementById(errorId) : null;
+  }
+
+  function getFieldErrorMessage(field: HTMLInputElement | HTMLTextAreaElement): string {
+    const { validity } = field;
+    const label = field.dataset.label?.toLowerCase() ?? "this field";
+
+    if (validity.valueMissing) {
+      return field.dataset.requiredMessage ?? `Please enter ${label}.`;
+    }
+
+    if (validity.typeMismatch || validity.patternMismatch || validity.tooShort) {
+      return field.dataset.invalidMessage ?? field.title ?? field.validationMessage;
+    }
+
+    return "";
+  }
+
+  function showFieldError(field: HTMLInputElement | HTMLTextAreaElement): boolean {
+    const message = getFieldErrorMessage(field);
+    const errorElement = getFieldErrorElement(field);
+    const hasError = Boolean(message);
+
+    field.setAttribute("aria-invalid", hasError ? "true" : "false");
+
+    if (errorElement) {
+      errorElement.textContent = message;
+      errorElement.classList.toggle("hidden", !hasError);
+    }
+
+    return hasError;
+  }
+
+  function clearFieldError(field: HTMLInputElement | HTMLTextAreaElement): void {
+    field.setAttribute("aria-invalid", "false");
+
+    const errorElement = getFieldErrorElement(field);
+
+    if (errorElement) {
+      errorElement.textContent = "";
+      errorElement.classList.add("hidden");
+    }
+  }
+
+  if (form && formContainer && successMessage) {
+    fieldElements.forEach((field) => {
+      field.addEventListener("blur", () => {
+        showFieldError(field);
+      });
+
+      field.addEventListener("input", () => {
+        if (field.validity.valid) {
+          clearFieldError(field);
+          return;
+        }
+
+        if (field.getAttribute("aria-invalid") === "true") {
+          showFieldError(field);
+        }
+      });
+    });
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      if (errorMessage) {
+        errorMessage.textContent = "";
+        errorMessage.classList.add("hidden");
+      }
+
+      const hasValidationErrors = fieldElements
+        .map((field) => showFieldError(field))
+        .some(Boolean);
+
+      if (hasValidationErrors) {
+        return;
+      }
+
+      const formData = new FormData(form);
+      const payload = {
+        name: String(formData.get("name") ?? "").trim(),
+        email: String(formData.get("email") ?? "").trim(),
+        contact_number: String(formData.get("phone") ?? "").trim(),
+        query: String(formData.get("message") ?? "").trim(),
+        reason: String(formData.get("reason") ?? "").trim(),
+      };
+      const requestBody = new URLSearchParams(payload);
+
+      const submitBtn = form.querySelector('button[type="submit"]') as HTMLButtonElement;
+      const originalText = submitBtn.innerText;
+
+      submitBtn.innerText = "Sending...";
+      submitBtn.disabled = true;
+
+      try {
+        const response = await fetch(CONTACT_API_URL, {
+          method: "POST",
+          body: requestBody,
+        });
+
+        const result = await response.json().catch(() => null);
+        const isSuccess = response.ok && result?.status === true;
+
+        if (!isSuccess) {
+          throw new Error(result?.error || result?.message || "Something went wrong while sending your message.");
+        }
+
+        formContainer.classList.add("hidden");
+        successMessage.classList.remove("hidden");
+        successMessage.classList.add("flex");
+        form.reset();
+        fieldElements.forEach((field) => clearFieldError(field));
+      } catch (error) {
+        if (errorMessage) {
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Something went wrong while sending your message. Please try again.";
+          errorMessage.textContent = message;
+          errorMessage.classList.remove("hidden");
+        }
+      } finally {
+        submitBtn.innerText = originalText;
+        submitBtn.disabled = false;
+      }
+    });
+  }
+
+  if (resetBtn && formContainer && successMessage) {
+    resetBtn.addEventListener("click", () => {
+      successMessage.classList.remove("flex");
+      successMessage.classList.add("hidden");
+      formContainer.classList.remove("hidden", "opacity-0", "pointer-events-none");
+    });
+  }
+</script>

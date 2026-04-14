@@ -1,35 +1,73 @@
 ---
 // DATA //
-import { courseSectionData } from "@/data/courses";
+import { getCourseSectionData } from "@/data/course-cards";
+import type { CourseCardData, CourseGroupData } from "@/types/course";
+import { getCoursesSectionViewModel } from "@/data/site-content-mappers";
 
 // COMPONENTS //
 import CourseCard from "@/components/CourseCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
 import Tabs from "@/components/ui/Tabs.astro";
+
+interface CoursesProps {
+  tabs?: string[];
+  cards?: CourseCardData[];
+  courseGroups?: CourseGroupData[];
+}
+
+const courseData = await getCourseSectionData();
+const sectionContent = await getCoursesSectionViewModel();
+
+const {
+  tabs = courseData.tabs,
+  cards = courseData.cards,
+  courseGroups = courseData.courseGroups,
+} = Astro.props as CoursesProps;
+
 ---
 
-<section class="bg-n-50">
+<section class="bg-n-50" data-courses-section>
   <div
-    class="container mx-auto flex w-full flex-col items-center gap-10 px-6 py-14 lg:gap-16 lg:px-28 lg:py-28"
+    class="container mx-auto flex w-full max-w-screen-2xl flex-col items-center gap-10 px-6 py-14 lg:gap-16 lg:px-28 lg:py-28"
   >
     <!-- Section Header -->
     <SectionHeader
-      eyebrow={courseSectionData.eyebrow}
-      heading={courseSectionData.heading}
-      description={courseSectionData.description}
+      eyebrow={sectionContent.eyebrow}
+      heading={sectionContent.heading}
+      description={sectionContent.description}
     />
 
     <!-- Courses Category Tabs -->
     <div class="flex w-full flex-col items-center gap-7 md:gap-8 md:px-20 lg:gap-12 xl:px-0">
       <div class="w-full max-w-3xl">
-        <Tabs items={courseSectionData.tabs} activeIndex={0} />
+        <Tabs items={tabs} activeIndex={0} controlsPanels />
       </div>
 
-      <!--  -->
+      <!-- Courses Cards -->
       <div class="w-full max-w-3xl lg:max-w-none">
-        <div class="grid w-full grid-cols-1 gap-5 xl:grid-cols-3">
-          {courseSectionData.cards.map((card) => <CourseCard {...card} />)}
-        </div>
+        {
+          courseGroups.map((group, groupIndex) => (
+            <div
+              data-tab-panel
+              data-active={groupIndex === 0 ? "true" : "false"}
+              hidden={groupIndex !== 0}
+            >
+              {group.cards.length > 0 ? (
+                <div class="grid w-full grid-cols-1 gap-5 md:px-4 xl:grid-cols-3">
+                  {
+                    group.cards.map((card) => (
+                      <CourseCard {...card} />
+                    ))
+                  }
+                </div>
+              ) : (
+                <div class="rounded-4xl border border-n-300 bg-n-50 px-6 py-10 text-center text-n-600">
+                  Course details for {group.tab} will be available soon.
+                </div>
+              )}
+            </div>
+          ))
+        }
       </div>
     </div>
   </div>

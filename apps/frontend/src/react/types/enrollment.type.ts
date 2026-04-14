@@ -2,6 +2,7 @@ export interface EnrollmentPayloadData {
   session_type: string;
 
   course: Partial<CourseData>;
+  courses?: Array<Partial<CourseData>>;
 
   student_first_name: string;
   student_last_name: string;
@@ -88,6 +89,7 @@ export type SessionOptionData = {
 export type SelectCourseValueData = {
   session_type: string | null;
   course: {
+    selected_course_ids: string[];
     course_id: string | null;
     course_price: number | null;
     tax_amount: number | null;

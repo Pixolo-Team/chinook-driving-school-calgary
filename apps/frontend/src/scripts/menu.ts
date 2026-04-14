@@ -200,11 +200,11 @@ export const initializeMobileHeader = ({ scrollThreshold }: MobileHeaderConfigDa
     mobileHeaderShell.classList.toggle("bg-transparent", !shouldShowBackground);
     mobileHeaderShell.classList.toggle("bg-n-50", shouldShowBackground);
     mobileHeaderShell.classList.toggle("rounded-b-[24px]", shouldShowBackground);
-    mobileMenuOpenButton.classList.toggle("border-n-100", !shouldShowBackground);
+    mobileMenuOpenButton.classList.toggle("border-blue-500/30", !shouldShowBackground);
     mobileMenuOpenButton.classList.toggle("border-n-300", shouldShowBackground);
-    mobileMenuOpenButton.classList.toggle("bg-transparent", !shouldShowBackground);
+    mobileMenuOpenButton.classList.toggle("bg-n-50/72", !shouldShowBackground);
     mobileMenuOpenButton.classList.toggle("bg-n-50", shouldShowBackground);
-    mobileMenuOpenIcon.classList.toggle("text-n-100", !shouldShowBackground);
+    mobileMenuOpenIcon.classList.toggle("text-blue-500", !shouldShowBackground);
     mobileMenuOpenIcon.classList.toggle("text-n-700", shouldShowBackground);
   };
 

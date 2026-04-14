@@ -1,0 +1,65 @@
+---
+// COMPONENTS //
+import ProcessStepCard from "@/components/ProcessStepCard.astro";
+import SectionHeader from "@/components/SectionHeader.astro";
+import Tabs from "@/components/ui/Tabs.astro";
+
+// DATA //
+import { getCoursesProcessViewModel } from "@/data/site-content-mappers";
+
+const processViewModel = await getCoursesProcessViewModel();
+const sectionContent = {
+  eyebrow: processViewModel.eyebrow,
+  heading: processViewModel.heading,
+  description: processViewModel.description,
+};
+const stepGroups = processViewModel.stepGroups;
+
+const tabs = stepGroups.map((group) => group.category);
+---
+
+<section class="bg-n-100" data-process-section>
+  <div
+    class="container mx-auto flex w-full max-w-screen-2xl flex-col items-center gap-10 px-6 py-20 md:gap-12 md:px-6 md:py-28 lg:px-12 xl:gap-14 xl:px-32"
+  >
+    <!-- Section Header -->
+    <SectionHeader
+      eyebrow={sectionContent.eyebrow}
+      heading={sectionContent.heading}
+      description={sectionContent.description}
+    />
+
+    <div class="flex w-full flex-col items-center gap-7 md:gap-8 md:px-20 lg:gap-12 xl:px-0">
+      
+      <!-- Tabs -->
+      <div class="w-full max-w-3xl">
+        <Tabs items={tabs} activeIndex={0} controlsPanels />
+      </div>
+
+      <!-- Tab Panels -->
+      <div class="w-full">
+        {
+          stepGroups.map((group, groupIndex) => (
+            <div
+              data-tab-panel
+              data-active={groupIndex === 0 ? "true" : "false"}
+              hidden={groupIndex !== 0}
+            >
+              <div class="grid w-full grid-cols-1 gap-3 md:grid-cols-2 md:gap-5 xl:grid-cols-3 xl:gap-6">
+                {
+                  group.steps.map((step, index) => (
+                    <ProcessStepCard
+                      index={index}
+                      title={step.title}
+                      description={step.description}
+                    />
+                  ))
+                }
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,14 +1,19 @@
 ---
 // COMPONENTS //
-import BrandLogo from "@/components/common/BrandLogo.astro";
 import Button from "@/components/ui/Button.astro";
 import MenuBar from "@/components/MenuBar.astro";
+import BrandLogo from "@/components/common/BrandLogo.astro"; 
 
 // CONSTANTS //
 import { URLS } from "@/infrastructure/constants/urls";
 
+
 // DATA //
 import { menuItems } from "@/data/menu";
+
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === "/" || currentPath === "/index.html" || currentPath === "";
+const enrollButtonClassName = [isHome ? "w-26.5 text-white" : "w-26.5"].join(" ");
 ---
 
 <!-- FloatingMenu -->
@@ -21,15 +26,15 @@ import { menuItems } from "@/data/menu";
   <div class="mx-auto w-full max-w-screen-2xl px-4 lg:px-5">
     <div
       id="floating-menu"
-      class="outline-n-300 bg-n-50 pointer-events-none mx-auto flex w-full max-w-248.5 items-center overflow-hidden rounded-full px-4 py-2 opacity-0 shadow-lg outline-2 lg:px-5 lg:py-2.5"
+      class="outline-n-300 bg-n-50 pointer-events-none mx-auto flex w-full max-w-248.5 items-center overflow-hidden rounded-full px-4 py-2 opacity-0 shadow-lg outline-2 lg:px-5 lg:py-2.5 transition-all duration-500 ease-[cubic-bezier(0.16,1,0.3,1)]"
     >
       <div class="flex w-full items-center justify-between">
         <!-- Brand Logo -->
         <a href="/" aria-label="Chinook Driving Academy home" class="shrink-0">
           <BrandLogo
-            containerClass="relative h-12 w-30"
-            markClass="absolute top-0 left-0 h-full w-10 object-contain"
-            textClass="absolute top-1/2 left-9.5 h-7 w-23 -translate-y-1/2 object-contain"
+            containerClass="inline-flex h-12 items-center justify-center gap-0.5"
+            markClass="h-full w-auto shrink-0 object-contain block"
+            textClass="h-7 w-auto shrink-0 object-contain block"
             textAlt="Chinook Driving Academy"
           />
         </a>
@@ -40,12 +45,12 @@ import { menuItems } from "@/data/menu";
 
           <!-- Menu Button Group -->
           <div class="flex items-center gap-2 lg:gap-2.5">
-            <Button buttonText="Enroll Now" className="w-26.5" href={URLS.ENROLL} />
+            <Button buttonText="Enroll Now" className={enrollButtonClassName} href={URLS.ENROLL} />
             <Button
               buttonText="Call Us"
               rightIcon="phone-icon"
               variant="outline"
-              href={URLS.CONTACT}
+              href={URLS.PHONE}
             />
           </div>
         </div>

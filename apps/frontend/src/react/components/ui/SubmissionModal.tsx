@@ -110,8 +110,10 @@ export default function SubmissionModal({
 
       <div
         className={joinClasses(
-          "relative z-10 flex w-full flex-col rounded-[28px] bg-n-50 shadow-[0_28px_80px_rgba(2,6,23,0.22)]",
-          isChecking ? "max-w-5xl gap-6 px-6 py-8 text-left md:px-8 md:py-9" : "max-w-md items-center gap-6 px-8 py-10 text-center",
+          "bg-n-50 relative z-10 flex w-full flex-col rounded-[28px] shadow-[0_28px_80px_rgba(2,6,23,0.22)]",
+          isChecking
+            ? "max-w-5xl gap-6 px-6 py-8 text-left md:px-8 md:py-9"
+            : "max-w-md items-center gap-6 px-8 py-10 text-center",
         )}
       >
         {isChecking ? (
@@ -127,12 +129,12 @@ export default function SubmissionModal({
                   |
                 </span>{" "}
                 <span className="text-red-600">
-                  <span className="font-bold">{pendingCount + untouchedCount}</span> 
-                  {" "} 
-                  Incomplete
+                  <span className="font-bold">{pendingCount + untouchedCount}</span> Incomplete
                 </span>
               </p>
-              {message ? <p className="text-amber-700 text-sm leading-6 font-medium">{message}</p> : null}
+              {message ? (
+                <p className="text-sm leading-6 font-medium text-amber-700">{message}</p>
+              ) : null}
             </div>
 
             <div className="grid w-full grid-cols-1 gap-3 md:grid-cols-2 md:gap-4">
@@ -155,8 +157,10 @@ export default function SubmissionModal({
           </>
         ) : isSending ? (
           <div className="flex w-full flex-col items-center gap-3 py-4 text-center">
-            <span className="h-14 w-14 animate-spin rounded-full border-4 border-n-200 border-t-blue-500" />
-            <p className="text-n-700 text-base leading-7 font-medium">Securely sending your details</p>
+            <span className="border-n-200 h-14 w-14 animate-spin rounded-full border-4 border-t-blue-500" />
+            <p className="text-n-700 text-base leading-7 font-medium">
+              Securely sending your details
+            </p>
           </div>
         ) : (
           <>
@@ -194,7 +198,11 @@ export default function SubmissionModal({
         )}
 
         <div className="border-n-200 mt-2 w-full border-t pt-5">
-          <Button variant="unfilled" onClick={onClose} className="min-h-12 w-full px-6 py-3 text-base">
+          <Button
+            variant="unfilled"
+            onClick={onClose}
+            className="min-h-12 w-full px-6 py-3 text-base"
+          >
             Cancel
           </Button>
         </div>

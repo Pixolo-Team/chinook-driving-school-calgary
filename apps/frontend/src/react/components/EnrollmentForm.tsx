@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from "react";
 // TYPES //
 import type {
   AvailabilityValueData,
+  CourseCategoryData,
   EnrollmentFormValueData,
   EnrollmentPayloadData,
   EnrollmentResponseData,
@@ -48,15 +49,43 @@ type EnrollmentFormStorageData = {
 };
 
 type EnrollmentFormPropsData = Readonly<{
+  courseCategories: CourseCategoryData[];
+  isCoursesLoading: boolean;
+  coursesErrorMessage?: string | null;
   onSuccess?: () => void;
 }>;
 
 const ENROLLMENT_FORM_STORAGE_KEY = "chinook-enrollment-form";
 
+const LEGACY_LICENSE_REGION_MAP: Record<string, string> = {
+  alberta: "AB",
+  "british-columbia": "BC",
+  manitoba: "MB",
+  ontario: "ON",
+  saskatchewan: "SK",
+};
+
+const LEGACY_LICENSE_TYPE_MAP: Record<string, string> = {
+  "class-7": "CLASS_7",
+  "class-5-gdl": "CLASS_5_GDL",
+  "class-5-full": "CLASS_5",
+  international: "OTHER",
+};
+
+const LEGACY_PAYMENT_METHOD_MAP: Record<string, string> = {
+  online: "upi",
+  in_person: "cash",
+};
+
 /**
  * Coordinates the multi-step enrollment flow and stores the shared form state.
  */
-export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
+export default function EnrollmentForm({
+  courseCategories,
+  isCoursesLoading,
+  coursesErrorMessage = null,
+  onSuccess,
+}: EnrollmentFormPropsData) {
   // Define Navigation
 
   // Define Context
@@ -81,6 +110,7 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
     select_course: {
       session_type: null,
       course: {
+        selected_course_ids: [],
         course_id: null,
         course_price: null,
         tax_amount: null,
@@ -132,7 +162,9 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
     title: "",
     message: "",
   });
-  const [submissionStepStatuses, setSubmissionStepStatuses] = useState<Record<number, StepStatusData>>({
+  const [submissionStepStatuses, setSubmissionStepStatuses] = useState<
+    Record<number, StepStatusData>
+  >({
     1: "untouched",
     2: "untouched",
     3: "untouched",
@@ -140,8 +172,44 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
     5: "untouched",
     6: "untouched",
   });
-
   // Helper Functions
+  /**
+   * Migrates older saved license values into the current backend-safe format.
+   */
+  const normalizeStoredEnrollmentFormValue = (
+    storedValue: EnrollmentFormValueData,
+  ): EnrollmentFormValueData => ({
+    ...storedValue,
+    select_course: {
+      ...storedValue.select_course,
+      course: {
+        ...storedValue.select_course.course,
+        selected_course_ids:
+          storedValue.select_course.course.selected_course_ids ??
+          (storedValue.select_course.course.course_id
+            ? [storedValue.select_course.course.course_id]
+            : []),
+      },
+    },
+    license_information: {
+      ...storedValue.license_information,
+      issuing_region: storedValue.license_information.issuing_region
+        ? (LEGACY_LICENSE_REGION_MAP[storedValue.license_information.issuing_region] ??
+          storedValue.license_information.issuing_region)
+        : storedValue.license_information.issuing_region,
+      type: storedValue.license_information.type
+        ? (LEGACY_LICENSE_TYPE_MAP[storedValue.license_information.type] ??
+          storedValue.license_information.type)
+        : storedValue.license_information.type,
+    },
+    payment_details: {
+      ...storedValue.payment_details,
+      method:
+        LEGACY_PAYMENT_METHOD_MAP[storedValue.payment_details.method] ??
+        storedValue.payment_details.method,
+    },
+  });
+
   /**
    * Registers a validator function for a step.
    */
@@ -322,8 +390,10 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
     }
 
     // Transform the Input Values
-    const enrollmentPayloadInfo: EnrollmentPayloadData =
-      transformEnrollmentPayload(enrollmentFormValue);
+    const enrollmentPayloadInfo: EnrollmentPayloadData = transformEnrollmentPayload(
+      enrollmentFormValue,
+      courseCategories,
+    );
     const requestStartedAtInMs: number = Date.now();
 
     setSubmissionModalState({
@@ -538,6 +608,9 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
       default:
         return (
           <SelectCourse
+            courses={courseCategories}
+            isLoadingCourses={isCoursesLoading}
+            coursesErrorMessage={coursesErrorMessage}
             value={enrollmentFormValue.select_course}
             onChange={(fieldKey, fieldValue) =>
               updateEnrollmentSectionValue("select_course", fieldKey, fieldValue)
@@ -565,11 +638,13 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
         storedEnrollmentFormValue,
       ) as EnrollmentFormStorageData;
 
-      setCurrentStep(
-        Math.min(parsedEnrollmentFormValue.currentStep ?? 1, TOTAL_ENROLLMENT_STEPS),
-      );
+      setCurrentStep(Math.min(parsedEnrollmentFormValue.currentStep ?? 1, TOTAL_ENROLLMENT_STEPS));
       setStepStates(parsedEnrollmentFormValue.stepStates ?? stepStates);
-      setEnrollmentFormValue(parsedEnrollmentFormValue.enrollmentFormValue ?? enrollmentFormValue);
+      setEnrollmentFormValue(
+        parsedEnrollmentFormValue.enrollmentFormValue
+          ? normalizeStoredEnrollmentFormValue(parsedEnrollmentFormValue.enrollmentFormValue)
+          : enrollmentFormValue,
+      );
     } catch {
       clearEnrollmentFormStorage();
     } finally {
@@ -601,22 +676,24 @@ export default function EnrollmentForm({ onSuccess }: EnrollmentFormPropsData) {
   }, []);
 
   return (
-    <section className="container mx-auto flex min-h-screen w-full flex-col gap-5 px-4 py-9 sm:px-6 md:gap-8 md:px-7 lg:px-8 lg:py-12 xl:px-10">
-      {/* Steps Component */}
-      <Steps currentStep={currentStep} stepStates={stepStates} onStepChange={handleStepChange} />
+    <section className="bg-n-50">
+      <div className="container mx-auto flex min-h-screen w-full flex-col gap-5 px-4 py-9 sm:px-6 md:gap-8 md:px-7 lg:px-8 lg:py-12 xl:px-10">
+        {/* Steps Component */}
+        <Steps currentStep={currentStep} stepStates={stepStates} onStepChange={handleStepChange} />
 
-      {/* Step Section (Renders based on Step) */}
-      {renderCurrentStep()}
+        {/* Step Section (Renders based on Step) */}
+        {renderCurrentStep()}
 
-      <SubmissionModal
-        isOpen={submissionModalState.isOpen}
-        mode={submissionModalState.mode}
-        title={submissionModalState.title}
-        message={submissionModalState.message}
-        stepStatuses={submissionStepStatuses}
-        onSelectStep={jumpToStepFromModal}
-        onClose={closeSubmissionModal}
-      />
+        <SubmissionModal
+          isOpen={submissionModalState.isOpen}
+          mode={submissionModalState.mode}
+          title={submissionModalState.title}
+          message={submissionModalState.message}
+          stepStatuses={submissionStepStatuses}
+          onSelectStep={jumpToStepFromModal}
+          onClose={closeSubmissionModal}
+        />
+      </div>
     </section>
   );
 }

@@ -11,10 +11,10 @@ import Button from "@/react/components/ui/Button";
 import {
   COURSES,
   DRIVING_EXPERIENCE_ITEMS,
+  LICENSE_ISSUING_REGIONS,
   LICENSE_TYPES,
   PAYMENT_METHOD_ITEMS,
   PREFERRED_DAYS_ITEMS,
-  PROVINCES,
   TIME_SLOT_ITEMS,
 } from "@/react/constants/form-items";
 
@@ -41,12 +41,12 @@ export default function ReviewResponse({
   // Define States
 
   // Helper Functions
-  const selectedCourseInfo = useMemo(
+  const selectedCourseInfos = useMemo(
     () =>
-      COURSES.flatMap((courseCategoryItem) => courseCategoryItem.courses).find(
-        (courseItem) => courseItem.id === value.select_course.course.course_id,
+      COURSES.flatMap((courseCategoryItem) => courseCategoryItem.courses).filter((courseItem) =>
+        (value.select_course.course.selected_course_ids ?? []).includes(courseItem.id),
       ),
-    [value.select_course.course.course_id],
+    [value.select_course.course.selected_course_ids],
   );
 
   const selectedPaymentMethodInfo = useMemo(
@@ -62,7 +62,9 @@ export default function ReviewResponse({
 
   const selectedProvinceInfo = useMemo(
     () =>
-      PROVINCES.find((provinceItem) => provinceItem.value === value.license_information.issuing_region),
+      LICENSE_ISSUING_REGIONS.find(
+        (provinceItem) => provinceItem.value === value.license_information.issuing_region,
+      ),
     [value.license_information.issuing_region],
   );
 
@@ -100,7 +102,11 @@ export default function ReviewResponse({
     [value.license_information.experience],
   );
 
-  const selectedAmountValue: string = `$${(value.select_course.course.total_amount ?? value.payment_details.amount ?? 0).toFixed(2)}`;
+  const selectedAmountValue: string = `$${(
+    value.select_course.course.total_amount ??
+    value.payment_details.amount ??
+    0
+  ).toFixed(2)}`;
 
   const renderEditButton = (stepId: number): React.JSX.Element => {
     return (
@@ -129,14 +135,21 @@ export default function ReviewResponse({
           </div>
           <div className="bg-n-100 flex items-center justify-between gap-4 rounded-lg px-6 py-6">
             <div className="flex flex-col gap-1">
-              <p className="text-n-800 text-base leading-6 font-bold">
-                {selectedCourseInfo?.name ?? "Selected Course"}
-              </p>
-              <p className="text-n-600 text-sm leading-5 font-normal">
-                {selectedCourseInfo
-                  ? `${selectedCourseInfo.hours_in_car} In-car hours • ${selectedCourseInfo.hours_in_classroom} classroom hours`
-                  : "Course details pending"}
-              </p>
+              {selectedCourseInfos.length ? (
+                selectedCourseInfos.map((selectedCourseInfo) => (
+                  <div key={selectedCourseInfo.id} className="flex flex-col gap-1">
+                    <p className="text-n-800 text-base leading-6 font-bold">{selectedCourseInfo.name}</p>
+                    <p className="text-n-600 text-sm leading-5 font-normal">
+                      {`${selectedCourseInfo.hours_in_car} In-car hours • ${selectedCourseInfo.hours_in_classroom} classroom hours`}
+                    </p>
+                  </div>
+                ))
+              ) : (
+                <>
+                  <p className="text-n-800 text-base leading-6 font-bold">Selected Course</p>
+                  <p className="text-n-600 text-sm leading-5 font-normal">Course details pending</p>
+                </>
+              )}
             </div>
             <p className="text-n-800 text-base leading-6 font-bold">{selectedAmountValue}</p>
           </div>

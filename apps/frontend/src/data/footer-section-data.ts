@@ -1,11 +1,6 @@
 import { URLS } from "@/infrastructure/constants/urls";
 
 export const footerSectionData = {
-  logo: {
-    mark: "/images/footer-logo-mark.svg",
-    text: "/images/footer-logo-text.svg",
-    alt: "Chinook Driving School Calgary logo",
-  },
   certification: {
     prefix: "Certified by ",
     emphasis: "Alberta Transportation",
@@ -20,12 +15,12 @@ export const footerSectionData = {
     {
       label: "Instagram",
       icon: "/images/footer-social-instagram.svg",
-      href: "https://www.instagram.com/",
+      href: "https://www.instagram.com/chinookdrivingacademy?igsh=OWljODU3YjF2cDR1",
     },
     {
-      label: "LinkedIn",
-      icon: "/images/footer-social-linkedin.svg",
-      href: "https://www.linkedin.com/",
+      label: "Facebook",
+      icon: "/images/footer-social-facebook.svg",
+      href: "https://www.facebook.com/ChinookDrivingAcademy/",
     },
   ],
   legalLinks: [
@@ -34,7 +29,6 @@ export const footerSectionData = {
   ],
   craftedBy: {
     label: "Crafted by",
-    logo: "/images/footer-crafted-by.svg",
     alt: "Pixolo logo",
   },
   copyright: "© 2026 Chinook Driving School Calgary.",

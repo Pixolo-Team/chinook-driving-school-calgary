@@ -1,8 +1,16 @@
 ---
 import InstructorCard from "@/components/InstructorCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
-import { instructorsSectionData } from "@/data/instructors-section-data";
 import SliderArrows from "@/components/SliderArrows.astro";
+import { getHomeInstructorsViewModel } from "@/data/site-content-mappers";
+
+const instructorsViewModel = await getHomeInstructorsViewModel();
+const sectionContent = {
+  eyebrow: instructorsViewModel.eyebrow,
+  heading: instructorsViewModel.heading,
+  description: instructorsViewModel.description,
+};
+const instructors = instructorsViewModel.instructors;
 
 ---
 
@@ -11,9 +19,9 @@ import SliderArrows from "@/components/SliderArrows.astro";
 
     <!-- Section Header -->
     <SectionHeader
-      eyebrow={instructorsSectionData.eyebrow}
-      heading={instructorsSectionData.heading}
-      description={instructorsSectionData.description}
+      eyebrow={sectionContent.eyebrow}
+      heading={sectionContent.heading}
+      description={sectionContent.description}
     />
 
     <!-- Instructor Card Section -->
@@ -22,11 +30,10 @@ import SliderArrows from "@/components/SliderArrows.astro";
         <div class="embla__container flex -ml-3">
 
           <!-- Instructor Cards -->
-          {instructorsSectionData.instructors.map((instructor) => (
-            <div class="embla__slide pl-3 cursor-default min-w-0 flex-[0_0_100%] md:flex-[0_0_50%] lg:pl-5 xl:flex-[0_0_33.33%]">
+          {instructors.map((instructor) => (
+            <div class="embla__slide flex pl-3 cursor-default min-w-0 flex-[0_0_100%] md:flex-[0_0_50%] lg:pl-5 xl:flex-[0_0_33.33%]">
               <InstructorCard
-                firstName={instructor.firstName}
-                lastName={instructor.lastName}
+                name={instructor.name}
                 role={instructor.role}
                 description={instructor.description}
               />

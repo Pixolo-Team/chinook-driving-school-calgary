@@ -48,6 +48,8 @@ export default function StepStatus({
     : isPending
       ? "bg-amber-500 text-n-50"
       : "bg-n-300 text-n-700";
+  const titleClassName: string = isCompleted || isPending ? "text-n-100" : "text-n-900";
+  const subTitleClassName: string = isCompleted || isPending ? "text-n-500" : "text-n-700";
 
   // Helper Functions
 
@@ -76,8 +78,8 @@ export default function StepStatus({
       </div>
 
       <div className="flex min-w-0 flex-col gap-0.5">
-        <p className="text-n-900 truncate text-sm leading-5 font-semibold">{title}</p>
-        <p className="text-n-700 truncate text-xs leading-4 font-normal">{subTitle}</p>
+        <p className={joinClasses("truncate text-sm leading-5 font-semibold", titleClassName)}>{title}</p>
+        <p className={joinClasses("truncate text-xs leading-4 font-normal", subTitleClassName)}>{subTitle}</p>
       </div>
       {isPending ? (
         <span aria-hidden="true" className="text-amber-700 ml-auto shrink-0">
