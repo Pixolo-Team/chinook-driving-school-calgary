@@ -207,7 +207,7 @@ export const PAYMENT_METHOD_ITEMS = [
   {
     title: "Online Transfer",
     description: "Visa Debit or Debit Mastercard",
-    name: "online",
+    name: "upi",
     iconName: "online",
   },
   {
@@ -219,7 +219,7 @@ export const PAYMENT_METHOD_ITEMS = [
   {
     title: "Pay in Person",
     description: "Fast and secure bank transfer",
-    name: "in_person",
+    name: "cash",
     iconName: "in_person",
   },
 ];

@@ -72,6 +72,11 @@ const LEGACY_LICENSE_TYPE_MAP: Record<string, string> = {
   international: "OTHER",
 };
 
+const LEGACY_PAYMENT_METHOD_MAP: Record<string, string> = {
+  online: "upi",
+  in_person: "cash",
+};
+
 /**
  * Coordinates the multi-step enrollment flow and stores the shared form state.
  */
@@ -184,6 +189,12 @@ export default function EnrollmentForm({
         ? (LEGACY_LICENSE_TYPE_MAP[storedValue.license_information.type] ??
           storedValue.license_information.type)
         : storedValue.license_information.type,
+    },
+    payment_details: {
+      ...storedValue.payment_details,
+      method:
+        LEGACY_PAYMENT_METHOD_MAP[storedValue.payment_details.method] ??
+        storedValue.payment_details.method,
     },
   });
 

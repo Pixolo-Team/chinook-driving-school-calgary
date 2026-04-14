@@ -21,6 +21,11 @@ const TIME_SLOT_MAP: Record<string, TimeSlotData> = {
   },
 };
 
+const LEGACY_PAYMENT_METHOD_MAP: Record<string, string> = {
+  online: "upi",
+  in_person: "cash",
+};
+
 /**
  * Converts the section-based enrollment form value into the API payload shape.
  */
@@ -60,7 +65,9 @@ export function transformEnrollmentPayload(
     parent_full_name: enrollmentFormValue.parent_information.full_name,
     parent_email: enrollmentFormValue.parent_information.email,
     parent_contact_number: enrollmentFormValue.parent_information.contact_number,
-    payment_method: enrollmentFormValue.payment_details.method,
+    payment_method:
+      LEGACY_PAYMENT_METHOD_MAP[enrollmentFormValue.payment_details.method] ??
+      enrollmentFormValue.payment_details.method,
     amount:
       enrollmentFormValue.payment_details.amount ||
       enrollmentFormValue.select_course.course.total_amount ||
