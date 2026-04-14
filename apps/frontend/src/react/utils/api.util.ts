@@ -35,7 +35,10 @@ export function transformEnrollmentPayload(
 ): EnrollmentPayloadData {
   const selectedCourseInfo =
     courseCategories.flatMap((courseCategoryItem) => courseCategoryItem.courses).find(
-      (courseItem) => courseItem.id === enrollmentFormValue.select_course.course.course_id,
+      (courseItem) =>
+        courseItem.id ===
+        (enrollmentFormValue.select_course.course.course_id ??
+          enrollmentFormValue.select_course.course.selected_course_ids?.[0]),
     ) ?? null;
 
   return {

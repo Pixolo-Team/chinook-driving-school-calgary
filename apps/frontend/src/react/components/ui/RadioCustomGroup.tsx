@@ -16,7 +16,8 @@ type RadioCustomGroupPropsData = {
   label?: string;
   required?: boolean;
   items: RadioCustomGroupItemData[];
-  selected: string;
+  selectedValues?: string[];
+  activeValue?: string;
   onChangeSelection?: (value: string) => void;
   name?: string;
   containerClassName?: string;
@@ -28,13 +29,14 @@ function joinClasses(...classes: Array<string | false | null | undefined>): stri
 }
 
 /**
- * Renders a custom-image radio card group with single selection.
+ * Renders a custom-image course-category card group.
  */
 export default function RadioCustomGroup({
   label,
   required = false,
   items,
-  selected,
+  selectedValues = [],
+  activeValue,
   onChangeSelection,
   name = "radio-custom-group",
   containerClassName,
@@ -47,15 +49,15 @@ export default function RadioCustomGroup({
   // Define Refs
 
   // Define States
-  const [activeValue, setActiveValue] = useState<string>(selected);
+  const [focusedValue, setFocusedValue] = useState<string>(activeValue ?? selectedValues[0] ?? "");
 
   // Helper Functions
   useEffect(() => {
-    setActiveValue(selected);
-  }, [selected]);
+    setFocusedValue(activeValue ?? selectedValues[0] ?? "");
+  }, [activeValue, selectedValues]);
 
   function handleSelect(value: string): void {
-    setActiveValue(value);
+    setFocusedValue(value);
     onChangeSelection?.(value);
   }
 
@@ -77,16 +79,14 @@ export default function RadioCustomGroup({
         </p>
       ) : null}
 
-      <div
-        role="radiogroup"
-        className={joinClasses("flex w-full flex-row gap-4", containerClassName)}
-      >
+      <div role="group" className={joinClasses("flex w-full flex-row gap-4", containerClassName)}>
         {items.map((itemItem) => (
           <RadioCustom
             key={itemItem.value}
             name={name}
             value={itemItem.value}
-            checked={activeValue === itemItem.value}
+            checked={selectedValues.includes(itemItem.value)}
+            highlighted={focusedValue === itemItem.value}
             disabled={itemItem.disabled}
             data={{
               title: itemItem.title,

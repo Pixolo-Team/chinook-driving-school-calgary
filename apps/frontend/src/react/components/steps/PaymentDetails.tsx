@@ -42,6 +42,8 @@ export default function PaymentDetails({
 
   // Define States
   const requiresCardDetails: boolean = value.method === "card";
+  const requiresTransferInstructions: boolean =
+    value.method === "upi" || value.method === "bank_transfer";
 
   // Helper Functions
   /**
@@ -165,30 +167,38 @@ export default function PaymentDetails({
       </div>
 
       <div className="flex w-full flex-col items-start gap-5">
-        <label className="flex items-center gap-3">
-          <input
-            type="checkbox"
-            checked={value.did_agree_conditions}
-            onChange={(event) => handleFieldChange("did_agree_conditions", event.target.checked)}
-            className="border-n-300 h-5 w-5 rounded border text-blue-500"
-          />
-          <span className="text-sm leading-6" style={{ color: "var(--color-n-700)" }}>
-            I agree to the{" "}
-            <a
-              href="https://drive.google.com/uc?export=download&id=1lF3ghbzu1NLVCdZTlsgd9Srn31AkCyB8"
-              download=""
-              target="_blank"
-              rel="noopener noreferrer"
-              className="font-semibold underline underline-offset-2"
-              style={{ color: "var(--color-blue-500)" }}
-            >
-              Conditions of Enrollment
-            </a>
-            <span className="ml-1" style={{ color: "var(--color-error-500, #ef4444)" }}>
-              *
+        <div className="flex w-full flex-col gap-6">
+          {requiresTransferInstructions ? (
+            <p className="text-n-600 text-base leading-5 font-semibold">
+              Please send to chinookdriving@gmail.com
+            </p>
+          ) : null}
+
+          <label className="flex items-center gap-3">
+            <input
+              type="checkbox"
+              checked={value.did_agree_conditions}
+              onChange={(event) => handleFieldChange("did_agree_conditions", event.target.checked)}
+              className="border-n-300 h-5 w-5 rounded border text-blue-500"
+            />
+            <span className="text-sm leading-6" style={{ color: "var(--color-n-700)" }}>
+              I agree to the{" "}
+              <a
+                href="https://drive.google.com/uc?export=download&id=1lF3ghbzu1NLVCdZTlsgd9Srn31AkCyB8"
+                download=""
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold underline underline-offset-2"
+                style={{ color: "var(--color-blue-500)" }}
+              >
+                Conditions of Enrollment
+              </a>
+              <span className="ml-1" style={{ color: "var(--color-error-500, #ef4444)" }}>
+                *
+              </span>
             </span>
-          </span>
-        </label>
+          </label>
+        </div>
 
         <div className="flex w-full flex-row items-center justify-end gap-3 md:gap-4">
           <Button

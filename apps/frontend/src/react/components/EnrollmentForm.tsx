@@ -110,6 +110,7 @@ export default function EnrollmentForm({
     select_course: {
       session_type: null,
       course: {
+        selected_course_ids: [],
         course_id: null,
         course_price: null,
         tax_amount: null,
@@ -179,6 +180,17 @@ export default function EnrollmentForm({
     storedValue: EnrollmentFormValueData,
   ): EnrollmentFormValueData => ({
     ...storedValue,
+    select_course: {
+      ...storedValue.select_course,
+      course: {
+        ...storedValue.select_course.course,
+        selected_course_ids:
+          storedValue.select_course.course.selected_course_ids ??
+          (storedValue.select_course.course.course_id
+            ? [storedValue.select_course.course.course_id]
+            : []),
+      },
+    },
     license_information: {
       ...storedValue.license_information,
       issuing_region: storedValue.license_information.issuing_region

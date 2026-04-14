@@ -88,6 +88,7 @@ export type SessionOptionData = {
 export type SelectCourseValueData = {
   session_type: string | null;
   course: {
+    selected_course_ids: string[];
     course_id: string | null;
     course_price: number | null;
     tax_amount: number | null;
