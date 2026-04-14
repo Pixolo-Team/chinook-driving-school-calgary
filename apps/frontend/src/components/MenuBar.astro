@@ -12,7 +12,6 @@ interface Props {
 const { items, variant = "primary" } = Astro.props as Props;
 const currentPath = Astro.url.pathname;
 const isHome = currentPath === "/" || currentPath === "/index.html" || currentPath === "";
-
 // Keep the enrollment route as a dedicated CTA so the primary nav stays focused on page links.
 const navItems = items.filter((item) => item.url !== "/enroll");
 
@@ -31,6 +30,21 @@ const navLabel = variant === "primary" ? "Primary" : "Floating navigation";
   {
     navItems.map((item) => {
       const isActiveLink = getIsActiveLink(item.url);
+      const linkClasses =
+        variant === "primary"
+          ? [
+              "dynamic-menu-link",
+              isActiveLink ? "font-semibold" : "font-medium",
+              isHome ? "text-white hover:text-white/80" : "text-n-900 hover:text-n-600",
+            ]
+          : [
+              isActiveLink ? "font-semibold" : "font-medium",
+              "text-n-800 hover:text-blue-500",
+            ];
+      const indicatorClasses =
+        variant === "primary"
+          ? "bg-current -bottom-3 h-0.5 w-full"
+          : "inset-x-0 -bottom-4 h-1 w-full bg-blue-500 lg:-bottom-6";
 
       return (
         <a
@@ -39,15 +53,7 @@ const navLabel = variant === "primary" ? "Primary" : "Floating navigation";
           class:list={[
             "group text-xs leading-5 whitespace-nowrap transition-colors duration-200 lg:text-sm",
             "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2 rounded-sm",
-
-            variant === "primary" && [
-              "dynamic-menu-link",
-              isActiveLink ? "font-semibold" : "font-medium",
-              isHome ? "text-n-100 hover:text-white" : "text-n-900 hover:text-n-600"
-            ],
-            variant === "floating" && [
-              isActiveLink ? "font-semibold text-blue-500" : "text-n-800 font-medium hover:text-blue-500"
-            ]
+            linkClasses,
           ]}
         >
           <span class:list={["relative inline-flex", variant === "floating" && "px-1 lg:px-1.5"]}>
@@ -59,9 +65,7 @@ const navLabel = variant === "primary" ? "Primary" : "Floating navigation";
                 isActiveLink
                   ? "scale-x-100 opacity-100"
                   : "scale-x-0 opacity-0 group-hover:scale-x-100 group-hover:opacity-100 group-focus-visible:scale-x-100 group-focus-visible:opacity-100",
-                variant === "primary"
-                  ? "bg-current -bottom-3 h-0.5 w-full"
-                  : "inset-x-0 -bottom-4 h-1 w-full bg-blue-500 lg:-bottom-6",
+                indicatorClasses,
               ]}
             />
           </span>

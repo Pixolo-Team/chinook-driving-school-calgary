@@ -9,6 +9,17 @@ import { URLS } from "@/infrastructure/constants/urls";
 
 // DATA //
 import { menuItems } from "@/data/menu";
+
+const currentPath = Astro.url.pathname;
+const isHome = currentPath === "/" || currentPath === "/index.html" || currentPath === "";
+const logoWordmarkColorClass = isHome ? "text-white" : undefined;
+const enrollButtonClassName = [isHome ? "w-26.75 text-white" : "w-26.75"].join(" ");
+const callUsButtonClassName = [
+  "dynamic-call-btn flex items-center justify-center gap-2 pl-5 pr-3 transition-colors duration-300",
+  isHome
+    ? "border-white text-white hover:bg-white/10"
+    : "border-n-900 text-n-900 hover:bg-n-900/10",
+].join(" ");
 ---
 
 <!-- Keep the mobile header in the main header component so breakpoint-specific chrome lives in one place. -->
@@ -27,6 +38,7 @@ import { menuItems } from "@/data/menu";
       markClass="h-full w-auto shrink-0 object-contain"
       textClass="h-8 w-auto shrink-0 object-contain"
       textAlt="Chinook Driving Academy"
+      wordmarkColorClass={logoWordmarkColorClass}
     />
   </a>
 
@@ -46,7 +58,7 @@ import { menuItems } from "@/data/menu";
 
 <!-- Menu component -->
 <header
-  class="relative hidden w-full bg-[linear-gradient(0deg,rgba(7,7,7,0)_0%,rgba(7,7,7,0.84)_100%)] lg:block"
+  class="relative hidden w-full lg:block"
 >
   <div class="container mx-auto flex w-full items-center justify-between px-4 py-3 lg:px-5 lg:py-4">
     
@@ -57,6 +69,7 @@ import { menuItems } from "@/data/menu";
         markClass="h-full w-auto shrink-0 object-contain"
         textClass="h-8 w-auto shrink-0 object-contain"
         textAlt="Chinook Driving Academy"
+        wordmarkColorClass={logoWordmarkColorClass}
       />
     </a>
 
@@ -67,14 +80,14 @@ import { menuItems } from "@/data/menu";
       <!-- Menu CTAs -->
       <div class="flex items-center gap-2 lg:gap-2.5">
         <!-- Enroll Now Button -->
-        <Button buttonText="Enroll Now" className="w-26.75" href={URLS.ENROLL} />
+        <Button buttonText="Enroll Now" className={enrollButtonClassName} href={URLS.ENROLL} />
 
         <!-- Contact Us Button -->
         <Button
           buttonText="Call Us"
           rightIcon="phone-icon"
           variant="outline"
-          className="dynamic-call-btn border-n-50 text-n-50 hover:bg-n-50/10 flex items-center justify-center gap-2 pl-5 pr-3 transition-colors duration-300"
+          className={callUsButtonClassName}
           href={URLS.PHONE}
         />
       </div>
@@ -122,19 +135,19 @@ import { menuItems } from "@/data/menu";
     }
 
     // 2. Update the "Call Us" Button
-    const callUsBtn = document.querySelector('.dynamic-call-btn');
-    
-    if (callUsBtn) {
+    const callUsButtons = document.querySelectorAll('.dynamic-call-btn');
+
+    callUsButtons.forEach((callUsBtn) => {
       if (isHome) {
         // Apply White Theme
         callUsBtn.classList.remove("border-n-900", "text-n-900", "hover:bg-n-900/10");
-        callUsBtn.classList.add("border-n-50", "text-n-50", "hover:bg-n-50/10");
+        callUsBtn.classList.add("border-white", "text-white", "hover:bg-white/10");
       } else {
         // Apply Black Theme
-        callUsBtn.classList.remove("border-n-50", "text-n-50", "hover:bg-n-50/10");
+        callUsBtn.classList.remove("border-white", "text-white", "hover:bg-white/10");
         callUsBtn.classList.add("border-n-900", "text-n-900", "hover:bg-n-900/10");
       }
-    }
+    });
   }
 
   // Run the theme check on standard load
