@@ -258,9 +258,9 @@ Stores inbound leads and queries.
 
 ---
 
-## 9. Enrollment Courses
+## 9. Enrollment Course
 
-### `enrollment_courses`
+### `enrollment_course`
 
 Junction table to support multiple courses per enrollment.
 
