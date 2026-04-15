@@ -6,27 +6,32 @@ export const statHeaderData = {
 export const numberStatsData = [
   {
     icon: "user-check-validate",
-    value: "10k+",
-    label: "Students Trained",
+    stat_number: "10",
+    stat_suffix: "k+",
+    description: "Students Trained",
   },
   {
     icon: "steering-wheel",
-    value: "50k+",
-    label: "Lessons Delivered",
+    stat_number: "50",
+    stat_suffix: "k+",
+    description: "Lessons Delivered",
   },
   {
     icon: "smiley-very-happy",
-    value: "99%",
-    label: "Satisfaction Rate",
+    stat_number: "99",
+    stat_suffix: "%",
+    description: "Satisfaction Rate",
   },
   {
     icon: "document-contract-license",
-    value: "100%",
-    label: "Licensed Coaches",
+    stat_number: "100",
+    stat_suffix: "%",
+    description: "Licensed Coaches",
   },
   {
     icon: "cars-traffic-jam",
-    value: "15+ Yrs",
-    label: "Combined Experience",
+    stat_number: "15",
+    stat_suffix: " Yrs",
+    description: "Combined Experience",
   },
 ];

@@ -1,3 +1,5 @@
+import { getLegalContactDetails } from "@/data/site-content-mappers";
+
 type TermsConditionItem = {
   text: string;
   children?: string[];
@@ -15,7 +17,7 @@ export const termsConditionsData: TermsConditionSection[] = [
   {
     title: "1. Introduction",
     paragraphs: [
-      "Welcome to Chinook Driving School (\"we,\" \"our,\" \"us\"). By accessing our website, enrolling in our courses, or using our services, you agree to be bound by these Terms & Conditions.",
+      'Welcome to Chinook Driving School ("we," "our," "us"). By accessing our website, enrolling in our courses, or using our services, you agree to be bound by these Terms & Conditions.',
       "If you do not agree, please do not use our services.",
     ],
   },
@@ -183,3 +185,23 @@ export const termsConditionsData: TermsConditionSection[] = [
     ],
   },
 ];
+
+export async function getTermsConditionsData(): Promise<TermsConditionSection[]> {
+  const legalContactDetails = await getLegalContactDetails();
+  const email = legalContactDetails.email ?? "chinookdriving@gmail.com";
+  const phoneNumber = legalContactDetails.phoneNumber ?? "+1 (403) 281-8050";
+
+  return termsConditionsData.map((section) =>
+    section.title === "13. Contact Information"
+      ? {
+          ...section,
+          paragraphs: [
+            "Chinook Driving School",
+            "Calgary, Alberta",
+            `Email: ${email}`,
+            `Phone: ${phoneNumber}`,
+          ],
+        }
+      : section,
+  );
+}

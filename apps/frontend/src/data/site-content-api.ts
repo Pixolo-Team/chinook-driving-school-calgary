@@ -63,6 +63,20 @@ type InstructorsData = {
   instructor_cards?: InstructorCardData[];
 };
 
+type TestimonialCardData = {
+  name?: string;
+  role?: string;
+  rating?: string;
+  review?: string;
+  image?: string;
+};
+
+type TestimonialsData = {
+  eyebrow?: string;
+  title?: string;
+  testimonial_cards?: TestimonialCardData[];
+};
+
 type CtaData = {
   eyebrow?: string;
   title?: string;
@@ -147,6 +161,7 @@ type ContactLocationData = {
 
 type ContactMetaData = {
   email?: string;
+  phone_number?: string;
   locations?: ContactLocationData[];
 };
 
@@ -161,6 +176,7 @@ export type SiteContentData = {
   features?: FeaturesData;
   courses?: CoursesData;
   instructors?: InstructorsData;
+  testimonials?: TestimonialsData;
   cta?: CtaData;
   contact?: ContactData;
   about_home?: AboutHomeData;

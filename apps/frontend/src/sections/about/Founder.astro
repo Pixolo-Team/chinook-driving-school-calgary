@@ -23,7 +23,10 @@ const founderContent = await getAboutFounderViewModel();
     <div class="flex w-full flex-col items-center gap-7 md:gap-14 lg:flex-row lg:gap-16">
       
       <!-- Founder Image -->
-      <div class="h-71 md:h-114 lg:h-135">
+      <div
+        data-founder-image
+        class="h-71 opacity-0 md:h-114 lg:h-135"
+      >
         <Image
           src={founderContent.imageSrc}
           alt={founderContent.imageAlt}
@@ -33,7 +36,11 @@ const founderContent = await getAboutFounderViewModel();
           />
       </div>
 
-      <div class="flex w-full flex-col gap-7 md:gap-11 lg:gap-12">
+      <div
+        data-founder-text
+        class="flex w-full flex-col gap-7 opacity-0 md:gap-11 lg:gap-12"
+        style="transform: translateX(30px);"
+      >
         
         <!-- Founder Story Paragraph -->
         <div class="flex w-full flex-col gap-4 text-sm text-n-800 md:gap-5 md:text-base lg:gap-6 lg:text-lg">
@@ -61,3 +68,9 @@ const founderContent = await getAboutFounderViewModel();
     </div>
   </div>
 </section>
+
+<script>
+  import { initializeFounderSection } from "@/scripts/founder";
+
+  initializeFounderSection();
+</script>

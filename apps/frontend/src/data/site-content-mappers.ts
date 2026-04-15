@@ -12,6 +12,7 @@ import { heroSectionData } from "@/data/hero-section-data";
 import { instructorsSectionData } from "@/data/instructors-section-data";
 import { numberStatsData, statHeaderData } from "@/data/numberSection";
 import { processSectionData } from "@/data/process-data";
+import { testimonialSectionDetails } from "@/data/testimonials";
 import {
   getSiteContentData,
   isNonEmptyString,
@@ -25,6 +26,18 @@ function pickString(value: unknown, fallback: string): string {
 
 function pickNonEmptyArray<T>(value: T[] | undefined, fallback: T[]): T[] {
   return Array.isArray(value) && value.length > 0 ? value : fallback;
+}
+
+export async function getLegalContactDetails() {
+  const siteContentData = await getSiteContentData();
+  const contactMetaData = siteContentData?.meta?.contact;
+
+  return {
+    email: isNonEmptyString(contactMetaData?.email) ? contactMetaData.email.trim() : null,
+    phoneNumber: isNonEmptyString(contactMetaData?.phone_number)
+      ? contactMetaData.phone_number.trim()
+      : null,
+  };
 }
 
 export async function getHomeHeroViewModel() {
@@ -53,8 +66,9 @@ export async function getHomeStatsViewModel() {
       )
       .map((statCard) => ({
         icon: statCard.icon ?? "",
-        value: `${statCard.stat_number ?? ""}${statCard.stat_suffix ?? ""}`,
-        label: statCard.description ?? "",
+        stat_number: statCard.stat_number ?? "",
+        stat_suffix: statCard.stat_suffix ?? "",
+        description: statCard.description ?? "",
       })) ?? [];
 
   return {
@@ -132,6 +146,39 @@ export async function getHomeInstructorsViewModel() {
     heading: pickString(instructorsApiData?.heading, instructorsSectionData.heading),
     description: pickString(instructorsApiData?.description, instructorsSectionData.description),
     instructors: pickNonEmptyArray(cardsFromApi, instructorsSectionData.instructors),
+  };
+}
+
+export async function getHomeTestimonialsViewModel() {
+  const siteContentData = await getSiteContentData();
+  const testimonialsApiData = siteContentData?.testimonials;
+
+  const cardsFromApi =
+    testimonialsApiData?.testimonial_cards
+      ?.filter(
+        (testimonialCard) =>
+          isNonEmptyString(testimonialCard.name) &&
+          isNonEmptyString(testimonialCard.role) &&
+          isNonEmptyString(testimonialCard.rating) &&
+          isNonEmptyString(testimonialCard.review),
+      )
+      .map((testimonialCard, index) => ({
+        id: `api-${index + 1}`,
+        customReview: false,
+        rating: Number.parseFloat(testimonialCard.rating ?? "") || 5,
+        review: testimonialCard.review ?? "",
+        name: testimonialCard.name ?? "",
+        role: testimonialCard.role ?? "",
+        profilePhoto:
+          normalizeApiImagePath(testimonialCard.image) ??
+          "/images/testimonials/profile-photo-placeholder.png",
+      })) ?? [];
+
+  return {
+    eyebrow: pickString(testimonialsApiData?.eyebrow, testimonialSectionDetails.eyebrow),
+    heading: pickString(testimonialsApiData?.title, testimonialSectionDetails.heading),
+    reviewSummary: testimonialSectionDetails.reviewSummary,
+    testimonials: pickNonEmptyArray(cardsFromApi, testimonialSectionDetails.testimonials),
   };
 }
 

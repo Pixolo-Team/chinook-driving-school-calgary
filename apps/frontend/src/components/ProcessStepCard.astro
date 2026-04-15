@@ -9,7 +9,11 @@ const { index, title, description } = Astro.props as ProcessStepCardProps;
 const stepNumber = String(index + 1).padStart(2, "0");
 ---
 
-<div class="relative flex h-full flex-col overflow-hidden rounded-4xl border border-n-300 bg-n-50 p-8 md:p-9 xl:p-10">
+<div
+  data-process-step-card
+  class="relative flex h-full flex-col overflow-hidden rounded-4xl border border-n-300 bg-n-50 p-8 md:p-9 xl:p-10"
+  style="opacity: 0; transform: translateX(32px);"
+>
   
   <!-- Ellipse Background -->
   <div

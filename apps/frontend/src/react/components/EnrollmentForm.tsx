@@ -34,6 +34,12 @@ import { TOTAL_ENROLLMENT_STEPS } from "@/react/constants/form-items";
 
 // UTILS //
 import { transformEnrollmentPayload } from "@/react/utils/api.util";
+import {
+  animateAxisFade,
+  prefersReducedMotion,
+  revealElementImmediately,
+  setElementAxisPosition,
+} from "@/scripts/motion";
 
 type SubmissionModalStateData = {
   isOpen: boolean;
@@ -95,6 +101,8 @@ export default function EnrollmentForm({
   const hasHydratedFromStorageRef = useRef<boolean>(false);
   const stepCheckIntervalRef = useRef<number | null>(null);
   const isSubmissionCancelledRef = useRef<boolean>(false);
+  const formContainerRef = useRef<HTMLDivElement | null>(null);
+  const stepContentRef = useRef<HTMLDivElement | null>(null);
 
   // Define States
   const [currentStep, setCurrentStep] = useState<number>(1);
@@ -675,14 +683,75 @@ export default function EnrollmentForm({
     };
   }, []);
 
+  useEffect(() => {
+    const formContainerElement = formContainerRef.current;
+
+    if (!(formContainerElement instanceof HTMLDivElement)) {
+      return;
+    }
+
+    if (prefersReducedMotion()) {
+      revealElementImmediately(formContainerElement, "x");
+      return;
+    }
+
+    formContainerElement.style.opacity = "0";
+    setElementAxisPosition(formContainerElement, "x", 34);
+
+    const animationFrameId = window.requestAnimationFrame(() => {
+      void animateAxisFade(formContainerElement, {
+        axis: "x",
+        from: 34,
+        duration: 0.72,
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  }, []);
+
+  useEffect(() => {
+    const stepContentElement = stepContentRef.current;
+
+    if (!(stepContentElement instanceof HTMLDivElement)) {
+      return;
+    }
+
+    if (prefersReducedMotion()) {
+      revealElementImmediately(stepContentElement, "x");
+      return;
+    }
+
+    stepContentElement.style.opacity = "0";
+    setElementAxisPosition(stepContentElement, "x", 24);
+
+    const animationFrameId = window.requestAnimationFrame(() => {
+      void animateAxisFade(stepContentElement, {
+        axis: "x",
+        from: 24,
+        duration: 0.44,
+      });
+    });
+
+    return () => {
+      window.cancelAnimationFrame(animationFrameId);
+    };
+  }, [currentStep]);
+
   return (
     <section className="bg-n-50">
-      <div className="container mx-auto flex min-h-screen w-full flex-col gap-5 px-4 py-9 sm:px-6 md:gap-8 md:px-7 lg:px-8 lg:py-12 xl:px-10">
+      <div
+        ref={formContainerRef}
+        className="container mx-auto flex min-h-screen w-full flex-col gap-5 px-4 py-9 sm:px-6 md:gap-8 md:px-7 lg:px-8 lg:py-12 xl:px-10"
+      >
         {/* Steps Component */}
         <Steps currentStep={currentStep} stepStates={stepStates} onStepChange={handleStepChange} />
 
         {/* Step Section (Renders based on Step) */}
-        {renderCurrentStep()}
+        <div key={currentStep} ref={stepContentRef}>
+          {renderCurrentStep()}
+        </div>
 
         <SubmissionModal
           isOpen={submissionModalState.isOpen}

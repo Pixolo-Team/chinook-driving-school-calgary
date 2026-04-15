@@ -76,7 +76,11 @@ const fieldRows: FormField[][] = [
   <div class="container mx-auto max-w-screen-2xl px-6 py-8 md:py-9 xl:px-44">
     <!-- Outer Box -->
     <div class="rounded-3xl bg-blue-50 p-3 md:p-6">
-      <div class="grid gap-4 xl:grid-cols-12 xl:items-stretch xl:gap-6">
+      <div
+        data-contact-form-shell
+        class="grid gap-4 xl:grid-cols-12 xl:items-stretch xl:gap-6"
+        style="opacity: 0; transform: translateX(34px);"
+      >
         <div class="xl:col-span-8">
           <div class="bg-n-50 h-full rounded-3xl p-6 md:p-8">
             <div class="h-full relative">
@@ -235,6 +239,10 @@ const fieldRows: FormField[][] = [
 </section>
 
 <script>
+  import { initializeContactForms } from "@/scripts/contactForm";
+
+  initializeContactForms();
+
   const form = document.getElementById("contact-form") as HTMLFormElement;
   const formContainer = document.getElementById("form-container");
   const successMessage = document.getElementById("success-message");

@@ -1,3 +1,5 @@
+import { getLegalContactDetails } from "@/data/site-content-mappers";
+
 type PrivacyPolicyItem = {
   text: string;
   children?: string[];
@@ -161,3 +163,22 @@ export const privacyPolicyData: PrivacyPolicySection[] = [
     ],
   },
 ];
+
+export async function getPrivacyPolicyData(): Promise<PrivacyPolicySection[]> {
+  const legalContactDetails = await getLegalContactDetails();
+  const email = legalContactDetails.email ?? "chinookdriving@gmail.com";
+  const phoneNumber = legalContactDetails.phoneNumber ?? "+1 (403) 281-8050";
+
+  return privacyPolicyData.map((section) =>
+    section.title === "12. Contact Us"
+      ? {
+          ...section,
+          paragraphs: [
+            "For any privacy-related concerns:",
+            `Email: ${email}`,
+            `Phone: ${phoneNumber}`,
+          ],
+        }
+      : section,
+  );
+}
