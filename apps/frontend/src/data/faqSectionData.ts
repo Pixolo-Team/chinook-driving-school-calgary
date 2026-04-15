@@ -2,7 +2,7 @@ export const faqSectionData = [
   {
     question: "What is the minimum age to start?",
     answer:
-      "You can begin driver training once you meet the local licensing age requirements. Our team can guide you on the right course based on your current licence stage.",
+      "You can begin driver training once you meet the local licensing age requirements. Our team can guide you on the right course based on your current license stage.",
   },
   {
     question: "How many lessons do I need?",

@@ -43,12 +43,18 @@ export async function getLegalContactDetails() {
 export async function getHomeHeroViewModel() {
   const siteContentData = await getSiteContentData();
   const heroApiData = siteContentData?.hero;
-  const heroApiImage = normalizeApiImagePath(heroApiData?.image);
+  const heroApiSlides = Array.isArray(heroApiData?.image)
+    ? heroApiData.image
+        .map((imagePath) => normalizeApiImagePath(imagePath))
+        .filter((imagePath): imagePath is string => imagePath !== null)
+    : normalizeApiImagePath(heroApiData?.image)
+      ? [normalizeApiImagePath(heroApiData?.image) as string]
+      : [];
 
   return {
     eyebrow: pickString(heroApiData?.title, heroSectionData.eyebrow),
     heading: pickString(heroApiData?.description, heroSectionData.heading),
-    slides: heroApiImage ? [heroApiImage, ...heroSectionData.slides] : heroSectionData.slides,
+    slides: pickNonEmptyArray(heroApiSlides, heroSectionData.slides),
   };
 }
 
@@ -143,7 +149,7 @@ export async function getHomeInstructorsViewModel() {
 
   return {
     eyebrow: pickString(instructorsApiData?.eyebrow, instructorsSectionData.eyebrow),
-    heading: pickString(instructorsApiData?.heading, instructorsSectionData.heading),
+    heading: pickString(instructorsApiData?.title, instructorsSectionData.heading),
     description: pickString(instructorsApiData?.description, instructorsSectionData.description),
     instructors: pickNonEmptyArray(cardsFromApi, instructorsSectionData.instructors),
   };
@@ -241,7 +247,7 @@ export async function getContactInfoViewModel() {
 
   return {
     eyebrow: pickString(contactApiData?.eyebrow, contactSectionData.eyebrow),
-    heading: pickString(contactApiData?.heading, contactSectionData.heading),
+    heading: pickString(contactApiData?.title, contactSectionData.heading),
     description: pickString(contactApiData?.description, contactSectionData.description),
     cards: {
       getInTouch: {
@@ -321,10 +327,10 @@ export async function getAboutFounderViewModel() {
 
   return {
     eyebrow: pickString(founderApiData?.eyebrow, founderSectionData.eyebrow),
-    heading: pickString(founderApiData?.heading, founderSectionData.heading),
+    heading: pickString(founderApiData?.title, founderSectionData.heading),
     paragraphs: pickNonEmptyArray(paragraphsFromApi, founderSectionData.paragraphs),
     name: pickString(founderApiData?.name, founderSectionData.name),
-    title: pickString(founderApiData?.title, founderSectionData.title),
+    title: pickString(founderApiData?.title_role, founderSectionData.title),
     imageSrc: normalizeApiImagePath(founderApiData?.image) ?? founderSectionData.imageSrc,
     imageAlt: founderSectionData.imageAlt,
   };

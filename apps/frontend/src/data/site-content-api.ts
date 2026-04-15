@@ -4,7 +4,7 @@ const PIXSHEET_SITE_CONTENT_API_URL =
 type HeroData = {
   title?: string;
   description?: string;
-  image?: string;
+  image?: string | string[];
 };
 
 type StatsCardData = {
@@ -58,7 +58,7 @@ type InstructorCardData = {
 
 type InstructorsData = {
   eyebrow?: string;
-  heading?: string;
+  title?: string;
   description?: string;
   instructor_cards?: InstructorCardData[];
 };
@@ -90,7 +90,7 @@ type OpeningHoursData = {
 
 type ContactData = {
   eyebrow?: string;
-  heading?: string;
+  title?: string;
   description?: string;
   opening_hours?: OpeningHoursData[];
 };
@@ -114,11 +114,11 @@ type AboutStoryData = {
 
 type AboutFounderData = {
   eyebrow?: string;
-  heading?: string;
+  title?: string;
   paragraphs?: string[];
   image?: string;
   name?: string;
-  title?: string;
+  title_role?: string;
 };
 
 type CoursesHeroData = {

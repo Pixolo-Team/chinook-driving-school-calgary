@@ -92,7 +92,7 @@ export default function EnrollmentInfo({
               <p className="text-xs font-medium text-n-500">What You’ll Need</p>
               <ul className="list-disc space-y-1 pl-4 text-base text-n-800 sm:text-lg">
                 <li>
-                  Valid <span className="font-bold">ID / Licence</span> details
+                  Valid <span className="font-bold">ID / License</span> details
                 </li>
                 <li>Contact information</li>
                 <li>Preferred schedule</li>

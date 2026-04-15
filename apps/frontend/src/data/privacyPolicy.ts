@@ -31,7 +31,7 @@ export const privacyPolicyData: PrivacyPolicySection[] = [
           "Phone number",
           "Address",
           "Date of birth",
-          "Licence details",
+          "License details",
         ],
       },
       {

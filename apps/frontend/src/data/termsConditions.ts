@@ -96,7 +96,7 @@ export const termsConditionsData: TermsConditionSection[] = [
         text: "Arrive on time for lessons.",
       },
       {
-        text: "Carry required documents (licence, ID).",
+        text: "Carry required documents (license, ID).",
       },
       {
         text: "Follow instructor guidance and road safety rules.",
