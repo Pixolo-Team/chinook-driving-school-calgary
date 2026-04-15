@@ -8,7 +8,6 @@ type HeroData = {
 };
 
 type StatsCardData = {
-  icon?: string;
   stat_number?: string;
   stat_suffix?: string;
   description?: string;
@@ -34,7 +33,6 @@ type FaqData = {
 type FeatureCardData = {
   title?: string;
   description?: string;
-  image?: string;
 };
 
 type FeaturesData = {
@@ -68,7 +66,6 @@ type TestimonialCardData = {
   role?: string;
   rating?: string;
   review?: string;
-  image?: string;
 };
 
 type TestimonialsData = {
@@ -81,6 +78,7 @@ type CtaData = {
   eyebrow?: string;
   title?: string;
   description?: string;
+  image?: string;
 };
 
 type OpeningHoursData = {
@@ -156,6 +154,7 @@ type EnrollHeroData = {
 type ContactLocationData = {
   title?: string;
   address?: string;
+  location?: string;
   service_area?: string;
 };
 

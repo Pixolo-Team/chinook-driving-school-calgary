@@ -9,7 +9,7 @@ $structure = (object) [
   "hero" => (object)[
     "title" => "",
     "description" => "",
-    "images" => array("")
+    "image" => array("")
   ],
 
   "stats" => (object)[
@@ -17,7 +17,6 @@ $structure = (object) [
     "title" => "",
     "stat_cards" => array(
       (object)[
-        "icon" => "",
         "stat_number" => "",
         "stat_suffix" => "",
         "description" => ""
@@ -70,13 +69,12 @@ $structure = (object) [
   "testimonials" => (object)[
     "eyebrow" => "",
     "title" => "",
-    "testimonial_card" => array(
+    "testimonial_cards" => array(
       (object)[
         "name" => "",
-        "title" => "",
-        "description" => "",
-        "rating" => "",
-        "image" => ""
+        "role" => "",
+        "review" => "",
+        "rating" => ""
       ]
     )
   ],

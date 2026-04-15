@@ -66,12 +66,11 @@ export async function getHomeStatsViewModel() {
     statsApiData?.stat_cards
       ?.filter(
         (statCard) =>
-          isNonEmptyString(statCard.icon) &&
           isNonEmptyString(statCard.stat_number) &&
           isNonEmptyString(statCard.description),
       )
-      .map((statCard) => ({
-        icon: statCard.icon ?? "",
+      .map((statCard, index) => ({
+        icon: numberStatsData[index]?.icon ?? numberStatsData[0]?.icon ?? "",
         stat_number: statCard.stat_number ?? "",
         stat_suffix: statCard.stat_suffix ?? "",
         description: statCard.description ?? "",
@@ -94,11 +93,17 @@ export async function getHomeFeaturesViewModel() {
         (featureCard) =>
           isNonEmptyString(featureCard.title) && isNonEmptyString(featureCard.description),
       )
-      .map((featureCard) => ({
+      .map((featureCard, index) => ({
         title: featureCard.title ?? "",
         description: featureCard.description ?? "",
-        imageAlt: featureCard.title ?? "Feature image",
-        imageSrc: normalizeApiImagePath(featureCard.image) ?? "/images/features/certified-driving.png",
+        imageAlt:
+          FeaturesSectionDetails.cards[index]?.imageAlt ??
+          featureCard.title ??
+          "Feature image",
+        imageSrc:
+          FeaturesSectionDetails.cards[index]?.imageSrc ??
+          FeaturesSectionDetails.cards[0]?.imageSrc ??
+          "/images/features/certified-driving.png",
       })) ?? [];
 
   return {
@@ -169,15 +174,16 @@ export async function getHomeTestimonialsViewModel() {
           isNonEmptyString(testimonialCard.review),
       )
       .map((testimonialCard, index) => ({
-        id: `api-${index + 1}`,
-        customReview: false,
+        id: testimonialSectionDetails.testimonials[index]?.id ?? `api-${index + 1}`,
+        customReview: testimonialSectionDetails.testimonials[index]?.customReview ?? false,
         rating: Number.parseFloat(testimonialCard.rating ?? "") || 5,
         review: testimonialCard.review ?? "",
         name: testimonialCard.name ?? "",
         role: testimonialCard.role ?? "",
         profilePhoto:
-          normalizeApiImagePath(testimonialCard.image) ??
+          testimonialSectionDetails.testimonials[index]?.profilePhoto ??
           "/images/testimonials/profile-photo-placeholder.png",
+        backgroundImage: testimonialSectionDetails.testimonials[index]?.backgroundImage,
       })) ?? [];
 
   return {
@@ -196,7 +202,7 @@ export async function getHomeCtaViewModel() {
     eyebrow: pickString(ctaApiData?.eyebrow, ctaData.eyebrow),
     heading: pickString(ctaApiData?.title, ctaData.heading),
     description: pickString(ctaApiData?.description, ctaData.description),
-    imageSrc: ctaData.imageSrc,
+    imageSrc: normalizeApiImagePath(ctaApiData?.image) ?? ctaData.imageSrc,
     imageAlt: ctaData.imageAlt,
   };
 }
