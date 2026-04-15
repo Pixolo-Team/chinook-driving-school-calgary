@@ -9,7 +9,7 @@ $structure = (object) [
   "hero" => (object)[
     "title" => "",
     "description" => "",
-    "image" => array("")
+    "images" => array("")
   ],
 
   "stats" => (object)[
