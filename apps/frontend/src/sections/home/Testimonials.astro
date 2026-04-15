@@ -7,9 +7,9 @@ import Button from "@/components/ui/Button.astro";
 import { Icon } from "astro-icon/components";
 
 // DATA //
-import { testimonialSectionDetails } from "@/data/testimonials";
+import { getHomeTestimonialsViewModel } from "@/data/site-content-mappers";
 
-const { eyebrow, heading, reviewSummary, testimonials } = testimonialSectionDetails;
+const { eyebrow, heading, reviewSummary, testimonials } = await getHomeTestimonialsViewModel();
 ---
 
 

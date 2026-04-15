@@ -25,9 +25,17 @@ const statsCards = statsViewModel.cards;
     />
 
     <!-- StatCard -->
-    <div class="grid w-70 grid-cols-1 gap-3.5 px-6 md:w-full md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
+    <div
+      data-stats-grid
+      class="grid w-70 grid-cols-1 gap-3.5 px-6 md:w-full md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5"
+    >
       {statsCards.map((stat) => (
-        <StatCard icon={stat.icon} value={stat.value} label={stat.label} />
+        <StatCard
+          icon={stat.icon}
+          stat_number={stat.stat_number}
+          stat_suffix={stat.stat_suffix}
+          description={stat.description}
+        />
       ))}
     </div>
   </div>

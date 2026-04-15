@@ -13,7 +13,8 @@ const ctaContent = await getHomeCtaViewModel();
     class="container mx-auto flex w-full flex-col items-center gap-8 px-5 py-14 sm:px-6 md:gap-10 lg:flex-row lg:gap-20 lg:px-10 lg:py-24"
   >
     <div
-      class="bg-n-50 relative h-[240px] w-full overflow-hidden rounded-3xl md:h-[387px] lg:h-[449px] lg:w-[595px] lg:shrink-0"
+      data-cta-image
+      class="bg-n-50 relative h-[240px] w-full overflow-hidden rounded-3xl opacity-0 md:h-[387px] lg:h-[449px] lg:w-[595px] lg:shrink-0"
     >
       <Image
         src={ctaContent.imageSrc}
@@ -24,7 +25,11 @@ const ctaContent = await getHomeCtaViewModel();
       />
     </div>
 
-    <div class="flex w-full flex-col gap-5 md:gap-7 lg:flex-1 lg:gap-8">
+    <div
+      data-cta-text
+      class="flex w-full flex-col gap-5 opacity-0 md:gap-7 lg:flex-1 lg:gap-8"
+      style="transform: translateX(30px);"
+    >
       <div class="flex flex-col gap-5 md:gap-7 lg:gap-10">
         <div class="flex flex-col gap-1 md:gap-2 lg:gap-3">
           <p class="text-xs font-bold uppercase tracking-[0.6px] text-blue-500">
@@ -50,3 +55,9 @@ const ctaContent = await getHomeCtaViewModel();
     </div>
   </div>
 </section>
+
+<script>
+  import { initializeCtaSection } from "@/scripts/cta";
+
+  initializeCtaSection();
+</script>

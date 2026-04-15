@@ -28,7 +28,7 @@ export const testimonialSectionDetails: {
         "The marketing campaign they created for us was outstanding, and we saw significant engagement. However, I wish they had provided more frequent updates during the process.",
       name: "Henry Foster",
       role: "Project Manager",
-      profilePhoto: "/images/testimonials/profile-photo.jpg",
+      profilePhoto: "/images/testimonials/profile-photo-placeholder.png",
       backgroundImage: "/images/testimonials/bg-image.png",
     },
     {
@@ -39,7 +39,7 @@ export const testimonialSectionDetails: {
         "The marketing campaign they created for us was outstanding, and we saw significant engagement. However, I wish they had provided more frequent updates during the process.",
       name: "Henry Foster",
       role: "Project Manager",
-      profilePhoto: "/images/testimonials/profile-photo.jpg",
+      profilePhoto: "/images/testimonials/profile-photo-placeholder.png",
     },
     {
       id: "standard",
@@ -49,7 +49,7 @@ export const testimonialSectionDetails: {
         "The marketing campaign they created for us was outstanding, and we saw significant engagement. However, I wish they had provided more frequent updates during the process.",
       name: "Henry Foster",
       role: "Project Manager",
-      profilePhoto: "/images/testimonials/profile-photo.jpg",
+      profilePhoto: "/images/testimonials/profile-photo-placeholder.png",
       backgroundImage: "/images/testimonials/bg-image.png",
     },
        {
@@ -60,7 +60,7 @@ export const testimonialSectionDetails: {
         "The marketing campaign they created for us was outstanding, and we saw significant engagement. However, I wish they had provided more frequent updates during the process.",
       name: "Henry Foster",
       role: "Project Manager",
-      profilePhoto: "/images/testimonials/profile-photo.jpg",
+      profilePhoto: "/images/testimonials/profile-photo-placeholder.png",
       backgroundImage: "/images/testimonials/bg-image.png",
     },
     {
@@ -71,7 +71,7 @@ export const testimonialSectionDetails: {
         "The marketing campaign they created for us was outstanding, and we saw significant engagement. However, I wish they had provided more frequent updates during the process.",
       name: "Henry Foster",
       role: "Project Manager",
-      profilePhoto: "/images/testimonials/profile-photo.jpg",
+      profilePhoto: "/images/testimonials/profile-photo-placeholder.png",
       backgroundImage: "/images/testimonials/bg-image.png",
     },
   ],

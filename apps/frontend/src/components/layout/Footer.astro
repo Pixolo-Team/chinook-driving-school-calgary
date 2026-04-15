@@ -13,7 +13,9 @@ import { footerSectionData } from "@/data/footer-section-data";
   >
     <!-- Chinook Logo & Links  -->
     <div
+      data-footer-reveal
       class="relative flex flex-col gap-9 md:gap-10 lg:flex-row lg:items-start lg:justify-between"
+      style="opacity: 0; transform: translateY(26px);"
     >
 
       <!-- Chinook Logo -->
@@ -112,3 +114,9 @@ import { footerSectionData } from "@/data/footer-section-data";
     </div>
   </div>
 </section>
+
+<script>
+  import { initializeFooterReveal } from "@/scripts/footer";
+
+  initializeFooterReveal();
+</script>

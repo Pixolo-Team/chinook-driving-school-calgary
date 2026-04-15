@@ -199,7 +199,7 @@ export default function ReviewResponse({
 
           <div className="border-n-300 flex w-full flex-col gap-4 rounded-xl border p-6 shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]">
             <div className="flex items-center justify-between gap-4">
-              <p className="text-n-800 text-lg leading-normal font-bold">Licence Information</p>
+              <p className="text-n-800 text-lg leading-normal font-bold">License Information</p>
               {renderEditButton(3)}
             </div>
             <div className="bg-n-100 flex flex-col gap-1 rounded-lg px-5 py-5">
@@ -219,7 +219,7 @@ export default function ReviewResponse({
             <div className="flex flex-col gap-4">
               <div className="flex flex-col gap-1">
                 <p className="text-n-500 text-xs leading-4 font-semibold tracking-[0.6px] uppercase">
-                  Licence Number
+                  License Number
                 </p>
                 <p className="text-n-800 text-base leading-5 font-medium">
                   {value.license_information.number || "Not provided"}
@@ -227,7 +227,7 @@ export default function ReviewResponse({
               </div>
               <div className="flex flex-col gap-1">
                 <p className="text-n-500 text-xs leading-4 font-semibold tracking-[0.6px] uppercase">
-                  Licence Type
+                  License Type
                 </p>
                 <p className="text-n-800 text-base leading-5 font-medium">
                   {selectedLicenseTypeInfo?.label || "Not provided"}

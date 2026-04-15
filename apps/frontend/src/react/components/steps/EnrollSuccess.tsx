@@ -1,11 +1,12 @@
 // REACT //
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 // COMPONENTS //
 import Button from "../ui/Button";
 
 // DATA //
 import { enrollmentConfirmedSectionData } from "@/data/enrollment-confirmed-section-data";
+import { animateAxisFade, prefersReducedMotion, revealElementImmediately, wait } from "@/scripts/motion";
 
 /**
  * Renders the enrolled confirmation screen using the shared section content.
@@ -16,6 +17,8 @@ export default function EnrollSuccess(): React.JSX.Element {
   // Define Context
 
   // Define Refs
+  const illustrationRef = useRef<HTMLDivElement | null>(null);
+  const textContentRef = useRef<HTMLDivElement | null>(null);
 
   // Define States
 
@@ -28,11 +31,42 @@ export default function EnrollSuccess(): React.JSX.Element {
   };
 
   // Use Effects
+  useEffect(() => {
+    const illustrationElement = illustrationRef.current;
+    const textContentElement = textContentRef.current;
+
+    if (!(illustrationElement instanceof HTMLDivElement) || !(textContentElement instanceof HTMLDivElement)) {
+      return;
+    }
+
+    if (prefersReducedMotion()) {
+      revealElementImmediately(illustrationElement, "y");
+      revealElementImmediately(textContentElement, "y");
+      return;
+    }
+
+    void (async () => {
+      await animateAxisFade(illustrationElement, {
+        axis: "y",
+        from: 0,
+        duration: 0.42,
+      });
+
+      await wait(120);
+
+      await animateAxisFade(textContentElement, {
+        axis: "y",
+        from: 24,
+        duration: 0.58,
+      });
+    })();
+  }, []);
+
   return (
     <section className="bg-n-50 pt-24 md:pt-28 lg:pt-32">
       <div className="mx-auto w-full max-w-screen-2xl px-6 py-20 lg:py-24 xl:px-60">
         <div className="flex w-full flex-col items-start gap-12 lg:flex-row lg:items-center lg:gap-20">
-          <div className="relative hidden lg:block">
+          <div ref={illustrationRef} className="relative hidden opacity-0 lg:block">
             <img
               src={enrollmentConfirmedSectionData.image}
               alt=""
@@ -43,7 +77,11 @@ export default function EnrollSuccess(): React.JSX.Element {
             />
           </div>
 
-          <div className="flex w-full flex-col items-start gap-9 md:gap-10 lg:gap-16">
+          <div
+            ref={textContentRef}
+            className="flex w-full flex-col items-start gap-9 opacity-0 md:gap-10 lg:gap-16"
+            style={{ transform: "translateY(24px)" }}
+          >
             <div className="flex w-full flex-col gap-6 md:gap-9 lg:gap-10">
               <div className="flex w-full flex-col gap-2">
                 <p className="text-xs font-bold tracking-[0.6px] uppercase text-blue-500 md:text-sm">

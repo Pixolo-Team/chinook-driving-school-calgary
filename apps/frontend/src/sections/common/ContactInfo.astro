@@ -30,7 +30,11 @@ const cards = contactInfoViewModel.cards;
     </div>
 
     <!-- Contact Cards -->
-    <div class="flex w-full flex-col gap-5 lg:gap-6">
+    <div
+      data-contact-info-shell
+      class="flex w-full flex-col gap-5 lg:gap-6"
+      style="opacity: 0; transform: translateX(34px);"
+    >
       <div class="grid w-full gap-5 lg:grid-cols-2 lg:gap-6">
         <!-- Get In Touch Card -->
         <div
@@ -217,3 +221,9 @@ const cards = contactInfoViewModel.cards;
     </div>
   </div>
 </section>
+
+<script>
+  import { initializeContactForms } from "@/scripts/contactForm";
+
+  initializeContactForms();
+</script>
