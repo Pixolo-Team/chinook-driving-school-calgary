@@ -33,7 +33,7 @@ const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const PHONE_DIGIT_PATTERN = /\d/g;
 
 /**
- * Renders the Parent information step and reports field changes to the parent form.
+ * Renders the Legal Guardian / Emergency Contact Information step and reports field changes to the parent form.
  */
 export default function ParentInformation({
   value,

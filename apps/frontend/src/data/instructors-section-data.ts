@@ -1,5 +1,5 @@
 export const instructorsSectionData = {
-  eyebrow: "Expert Trainers",
+  eyebrow: "Expert Instructors",
   heading: "Our Expert Driving Instructors",
   description:
     "Certified instructors guide you step-by-step to become a confident, skilled driver.",
