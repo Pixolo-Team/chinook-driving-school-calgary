@@ -231,7 +231,7 @@ export default function Availability({
           }}
           className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
         >
-          Continue to Parent Info.
+          Continue to Legal Guardian / Emergency Contact Information.
         </Button>
       </div>
     </section>

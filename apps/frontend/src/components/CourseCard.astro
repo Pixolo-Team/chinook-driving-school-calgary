@@ -35,17 +35,6 @@ const showDivider = hasPracticeHours && hasClassroomHours;
   class="relative flex h-full w-full"
   style="opacity: 0; transform: translateY(26px);"
 >
-  
-  <!-- Most Popular Badge -->
-  {
-    card.badge && (
-      <div class="absolute top-0 left-1/2 z-20 hidden -translate-x-1/2 -translate-y-1/2 md:block">
-        <div class="bg-n-50 inline-flex min-h-8.75 items-center justify-center rounded-full border-2 border-blue-500 px-5 py-2 text-center text-xs leading-none font-bold whitespace-nowrap text-blue-500 lg:px-6 lg:text-sm">
-          {card.badge}
-        </div>
-      </div>
-    )
-  }
 
   <!-- Course Details Card -->
   <div
@@ -217,30 +206,8 @@ const showDivider = hasPracticeHours && hasClassroomHours;
           }
         </div>
 
-        <div class="flex flex-col gap-2.5">
-          {
-            card.features.map((feature) => (
-              <div class="flex items-start gap-3">
-                <Icon
-                  name={card.theme === "brand" ? "check-circle-inverse" : "check-circle"}
-                  class:list={[
-                    "mt-0.5 size-4 shrink-0",
-                    card.theme === "brand" ? "text-n-50" : "text-green-500",
-                  ]}
-                  aria-hidden="true"
-                />
-                <p
-                  class:list={[
-                    "text-sm leading-5",
-                    card.theme === "brand" ? "text-n-50 font-semibold" : "text-n-800 font-normal",
-                  ]}
-                >
-                  {feature}
-                </p>
-              </div>
-            ))
-          }
-        </div>
+        <!-- Features -->
+        
       </div>
     </div>
 

@@ -210,16 +210,4 @@ export const PAYMENT_METHOD_ITEMS = [
     name: "upi",
     iconName: "online",
   },
-  {
-    title: "Bank Transfer",
-    description: "Fast and secure bank transfer",
-    name: "bank_transfer",
-    iconName: "bank_transfer",
-  },
-  {
-    title: "Pay in Person",
-    description: "Fast and secure bank transfer",
-    name: "cash",
-    iconName: "in_person",
-  },
 ];

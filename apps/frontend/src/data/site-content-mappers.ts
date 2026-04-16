@@ -43,13 +43,11 @@ export async function getLegalContactDetails() {
 export async function getHomeHeroViewModel() {
   const siteContentData = await getSiteContentData();
   const heroApiData = siteContentData?.hero;
-  const heroApiSlides = Array.isArray(heroApiData?.image)
-    ? heroApiData.image
-        .map((imagePath) => normalizeApiImagePath(imagePath))
-        .filter((imagePath): imagePath is string => imagePath !== null)
-    : normalizeApiImagePath(heroApiData?.image)
-      ? [normalizeApiImagePath(heroApiData?.image) as string]
-      : [];
+  const heroApiSlides = Array.isArray(heroApiData?.images)
+  ? heroApiData.images
+      .map((imagePath) => normalizeApiImagePath(imagePath))
+      .filter((imagePath): imagePath is string => imagePath !== null)
+  : [];
 
   return {
     eyebrow: pickString(heroApiData?.title, heroSectionData.eyebrow),

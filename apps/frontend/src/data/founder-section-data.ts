@@ -1,6 +1,6 @@
 
 export const founderSectionData = {
-  eyebrow: "Meet Our Founder",
+  eyebrow: "",
   heading: "Meet Our Founder",
   paragraphs: [
     "Our academy was founded by Amit, an experienced driving instructor who believes that learning to drive should be simple, supportive, and confidence-building. After years of teaching students from different backgrounds, he noticed that many learners struggled because they were rushed or not properly guided.",

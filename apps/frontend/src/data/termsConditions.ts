@@ -67,7 +67,7 @@ export const termsConditionsData: TermsConditionSection[] = [
     title: "5. Cancellation & Refund Policy",
     items: [
       {
-        text: "Cancellations must be made at least 24-48 hours before the scheduled lesson.",
+        text: "Cancellations must be made at least 24 hours before the scheduled lesson.",
       },
       {
         text: "Late cancellations or no-shows may result in a forfeited lesson or fee.",
