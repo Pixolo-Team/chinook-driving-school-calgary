@@ -163,15 +163,19 @@ export async function getHomeInstructorsViewModel() {
 export async function getHomeTestimonialsViewModel() {
   const siteContentData = await getSiteContentData();
   const testimonialsApiData = siteContentData?.testimonials;
+  const testimonialCardsFromApi = Array.isArray(testimonialsApiData?.testimonial_cards)
+    ? testimonialsApiData.testimonial_cards
+    : null;
 
   const cardsFromApi =
-    testimonialsApiData?.testimonial_cards
-      ?.filter(
-        (testimonialCard) =>
-          isNonEmptyString(testimonialCard.name) &&
-          isNonEmptyString(testimonialCard.role) &&
-          isNonEmptyString(testimonialCard.rating) &&
-          isNonEmptyString(testimonialCard.review),
+    testimonialCardsFromApi
+      ?.filter((testimonialCard) =>
+        [
+          testimonialCard.name,
+          testimonialCard.role,
+          testimonialCard.rating,
+          testimonialCard.review,
+        ].some((value) => isNonEmptyString(value)),
       )
       .map((testimonialCard, index) => ({
         id: testimonialSectionDetails.testimonials[index]?.id ?? `api-${index + 1}`,
@@ -190,7 +194,7 @@ export async function getHomeTestimonialsViewModel() {
     eyebrow: pickString(testimonialsApiData?.eyebrow, testimonialSectionDetails.eyebrow),
     heading: pickString(testimonialsApiData?.title, testimonialSectionDetails.heading),
     reviewSummary: testimonialSectionDetails.reviewSummary,
-    testimonials: pickNonEmptyArray(cardsFromApi, testimonialSectionDetails.testimonials),
+    testimonials: testimonialCardsFromApi ? cardsFromApi : testimonialSectionDetails.testimonials,
   };
 }
 
