@@ -57,7 +57,7 @@ export default function ParentInformation({
 
   // Helper Functions
   function getParentNameError(): string | null {
-    return (value.full_name ?? "").trim().length > 0 ? null : "Please enter parent/guardian name.";
+    return (value.full_name ?? "").trim().length > 0 ? null : "Please enter legal guardian / emergency contact name.";
   }
 
   function getParentEmailError(): string | null {
@@ -133,7 +133,7 @@ export default function ParentInformation({
         <div className="grid w-full grid-cols-1 gap-x-8 gap-y-6 md:gap-y-8 lg:grid-cols-2 lg:gap-x-16 lg:gap-y-10">
           <Input
             type="text"
-            label="Parent's Full Name"
+            label="Legal Guardian / Emergency Contact's Full Name"
             required
             value={value.full_name ?? ""}
             onChange={(event) => handleFieldChange("full_name", event.target.value)}
@@ -147,12 +147,12 @@ export default function ParentInformation({
 
           <Input
             type="email"
-            label="Parent's Email Address"
+            label="Legal Guardian / Emergency Contact's Email Address"
             required
             value={value.email ?? ""}
             onChange={(event) => handleFieldChange("email", event.target.value)}
             onBlur={() => markFieldAsTouched("email")}
-            placeholder="parent@example.com"
+            placeholder="contact@example.com"
             caption="We may share booking updates and confirmations."
             isError={shouldShowParentEmailError}
             errorMessage={parentEmailError ?? undefined}
@@ -161,7 +161,7 @@ export default function ParentInformation({
 
           <Input
             type="text"
-            label="Parent's Phone number"
+            label="Legal Guardian / Emergency Contact's Phone Number"
             required
             value={value.contact_number ?? ""}
             onChange={(event) => handleFieldChange("contact_number", event.target.value)}

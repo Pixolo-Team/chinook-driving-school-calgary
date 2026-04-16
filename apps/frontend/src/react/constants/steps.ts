@@ -5,6 +5,6 @@ export const DEFAULT_STEPS: StepItemData[] = [
   { label: "User Information", icon: "user" },
   { label: "License Information", icon: "license" },
   { label: "Availability", icon: "availability" },
-  { label: "Parent Information", icon: "parent" },
+  { label: "Legal Guardian / Emergency Contact Information", icon: "parent" },
   { label: "Payment Details", icon: "payment" },
 ];
