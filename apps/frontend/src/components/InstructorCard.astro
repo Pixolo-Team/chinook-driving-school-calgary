@@ -12,7 +12,11 @@ interface Props {
 const { name, role, description } = Astro.props;
 ---
 
-<div class="relative h-full min-h-60 w-full overflow-hidden rounded-3xl border border-n-200 bg-n-50 px-9 py-7 lg:min-h-84 lg:px-11 lg:py-9">
+<div
+  data-instructor-card
+  class="relative h-full min-h-60 w-full overflow-hidden rounded-3xl border border-n-200 bg-n-50 px-9 py-7 lg:min-h-84 lg:px-11 lg:py-9"
+  style="opacity: 0; transform: translateX(30px);"
+>
   
   <!-- Background Ellipse -->
   <div

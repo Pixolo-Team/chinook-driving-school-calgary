@@ -10,7 +10,7 @@ const aboutStoryViewModel = await getAboutStoryViewModel();
 const { content, cards } = aboutStoryViewModel;
 ---
 
-<section class="bg-n-50">
+<section class="bg-n-50" data-story-section>
   <div
     class="container mx-auto flex w-full flex-col items-center gap-7 px-5 py-12 sm:gap-11 sm:px-6 sm:py-20 lg:gap-12 lg:py-20"
   >
@@ -23,8 +23,10 @@ const { content, cards } = aboutStoryViewModel;
       />
 
       <p
+        data-story-text
         set:html={content.story}
-        class="text-sm leading-[1.4] text-n-800 sm:text-base md:text-lg lg:text-xl"
+        class="text-sm leading-[1.4] text-n-800 opacity-0 sm:text-base md:text-lg lg:text-xl"
+        style="transform: translateX(30px);"
       >
       </p>
     </div>
@@ -41,3 +43,9 @@ const { content, cards } = aboutStoryViewModel;
     </div>
   </div>
 </section>
+
+<script>
+  import { initializeStorySection } from "@/scripts/story";
+
+  initializeStorySection();
+</script>

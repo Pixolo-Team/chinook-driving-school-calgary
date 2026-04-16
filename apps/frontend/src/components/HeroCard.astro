@@ -20,10 +20,17 @@ const {
 } = Astro.props as Props;
 ---
 
-<div class="container mx-auto flex flex-col gap-9 px-6 pt-22 md:gap-10 md:px-8 lg:flex-row lg:items-end lg:justify-between lg:gap-8 lg:px-4 lg:pt-24 xl:gap-12">
+<div
+  data-hero-card
+  class="container mx-auto flex flex-col gap-9 px-6 pt-22 md:gap-10 md:px-8 lg:flex-row lg:items-end lg:justify-between lg:gap-8 lg:px-4 lg:pt-24 xl:gap-12"
+>
   
   <!-- Title and Description -->
-  <div class="flex min-w-0 flex-col gap-6 md:gap-7 lg:flex-[1.05] lg:gap-8 lg:self-end lg:pb-32">
+  <div
+    data-hero-card-text
+    class="flex min-w-0 flex-col gap-6 md:gap-7 lg:flex-[1.05] lg:gap-8 lg:self-end lg:pb-32"
+    style="opacity: 0; transform: translateY(18px);"
+  >
     <p class="text-3xl font-bold leading-tight text-n-900 md:text-5xl lg:text-6xl lg:whitespace-pre-line">
       {title}
     </p>
@@ -36,7 +43,11 @@ const {
     
   </div>
 
-  <div class="mx-auto w-full max-w-[327px] md:max-w-[768px] lg:mx-0 lg:min-w-0 lg:flex-[0.95] lg:self-end lg:max-w-[700px] xl:flex-none xl:w-[700px]">
+  <div
+    data-hero-card-illustration
+    class="mx-auto w-full max-w-[327px] md:max-w-[768px] lg:mx-0 lg:min-w-0 lg:flex-[0.95] lg:self-end lg:max-w-[700px] xl:flex-none xl:w-[700px]"
+    style="opacity: 0; transform: translateY(24px);"
+  >
     <Image
       src={illustration}
       alt={illustrationAlt}
@@ -44,3 +55,9 @@ const {
     />
   </div>
 </div>
+
+<script>
+  import { initializeHeroCards } from "@/scripts/heroCard";
+
+  initializeHeroCards();
+</script>

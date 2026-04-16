@@ -12,6 +12,7 @@ import { heroSectionData } from "@/data/hero-section-data";
 import { instructorsSectionData } from "@/data/instructors-section-data";
 import { numberStatsData, statHeaderData } from "@/data/numberSection";
 import { processSectionData } from "@/data/process-data";
+import { testimonialSectionDetails } from "@/data/testimonials";
 import {
   getSiteContentData,
   isNonEmptyString,
@@ -27,15 +28,33 @@ function pickNonEmptyArray<T>(value: T[] | undefined, fallback: T[]): T[] {
   return Array.isArray(value) && value.length > 0 ? value : fallback;
 }
 
+export async function getLegalContactDetails() {
+  const siteContentData = await getSiteContentData();
+  const contactMetaData = siteContentData?.meta?.contact;
+
+  return {
+    email: isNonEmptyString(contactMetaData?.email) ? contactMetaData.email.trim() : null,
+    phoneNumber: isNonEmptyString(contactMetaData?.phone_number)
+      ? contactMetaData.phone_number.trim()
+      : null,
+  };
+}
+
 export async function getHomeHeroViewModel() {
   const siteContentData = await getSiteContentData();
   const heroApiData = siteContentData?.hero;
-  const heroApiImage = normalizeApiImagePath(heroApiData?.image);
+  const heroApiSlides = Array.isArray(heroApiData?.image)
+    ? heroApiData.image
+        .map((imagePath) => normalizeApiImagePath(imagePath))
+        .filter((imagePath): imagePath is string => imagePath !== null)
+    : normalizeApiImagePath(heroApiData?.image)
+      ? [normalizeApiImagePath(heroApiData?.image) as string]
+      : [];
 
   return {
     eyebrow: pickString(heroApiData?.title, heroSectionData.eyebrow),
     heading: pickString(heroApiData?.description, heroSectionData.heading),
-    slides: heroApiImage ? [heroApiImage, ...heroSectionData.slides] : heroSectionData.slides,
+    slides: pickNonEmptyArray(heroApiSlides, heroSectionData.slides),
   };
 }
 
@@ -47,14 +66,14 @@ export async function getHomeStatsViewModel() {
     statsApiData?.stat_cards
       ?.filter(
         (statCard) =>
-          isNonEmptyString(statCard.icon) &&
           isNonEmptyString(statCard.stat_number) &&
           isNonEmptyString(statCard.description),
       )
-      .map((statCard) => ({
-        icon: statCard.icon ?? "",
-        value: `${statCard.stat_number ?? ""}${statCard.stat_suffix ?? ""}`,
-        label: statCard.description ?? "",
+      .map((statCard, index) => ({
+        icon: numberStatsData[index]?.icon ?? numberStatsData[0]?.icon ?? "",
+        stat_number: statCard.stat_number ?? "",
+        stat_suffix: statCard.stat_suffix ?? "",
+        description: statCard.description ?? "",
       })) ?? [];
 
   return {
@@ -74,11 +93,17 @@ export async function getHomeFeaturesViewModel() {
         (featureCard) =>
           isNonEmptyString(featureCard.title) && isNonEmptyString(featureCard.description),
       )
-      .map((featureCard) => ({
+      .map((featureCard, index) => ({
         title: featureCard.title ?? "",
         description: featureCard.description ?? "",
-        imageAlt: featureCard.title ?? "Feature image",
-        imageSrc: normalizeApiImagePath(featureCard.image) ?? "/images/features/certified-driving.png",
+        imageAlt:
+          FeaturesSectionDetails.cards[index]?.imageAlt ??
+          featureCard.title ??
+          "Feature image",
+        imageSrc:
+          FeaturesSectionDetails.cards[index]?.imageSrc ??
+          FeaturesSectionDetails.cards[0]?.imageSrc ??
+          "/images/features/certified-driving.png",
       })) ?? [];
 
   return {
@@ -129,9 +154,47 @@ export async function getHomeInstructorsViewModel() {
 
   return {
     eyebrow: pickString(instructorsApiData?.eyebrow, instructorsSectionData.eyebrow),
-    heading: pickString(instructorsApiData?.heading, instructorsSectionData.heading),
+    heading: pickString(instructorsApiData?.title, instructorsSectionData.heading),
     description: pickString(instructorsApiData?.description, instructorsSectionData.description),
     instructors: pickNonEmptyArray(cardsFromApi, instructorsSectionData.instructors),
+  };
+}
+
+export async function getHomeTestimonialsViewModel() {
+  const siteContentData = await getSiteContentData();
+  const testimonialsApiData = siteContentData?.testimonials;
+  const testimonialCardsFromApi = Array.isArray(testimonialsApiData?.testimonial_cards)
+    ? testimonialsApiData.testimonial_cards
+    : null;
+
+  const cardsFromApi =
+    testimonialCardsFromApi
+      ?.filter((testimonialCard) =>
+        [
+          testimonialCard.name,
+          testimonialCard.role,
+          testimonialCard.rating,
+          testimonialCard.review,
+        ].some((value) => isNonEmptyString(value)),
+      )
+      .map((testimonialCard, index) => ({
+        id: testimonialSectionDetails.testimonials[index]?.id ?? `api-${index + 1}`,
+        customReview: testimonialSectionDetails.testimonials[index]?.customReview ?? false,
+        rating: Number.parseFloat(testimonialCard.rating ?? "") || 5,
+        review: testimonialCard.review ?? "",
+        name: testimonialCard.name ?? "",
+        role: testimonialCard.role ?? "",
+        profilePhoto:
+          testimonialSectionDetails.testimonials[index]?.profilePhoto ??
+          "/images/testimonials/profile-photo-placeholder.png",
+        backgroundImage: testimonialSectionDetails.testimonials[index]?.backgroundImage,
+      })) ?? [];
+
+  return {
+    eyebrow: pickString(testimonialsApiData?.eyebrow, testimonialSectionDetails.eyebrow),
+    heading: pickString(testimonialsApiData?.title, testimonialSectionDetails.heading),
+    reviewSummary: testimonialSectionDetails.reviewSummary,
+    testimonials: testimonialCardsFromApi ? cardsFromApi : testimonialSectionDetails.testimonials,
   };
 }
 
@@ -143,7 +206,7 @@ export async function getHomeCtaViewModel() {
     eyebrow: pickString(ctaApiData?.eyebrow, ctaData.eyebrow),
     heading: pickString(ctaApiData?.title, ctaData.heading),
     description: pickString(ctaApiData?.description, ctaData.description),
-    imageSrc: ctaData.imageSrc,
+    imageSrc: normalizeApiImagePath(ctaApiData?.image) ?? ctaData.imageSrc,
     imageAlt: ctaData.imageAlt,
   };
 }
@@ -194,7 +257,7 @@ export async function getContactInfoViewModel() {
 
   return {
     eyebrow: pickString(contactApiData?.eyebrow, contactSectionData.eyebrow),
-    heading: pickString(contactApiData?.heading, contactSectionData.heading),
+    heading: pickString(contactApiData?.title, contactSectionData.heading),
     description: pickString(contactApiData?.description, contactSectionData.description),
     cards: {
       getInTouch: {
@@ -274,10 +337,10 @@ export async function getAboutFounderViewModel() {
 
   return {
     eyebrow: pickString(founderApiData?.eyebrow, founderSectionData.eyebrow),
-    heading: pickString(founderApiData?.heading, founderSectionData.heading),
+    heading: pickString(founderApiData?.title, founderSectionData.heading),
     paragraphs: pickNonEmptyArray(paragraphsFromApi, founderSectionData.paragraphs),
     name: pickString(founderApiData?.name, founderSectionData.name),
-    title: pickString(founderApiData?.title, founderSectionData.title),
+    title: pickString(founderApiData?.title_role, founderSectionData.title),
     imageSrc: normalizeApiImagePath(founderApiData?.image) ?? founderSectionData.imageSrc,
     imageAlt: founderSectionData.imageAlt,
   };

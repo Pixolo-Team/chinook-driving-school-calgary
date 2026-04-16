@@ -310,7 +310,7 @@ export default function UserInfo({
           }}
           className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
         >
-          Continue to Licence Info
+          Continue to License Info
         </Button>
       </div>
     </section>

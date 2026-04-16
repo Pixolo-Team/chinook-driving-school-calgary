@@ -30,7 +30,11 @@ const hasClassroomHours = Boolean(card.classroom?.value?.trim());
 const showDivider = hasPracticeHours && hasClassroomHours;
 ---
 
-<div class="relative flex h-full w-full">
+<div
+  data-course-card
+  class="relative flex h-full w-full"
+  style="opacity: 0; transform: translateY(26px);"
+>
   
   <!-- Most Popular Badge -->
   {

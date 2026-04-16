@@ -4,11 +4,10 @@ const PIXSHEET_SITE_CONTENT_API_URL =
 type HeroData = {
   title?: string;
   description?: string;
-  image?: string;
+  image?: string | string[];
 };
 
 type StatsCardData = {
-  icon?: string;
   stat_number?: string;
   stat_suffix?: string;
   description?: string;
@@ -34,7 +33,6 @@ type FaqData = {
 type FeatureCardData = {
   title?: string;
   description?: string;
-  image?: string;
 };
 
 type FeaturesData = {
@@ -58,15 +56,29 @@ type InstructorCardData = {
 
 type InstructorsData = {
   eyebrow?: string;
-  heading?: string;
+  title?: string;
   description?: string;
   instructor_cards?: InstructorCardData[];
+};
+
+type TestimonialCardData = {
+  name?: string;
+  role?: string;
+  rating?: string;
+  review?: string;
+};
+
+type TestimonialsData = {
+  eyebrow?: string;
+  title?: string;
+  testimonial_cards?: TestimonialCardData[];
 };
 
 type CtaData = {
   eyebrow?: string;
   title?: string;
   description?: string;
+  image?: string;
 };
 
 type OpeningHoursData = {
@@ -76,7 +88,7 @@ type OpeningHoursData = {
 
 type ContactData = {
   eyebrow?: string;
-  heading?: string;
+  title?: string;
   description?: string;
   opening_hours?: OpeningHoursData[];
 };
@@ -100,11 +112,11 @@ type AboutStoryData = {
 
 type AboutFounderData = {
   eyebrow?: string;
-  heading?: string;
+  title?: string;
   paragraphs?: string[];
   image?: string;
   name?: string;
-  title?: string;
+  title_role?: string;
 };
 
 type CoursesHeroData = {
@@ -142,11 +154,13 @@ type EnrollHeroData = {
 type ContactLocationData = {
   title?: string;
   address?: string;
+  location?: string;
   service_area?: string;
 };
 
 type ContactMetaData = {
   email?: string;
+  phone_number?: string;
   locations?: ContactLocationData[];
 };
 
@@ -161,6 +175,7 @@ export type SiteContentData = {
   features?: FeaturesData;
   courses?: CoursesData;
   instructors?: InstructorsData;
+  testimonials?: TestimonialsData;
   cta?: CtaData;
   contact?: ContactData;
   about_home?: AboutHomeData;
