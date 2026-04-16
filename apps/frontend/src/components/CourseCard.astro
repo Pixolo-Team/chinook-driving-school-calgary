@@ -206,30 +206,8 @@ const showDivider = hasPracticeHours && hasClassroomHours;
           }
         </div>
 
-        <div class="flex flex-col gap-2.5">
-          {
-            card.features.map((feature) => (
-              <div class="flex items-start gap-3">
-                <Icon
-                  name={card.theme === "brand" ? "check-circle-inverse" : "check-circle"}
-                  class:list={[
-                    "mt-0.5 size-4 shrink-0",
-                    card.theme === "brand" ? "text-n-50" : "text-green-500",
-                  ]}
-                  aria-hidden="true"
-                />
-                <p
-                  class:list={[
-                    "text-sm leading-5",
-                    card.theme === "brand" ? "text-n-50 font-semibold" : "text-n-800 font-normal",
-                  ]}
-                >
-                  {feature}
-                </p>
-              </div>
-            ))
-          }
-        </div>
+        <!-- Features -->
+        
       </div>
     </div>
 
