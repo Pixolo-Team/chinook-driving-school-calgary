@@ -4,11 +4,11 @@ import { Icon } from "astro-icon/components";
 
 <div class="relative flex w-full items-center justify-end">
   
-  <div class="absolute left-1/2 top-5 -translate-x-1/2">
+  <div data-embla-dots-wrapper class="absolute left-1/2 top-5 -translate-x-1/2">
     <div class="embla__dots flex items-center justify-center gap-2"></div>
   </div>
 
-  <div class="hidden items-center gap-4 lg:flex">
+  <div data-embla-desktop-arrows class="hidden items-center gap-4 lg:flex">
     <button
       type="button"
       data-embla-prev
@@ -27,7 +27,7 @@ import { Icon } from "astro-icon/components";
     </button>
   </div>
 
-  <div class="flex items-center gap-3 lg:hidden">
+  <div data-embla-mobile-arrows class="flex items-center gap-3 lg:hidden">
     <button
       type="button"
       data-embla-prev
