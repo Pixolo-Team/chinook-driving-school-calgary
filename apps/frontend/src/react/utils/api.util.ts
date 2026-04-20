@@ -59,6 +59,7 @@ export function transformEnrollmentPayload(
     course: aggregatedCourseInfo,
     courses: selectedCourseInfos,
     student_first_name: enrollmentFormValue.user_info.first_name,
+    student_middle_name: enrollmentFormValue.user_info.middle_name || null,
     student_last_name: enrollmentFormValue.user_info.last_name,
     student_date_of_birth: enrollmentFormValue.user_info.date_of_birth,
     student_address: enrollmentFormValue.user_info.address,

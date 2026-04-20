@@ -5,6 +5,7 @@ export interface EnrollmentPayloadData {
   courses?: Array<Partial<CourseData>>;
 
   student_first_name: string;
+  student_middle_name?: string | null;
   student_last_name: string;
   student_date_of_birth: string; // YYYY-MM-DD
   student_address: string;
@@ -99,6 +100,7 @@ export type SelectCourseValueData = {
 
 export type UserInfoValueData = {
   first_name: string;
+  middle_name: string;
   last_name: string;
   date_of_birth: string;
   address: string;

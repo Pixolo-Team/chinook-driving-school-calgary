@@ -13,14 +13,14 @@ interface Props {
 
 const {
   containerClass = "inline-flex h-14 items-center gap-0.5",
-  markClass = "h-full w-auto shrink-0 object-contain",
-  textClass = "h-8 w-auto shrink-0 object-contain",
+  markClass = "brand-logo__mark h-full w-auto shrink-0 object-contain",
+  textClass = "brand-logo__wordmark h-8 w-auto shrink-0",
   textAlt = "Chinook Driving Academy",
   wordmarkColorClass = "text-[var(--color-brand-logo-wordmark)]",
 } = Astro.props as Props;
 ---
 
-<div class={containerClass} role="img" aria-label={textAlt}>
+<div class:list={["brand-logo", containerClass]} role="img" aria-label={textAlt}>
   <Image
     src={logoMark}
     alt=""
@@ -36,3 +36,28 @@ const {
     set:html={logoTextInline}
   />
 </div>
+
+<style>
+  .brand-logo {
+    flex-wrap: nowrap;
+  }
+
+  .brand-logo__mark {
+    display: block;
+    flex: none;
+  }
+
+  .brand-logo__wordmark {
+    display: block;
+    flex: none;
+    min-width: 0;
+  }
+
+  .brand-logo__wordmark :global(svg) {
+    display: block;
+    width: auto;
+    max-width: 100%;
+    height: 100%;
+    aspect-ratio: 143.908 / 42.0534;
+  }
+</style>
