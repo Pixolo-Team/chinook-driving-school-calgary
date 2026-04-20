@@ -196,16 +196,26 @@ export const initializeMobileHeader = ({ scrollThreshold }: MobileHeaderConfigDa
   /** Syncs the mobile header state with the current scroll position. */
   const handleMobileHeaderScroll = () => {
     const shouldShowBackground = window.scrollY > scrollThreshold;
+    const isHome = window.location.pathname === "/" || window.location.pathname === "/index.html";
+    const isDarkMode =
+      document.documentElement.classList.contains("dark") ||
+      window.matchMedia("(prefers-color-scheme: dark)").matches;
 
     mobileHeaderShell.classList.toggle("bg-transparent", !shouldShowBackground);
     mobileHeaderShell.classList.toggle("bg-n-50", shouldShowBackground);
     mobileHeaderShell.classList.toggle("rounded-b-[24px]", shouldShowBackground);
-    mobileMenuOpenButton.classList.toggle("border-blue-500/30", !shouldShowBackground);
+    mobileMenuOpenButton.classList.toggle("border-blue-500/30", !shouldShowBackground && !isDarkMode);
+    mobileMenuOpenButton.classList.toggle("border-white", !shouldShowBackground && isDarkMode);
     mobileMenuOpenButton.classList.toggle("border-n-300", shouldShowBackground);
     mobileMenuOpenButton.classList.toggle("bg-n-50/72", !shouldShowBackground);
     mobileMenuOpenButton.classList.toggle("bg-n-50", shouldShowBackground);
-    mobileMenuOpenIcon.classList.toggle("text-blue-500", !shouldShowBackground);
+    mobileMenuOpenIcon.classList.toggle("text-blue-500", !shouldShowBackground && !isDarkMode);
+    mobileMenuOpenIcon.classList.toggle("text-white", !shouldShowBackground && isDarkMode);
     mobileMenuOpenIcon.classList.toggle("text-n-700", shouldShowBackground);
+    mobileHeaderShell.style.setProperty(
+      "--mobile-header-logo-color",
+      shouldShowBackground || !isHome ? "var(--color-n-900)" : "#ffffff",
+    );
   };
 
   handleMobileHeaderScroll();

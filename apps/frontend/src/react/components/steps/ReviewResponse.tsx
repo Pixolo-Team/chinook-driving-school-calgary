@@ -167,7 +167,9 @@ export default function ReviewResponse({
                   Full Name
                 </p>
                 <p className="text-n-800 text-base leading-5 font-medium">
-                  {`${value.user_info.first_name} ${value.user_info.last_name}`.trim() || "Not provided"}
+                  {[value.user_info.first_name, value.user_info.middle_name, value.user_info.last_name]
+                    .filter(Boolean)
+                    .join(" ") || "Not provided"}
                 </p>
               </div>
               <div className="flex flex-col gap-1">

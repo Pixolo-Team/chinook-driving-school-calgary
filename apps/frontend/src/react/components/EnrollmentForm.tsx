@@ -127,6 +127,7 @@ export default function EnrollmentForm({
     },
     user_info: {
       first_name: "",
+      middle_name: "",
       last_name: "",
       date_of_birth: "",
       address: "",

@@ -180,6 +180,17 @@ export default function UserInfo({
           containerClassName="w-full"
         />
 
+        {/* Middle Name */}
+        <Input
+          type="text"
+          label="Middle Name"
+          value={value.middle_name}
+          onChange={(event) => handleFieldChange("middle_name", event.target.value)}
+          placeholder="Type Middle Name"
+          caption="Enter your middle name exactly as it appears on your ID or license."
+          containerClassName="w-full"
+        />
+
         {/* Last Name */}
         <Input
           type="text"

@@ -11,6 +11,7 @@ import type {
 // COMPONENTS //
 import Button from "@/react/components/ui/Button";
 import Dropdown from "@/react/components/ui/Dropdown";
+import InfoBox from "@/react/components/ui/InfoBox";
 import RadioCustomGroup from "@/react/components/ui/RadioCustomGroup";
 
 // CONSTANTS //
@@ -74,6 +75,8 @@ export default function SelectCourse({
       ),
     [activeCourseTypeValue, courses],
   );
+  const isDrivingCoursesCategory =
+    (selectedCourseCategoryInfo?.name ?? "").trim().toLowerCase() === "driving courses";
 
   /** Set the Course Type options data as needed by the component */
   const courseTypeOptions = useMemo(
@@ -96,9 +99,11 @@ export default function SelectCourse({
       (selectedCourseCategoryInfo?.courses ?? []).map((courseItem) => ({
         value: courseItem.id,
         label: courseItem.name,
-        description: `${courseItem.course_price}+GST= $${courseItem.total_amount.toFixed(2)} Insurance Reduction`,
+        description: ` ${courseItem.course_price}+GST= $${courseItem.total_amount.toFixed(2)}${
+          isDrivingCoursesCategory ? " Insurance Reduction" : ""
+        }`,
       })),
-    [selectedCourseCategoryInfo],
+    [isDrivingCoursesCategory, selectedCourseCategoryInfo],
   );
 
   const selectedCategoryValues = useMemo(
@@ -306,9 +311,11 @@ export default function SelectCourse({
           ) : null}
         </div>
 
+        {isDrivingCoursesCategory ? <InfoBox /> : null}
+
         {/* Enrollment Options */}
         <div className="flex w-full flex-col gap-[10px] md:gap-5">
-          <div className="flex w-full flex-col gap-5">
+          <div className="flex w-full flex-col gap-5 md:gap-10">
             <p className="text-n-900 flex items-center gap-1 text-lg leading-normal font-semibold">
               <span>Enroll me in</span>
             </p>

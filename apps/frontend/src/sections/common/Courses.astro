@@ -7,12 +7,14 @@ import { getCoursesSectionViewModel } from "@/data/site-content-mappers";
 // COMPONENTS //
 import CourseCard from "@/components/CourseCard.astro";
 import SectionHeader from "@/components/SectionHeader.astro";
+import InfoBox from "@/components/ui/InfoBox.astro";
 import Tabs from "@/components/ui/Tabs.astro";
 
 interface CoursesProps {
   tabs?: string[];
   cards?: CourseCardData[];
   courseGroups?: CourseGroupData[];
+  showInfoBox?: boolean;
 }
 
 const courseData = await getCourseSectionData();
@@ -22,6 +24,7 @@ const {
   tabs = courseData.tabs,
   cards = courseData.cards,
   courseGroups = courseData.courseGroups,
+  showInfoBox = true,
 } = Astro.props as CoursesProps;
 
 ---
@@ -37,8 +40,10 @@ const {
       description={sectionContent.description}
     />
 
-    <!-- Courses Category Tabs -->
+    
     <div class="flex w-full flex-col items-center gap-7 md:gap-8 md:px-20 lg:gap-12 xl:px-0">
+      
+      <!-- Courses Category Tabs -->
       <div class="w-full max-w-3xl">
         <Tabs items={tabs} activeIndex={0} controlsPanels />
       </div>
@@ -52,25 +57,34 @@ const {
               data-active={groupIndex === 0 ? "true" : "false"}
               hidden={groupIndex !== 0}
             >
-              {group.cards.length > 0 ? (
-                <div class="grid w-full grid-cols-1 gap-5 md:px-4 xl:grid-cols-3">
-                  {
-                    group.cards.map((card) => (
-                      <CourseCard {...card} />
-                    ))
-                  }
-                </div>
-              ) : (
-                <div class="rounded-4xl border border-n-300 bg-n-50 px-6 py-10 text-center text-n-600">
-                  Course details for {group.tab} will be available soon.
-                </div>
-              )}
+              <div class="flex w-full flex-col gap-10">
+                {group.cards.length > 0 ? (
+                  <div class="grid w-full grid-cols-1 gap-5 md:px-4 xl:grid-cols-3">
+                    {
+                      group.cards.map((card) => (
+                        <CourseCard {...card} />
+                      ))
+                    }
+                  </div>
+                ) : (
+                  <div class="rounded-4xl border border-n-300 bg-n-50 px-6 py-10 text-center text-n-600">
+                    Course details for {group.tab} will be available soon.
+                  </div>
+                )}
+
+                {showInfoBox && group.tab.trim().toLowerCase() === "driving courses" ? (
+                  
+                  // InfoBox for Driving Courses tab
+                  <InfoBox />
+                ) : null}
+              </div>
             </div>
           ))
         }
       </div>
     </div>
   </div>
+
 </section>
 
 <script>

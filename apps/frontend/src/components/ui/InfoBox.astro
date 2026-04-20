@@ -1,0 +1,28 @@
+---
+import { Icon } from "astro-icon/components";
+
+interface Props {
+  className?: string;
+}
+
+const { className = "" } = Astro.props;
+const infoMessage =
+  "Upon successful completion of any full driver education course, students will receive an Alberta Driver Education Course Completion Certificate. This certificate may reduce the GDL probationary period by 6 months, from 2 years to 1 year and 6 months, and may also be submitted to an insurance company for a possible premium reduction.";
+---
+
+<div
+  class:list={[
+    "border-blue-100 bg-blue-50/60 flex w-full max-w-screen-2xl flex-col items-start gap-4 rounded-3xl border p-6 sm:flex-row sm:items-center sm:gap-5",
+    className,
+  ]}
+>
+  <Icon
+    name="information-circle"
+    class="text-n-500 h-6 w-6 shrink-0"
+    aria-hidden="true"
+  />
+
+  <p class="text-n-700 text-sm leading-[1.2] font-normal">
+    {infoMessage}
+  </p>
+</div>
