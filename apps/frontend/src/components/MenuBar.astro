@@ -1,4 +1,6 @@
 ---
+import { isMenuItemActive } from "@/data/menu";
+
 interface MenuItemData {
   name: string;
   url: string;
@@ -15,10 +17,6 @@ const isHome = currentPath === "/" || currentPath === "/index.html" || currentPa
 // Keep the enrollment route as a dedicated CTA so the primary nav stays focused on page links.
 const navItems = items.filter((item) => item.url !== "/enroll");
 
-// Match the home page exactly while allowing nested routes like /courses/foo to stay active.
-const getIsActiveLink = (href: string) =>
-  href === "/" ? currentPath === href : currentPath.startsWith(href);
-
 const navClassName =
   variant === "primary"
     ? "flex items-center gap-5 text-sm leading-5 lg:gap-7"
@@ -29,7 +27,7 @@ const navLabel = variant === "primary" ? "Primary" : "Floating navigation";
 <nav aria-label={navLabel} class={navClassName}>
   {
     navItems.map((item) => {
-      const isActiveLink = getIsActiveLink(item.url);
+      const isActiveLink = isMenuItemActive(currentPath, item.url);
       const linkClasses =
         variant === "primary"
           ? [

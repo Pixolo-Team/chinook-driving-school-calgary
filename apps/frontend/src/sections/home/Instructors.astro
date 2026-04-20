@@ -84,9 +84,31 @@ const instructors = instructorsViewModel.instructors;
       });
 
       const dotsContainer = wrapper.querySelector(".embla__dots");
+      const dotsWrapper = wrapper.querySelector("[data-embla-dots-wrapper]") as HTMLElement | null;
+      const mobileTabletArrows = wrapper.querySelector("[data-embla-mobile-arrows]") as HTMLElement | null;
+      const desktopArrows = wrapper.querySelector("[data-embla-desktop-arrows]") as HTMLElement | null;
       let dotNodes: HTMLButtonElement[] = [];
 
       if (dotsContainer) {
+        const updateControlsVisibility = () => {
+          const slideCount = emblaApi.slideNodes().length;
+          const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
+          const isTablet = window.matchMedia("(min-width: 768px)").matches && !isDesktop;
+          const visibleCards = isDesktop ? 3 : isTablet ? 2 : 1;
+          const showControls = slideCount > visibleCards;
+
+          dotsWrapper?.classList.toggle("hidden", !showControls);
+
+          if (mobileTabletArrows) {
+            mobileTabletArrows.classList.toggle("hidden", isDesktop || !showControls);
+            mobileTabletArrows.classList.toggle("flex", !isDesktop && showControls);
+          }
+
+          if (desktopArrows) {
+            desktopArrows.classList.toggle("hidden", !isDesktop || !showControls);
+            desktopArrows.classList.toggle("lg:flex", isDesktop && showControls);
+          }
+        };
         
         // Build one dot per scroll snap.
         const createDots = () => {
@@ -129,12 +151,14 @@ const instructors = instructorsViewModel.instructors;
 
         createDots();
         updateDots();
+        updateControlsVisibility();
 
         emblaApi.on("select", updateDots);
 
         emblaApi.on("reInit", () => {
           createDots();
           updateDots();
+          updateControlsVisibility();
         });
       }
     });
