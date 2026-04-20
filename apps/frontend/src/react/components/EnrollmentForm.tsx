@@ -31,9 +31,11 @@ import { submitEnrollmentRequest } from "@/react/services/api/enrollment.api.ser
 
 // CONSTANTS //
 import { TOTAL_ENROLLMENT_STEPS } from "@/react/constants/form-items";
+import { DEFAULT_STEPS } from "@/react/constants/steps";
 
 // UTILS //
 import { transformEnrollmentPayload } from "@/react/utils/api.util";
+import { trackEvent } from "@/utils/analytics";
 import {
   animateAxisFade,
   prefersReducedMotion,
@@ -389,6 +391,13 @@ export default function EnrollmentForm({
 
     // Steps are not complete then show message
     if (hasIncompleteSteps) {
+      trackEvent("enrollment_submit_blocked", {
+        incomplete_steps: DEFAULT_STEPS
+          .filter((_, index) => currentStepStatesInfo[index + 1] !== "completed")
+          .map((step) => step.label)
+          .join(" | "),
+      });
+
       setSubmissionModalState({
         isOpen: true,
         mode: "checking",
@@ -422,6 +431,13 @@ export default function EnrollmentForm({
       }
 
       if (!enrollmentResponseInfo.status) {
+        trackEvent("enrollment_submit_error", {
+          error_type:
+            enrollmentResponseInfo.error ||
+            enrollmentResponseInfo.message ||
+            "submission_error",
+        });
+
         const elapsedMs: number = Date.now() - requestStartedAtInMs;
 
         if (elapsedMs < 2000) {
@@ -442,6 +458,24 @@ export default function EnrollmentForm({
       });
 
       if (enrollmentResponseInfo.status) {
+        // PRIMARY CONVERSION: enrollment completion is a core revenue event.
+        trackEvent("enrollment_submit_success", {
+          selected_course_count: enrollmentFormValue.select_course.course.selected_course_ids.length,
+          session_type: enrollmentFormValue.select_course.session_type ?? "unknown",
+          payment_method: enrollmentFormValue.payment_details.method,
+          total_amount:
+            enrollmentPayloadInfo.amount ??
+            enrollmentFormValue.select_course.course.total_amount ??
+            0,
+        });
+
+        // PRIMARY CONVERSION: successful enrollment submissions create a form lead.
+        trackEvent("generate_lead", {
+          lead_type: "form",
+          form_name: "enrollment_form",
+          method: "api",
+        });
+
         clearEnrollmentFormStorage();
         onSuccess?.();
       }
@@ -460,6 +494,10 @@ export default function EnrollmentForm({
         error instanceof Error
           ? error.message
           : "Something went wrong while submitting the enrollment form.";
+
+      trackEvent("enrollment_submit_error", {
+        error_type: errorMessage,
+      });
 
       setSubmissionModalState({
         isOpen: true,
@@ -481,6 +519,13 @@ export default function EnrollmentForm({
       ...currentStates,
       [currentStep]: currentStepState,
     }));
+
+    if (currentStepState === "completed") {
+      trackEvent("enrollment_step_complete", {
+        step_number: currentStep,
+        step_name: DEFAULT_STEPS[currentStep - 1]?.label ?? `Step ${currentStep}`,
+      });
+    }
 
     // Go to Next Step
     setCurrentStep((step) => Math.min(step + 1, TOTAL_ENROLLMENT_STEPS));
@@ -511,6 +556,19 @@ export default function EnrollmentForm({
       ...currentStates,
       [currentStep]: currentStepState,
     }));
+
+    if (currentStepState === "completed") {
+      trackEvent("enrollment_step_complete", {
+        step_number: currentStep,
+        step_name: DEFAULT_STEPS[currentStep - 1]?.label ?? `Step ${currentStep}`,
+      });
+    }
+
+    trackEvent("enrollment_submit_attempt", {
+      selected_course_count: enrollmentFormValue.select_course.course.selected_course_ids.length,
+      session_type: enrollmentFormValue.select_course.session_type ?? "unknown",
+      payment_method: enrollmentFormValue.payment_details.method,
+    });
 
     void handleEnrollmentCompletion();
   };
@@ -683,6 +741,12 @@ export default function EnrollmentForm({
       clearStepCheckInterval();
     };
   }, []);
+
+  useEffect(() => {
+    trackEvent("enrollment_flow_view", {
+      view_name: DEFAULT_STEPS[currentStep - 1]?.label ?? `Step ${currentStep}`,
+    });
+  }, [currentStep]);
 
   useEffect(() => {
     const formContainerElement = formContainerRef.current;

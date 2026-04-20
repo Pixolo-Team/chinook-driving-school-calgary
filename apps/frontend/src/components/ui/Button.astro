@@ -16,6 +16,7 @@ interface ButtonProps {
   rel?: string;
   openInNewTab?: boolean;
   className?: string;
+  attributes?: Record<string, string>;
 }
 
 const {
@@ -33,6 +34,7 @@ const {
   rel,
   openInNewTab = false,
   className = "",
+  attributes = {},
 } = Astro.props as ButtonProps;
 
 const label = buttonText ?? value ?? "";
@@ -77,6 +79,7 @@ const courseButtonClasses = [
       target={resolvedTarget}
       rel={anchorRel}
       onclick={onClick || undefined}
+      {...attributes}
       class:list={isCourseButton ? courseButtonClasses : menuButtonClasses}
     >
       {hasDefaultSlot ? (
@@ -96,6 +99,7 @@ const courseButtonClasses = [
       id={id}
       type={type}
       onclick={onClick || undefined}
+      {...attributes}
       class:list={isCourseButton ? courseButtonClasses : menuButtonClasses}
     >
       {hasDefaultSlot ? (

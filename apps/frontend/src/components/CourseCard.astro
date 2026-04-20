@@ -212,7 +212,15 @@ const showDivider = hasPracticeHours && hasClassroomHours;
     </div>
 
     <div class="relative z-10">
-      <Button value="Select Package" theme={card.theme} href={URLS.ENROLL} />
+      <Button
+        value="Select Package"
+        theme={card.theme}
+        href={URLS.ENROLL}
+        attributes={{
+          "data-cta-label": `Select Package: ${card.title}`,
+          "data-cta-location": "courses_section",
+        }}
+      />
     </div>
   </div>
 </div>

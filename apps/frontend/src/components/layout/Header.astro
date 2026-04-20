@@ -80,7 +80,15 @@ const callUsButtonClassName = [
       <!-- Menu CTAs -->
       <div class="flex items-center gap-2 lg:gap-2.5">
         <!-- Enroll Now Button -->
-        <Button buttonText="Enroll Now" className={enrollButtonClassName} href={URLS.ENROLL} />
+        <Button
+          buttonText="Enroll Now"
+          className={enrollButtonClassName}
+          href={URLS.ENROLL}
+          attributes={{
+            "data-cta-label": "Enroll Now",
+            "data-cta-location": "header",
+          }}
+        />
 
         <!-- Contact Us Button -->
         <Button
@@ -89,6 +97,11 @@ const callUsButtonClassName = [
           variant="outline"
           className={callUsButtonClassName}
           href={URLS.PHONE}
+          attributes={{
+            "data-cta-label": "Call Us",
+            "data-cta-location": "header",
+            "data-contact-location": "header",
+          }}
         />
       </div>
     </div>

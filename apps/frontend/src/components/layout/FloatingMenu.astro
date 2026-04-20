@@ -46,12 +46,25 @@ const enrollButtonClassName = [isHome ? "w-26.5 text-white" : "w-26.5"].join(" "
 
           <!-- Menu Button Group -->
           <div class="flex items-center gap-2 lg:gap-2.5">
-            <Button buttonText="Enroll Now" className={enrollButtonClassName} href={URLS.ENROLL} />
+            <Button
+              buttonText="Enroll Now"
+              className={enrollButtonClassName}
+              href={URLS.ENROLL}
+              attributes={{
+                "data-cta-label": "Enroll Now",
+                "data-cta-location": "floating_menu",
+              }}
+            />
             <Button
               buttonText="Call Us"
               rightIcon="phone-icon"
               variant="outline"
               href={URLS.PHONE}
+              attributes={{
+                "data-cta-label": "Call Us",
+                "data-cta-location": "floating_menu",
+                "data-contact-location": "floating_menu",
+              }}
             />
           </div>
         </div>

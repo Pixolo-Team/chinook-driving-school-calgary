@@ -17,6 +17,7 @@ const {
   title = "Chinook Driving School Calgary",
   description = "Chinook Driving School Calgary website.",
 } = Astro.props;
+const gaMeasurementId = "G-PDVPHNJBW4";
 ---
 
 <html lang="en">
@@ -34,6 +35,16 @@ const {
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap"
       rel="stylesheet"
     />
+    <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`}></script>
+    <script is:inline define:vars={{ gaMeasurementId }}>
+      window.dataLayer = window.dataLayer || [];
+      function gtag() {
+        window.dataLayer.push(arguments);
+      }
+      window.gtag = window.gtag || gtag;
+      window.gtag("js", new Date());
+      window.gtag("config", gaMeasurementId, { send_page_view: false });
+    </script>
   </head>
   <body class="relative">
     <!-- Header -->
@@ -56,8 +67,18 @@ const {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Chat on WhatsApp"
+      data-cta-label="Chat on WhatsApp"
+      data-cta-location="floating_whatsapp_button"
+      data-contact-location="floating_whatsapp_button"
+      data-link-area="floating_whatsapp_button"
     >
       <Icon name="whatsapp" aria-hidden="true" />
     </a>
+
+    <script>
+      import { initializeAnalytics } from "@/scripts/analytics";
+
+      initializeAnalytics();
+    </script>
   </body>
 </html>

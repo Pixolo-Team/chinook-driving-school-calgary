@@ -119,6 +119,8 @@ export default function EnrollmentInfo({
             <Button
               className="h-[78px] w-full max-w-[296px] gap-2.5 rounded-[30px] px-16 py-6"
               onClick={onStart}
+              data-cta-label="Start Enrollment"
+              data-cta-location="enrollment_intro"
             >
               Start Enrollment
             </Button>
