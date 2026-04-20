@@ -80,7 +80,14 @@ const currentPath = Astro.url.pathname;
       <div data-mobile-menu-section class="flex flex-col gap-3 pt-8">
 
         <!-- Enroll Now Button -->
-        <Button href="/enroll" className="h-14 rounded-full px-6">
+        <Button
+          href="/enroll"
+          className="h-14 rounded-full px-6"
+          attributes={{
+            "data-cta-label": "Enroll Now",
+            "data-cta-location": "mobile_menu",
+          }}
+        >
           <span class="text-lg leading-none font-bold">Enroll Now</span>
         </Button>
 
@@ -89,6 +96,11 @@ const currentPath = Astro.url.pathname;
           variant="outline"
           href={URLS.PHONE}
           className="bg-n-100 border-n-300 text-n-700 h-14 rounded-full px-6"
+          attributes={{
+            "data-cta-label": "Call Us",
+            "data-cta-location": "mobile_menu",
+            "data-contact-location": "mobile_menu",
+          }}
         >
           <span class="flex items-center gap-2">
             <Icon name="phone-icon" class="size-4.5" />

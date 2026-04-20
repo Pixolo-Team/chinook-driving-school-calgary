@@ -266,6 +266,8 @@ export default function PaymentDetails({
           <Button
             variant="filled"
             onClick={() => onNext?.(getStepState())}
+            data-cta-label="Complete Enrollment"
+            data-cta-location="enrollment_payment_step"
             className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
           >
             Complete Enrollment

@@ -115,6 +115,8 @@ export default function EnrollSuccess(): React.JSX.Element {
             <Button
               variant="filled"
               onClick={handleCtaClick}
+              data-cta-label={enrollmentConfirmedSectionData.cta.label}
+              data-cta-location="enrollment_success"
               className="h-auto w-full max-w-120 justify-center rounded-full px-10 py-4 text-lg font-bold md:px-16 md:py-5 lg:px-20 lg:py-6 lg:text-xl"
             >
               {enrollmentConfirmedSectionData.cta.label}

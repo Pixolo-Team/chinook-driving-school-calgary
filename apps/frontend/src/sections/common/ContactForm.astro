@@ -156,6 +156,8 @@ const fieldRows: FormField[][] = [
                   <div class="mt-auto pt-2">
                     <button
                       type="submit"
+                      data-cta-label="Send Message"
+                      data-cta-location="contact_form"
                       class="animate-bouncy-hover text-n-50 w-full cursor-pointer rounded-full bg-blue-500 px-6 py-3 text-sm leading-6 font-bold transition-colors duration-300 hover:bg-blue-600 focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:outline-none disabled:opacity-70 disabled:cursor-not-allowed"
                     >
                       Send Message
@@ -240,6 +242,7 @@ const fieldRows: FormField[][] = [
 
 <script>
   import { initializeContactForms } from "@/scripts/contactForm";
+  import { trackEvent } from "@/utils/analytics";
 
   initializeContactForms();
 
@@ -249,11 +252,13 @@ const fieldRows: FormField[][] = [
   const resetBtn = document.getElementById("reset-form-btn");
   const errorMessage = document.getElementById("contact-form-error");
   const CONTACT_API_URL = "https://api.pixoloproductions.com/chinook/calgary/send-inquiry.php";
+  const formName = "contact_form";
   const fieldElements = form
     ? Array.from(
         form.querySelectorAll<HTMLInputElement | HTMLTextAreaElement>("input, textarea"),
       )
     : [];
+  let hasTrackedFormStart = false;
 
   function getFieldErrorElement(
     field: HTMLInputElement | HTMLTextAreaElement,
@@ -314,6 +319,17 @@ const fieldRows: FormField[][] = [
 
   if (form && formContainer && successMessage) {
     fieldElements.forEach((field) => {
+      field.addEventListener("focus", () => {
+        if (hasTrackedFormStart) {
+          return;
+        }
+
+        hasTrackedFormStart = true;
+        trackEvent("contact_form_start", {
+          form_name: formName,
+        });
+      });
+
       field.addEventListener("blur", () => {
         showFieldError(field);
       });
@@ -343,6 +359,14 @@ const fieldRows: FormField[][] = [
         .some(Boolean);
 
       if (hasValidationErrors) {
+        const firstInvalidField = fieldElements.find(
+          (field) => field.getAttribute("aria-invalid") === "true",
+        );
+
+        trackEvent("contact_form_error", {
+          form_name: formName,
+          error_type: firstInvalidField?.name ?? "validation_error",
+        });
         return;
       }
 
@@ -374,6 +398,18 @@ const fieldRows: FormField[][] = [
         if (!isSuccess) {
           throw new Error(result?.error || result?.message || "Something went wrong while sending your message.");
         }
+
+        trackEvent("contact_form_submit", {
+          form_name: formName,
+          reason_present: payload.reason.length > 0,
+        });
+
+        // PRIMARY CONVERSION: successful contact submissions create a form lead.
+        trackEvent("generate_lead", {
+          lead_type: "form",
+          form_name: formName,
+          method: "api",
+        });
 
         formContainer.classList.add("hidden");
         successMessage.classList.remove("hidden");

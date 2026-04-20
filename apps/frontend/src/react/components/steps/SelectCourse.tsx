@@ -19,6 +19,7 @@ import {
   resolveCourseCategoryImage,
   SESSION_TYPE_OPTIONS,
 } from "@/react/constants/form-items";
+import { trackEvent } from "@/utils/analytics";
 
 type SelectCoursePropsData = Readonly<{
   courses: CourseCategoryData[];
@@ -202,6 +203,18 @@ export default function SelectCourse({
     const nextSelectedCourseIds = checked
       ? Array.from(new Set([...selectedCourseIds, courseId]))
       : selectedCourseIds.filter((selectedCourseId) => selectedCourseId !== courseId);
+    const selectedCourseInfo = selectedCourseCategoryInfo?.courses.find(
+      (courseItem) => courseItem.id === courseId,
+    );
+
+    if (checked && selectedCourseInfo) {
+      trackEvent("course_select_click", {
+        course_title: selectedCourseInfo.name,
+        course_price: selectedCourseInfo.course_price,
+        course_theme: selectedCourseCategoryInfo?.name ?? activeCourseTypeValue,
+        location: "enrollment_flow",
+      });
+    }
 
     onChange(
       "course",
