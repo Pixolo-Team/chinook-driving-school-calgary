@@ -9,7 +9,11 @@ $structure = (object) [
   "hero" => (object)[
     "title" => "",
     "description" => "",
-    "images" => array("")
+    "images" => array(
+      (object)[ 
+        "url" => "" 
+      ]
+    )
   ],
 
   "stats" => (object)[
@@ -74,7 +78,8 @@ $structure = (object) [
         "name" => "",
         "role" => "",
         "review" => "",
-        "rating" => ""
+        "rating" => "",
+        "image" => ""
       ]
     )
   ],

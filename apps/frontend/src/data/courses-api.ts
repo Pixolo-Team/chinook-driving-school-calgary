@@ -85,6 +85,22 @@ export async function getCourseGroups(): Promise<CourseGroup[]> {
 
   const courseGroupMap: Record<string, CourseGroup> = {};
 
+  const COURSE_ORDER = [
+  "Basic Course",
+  "Premium Course",
+  "Ultimate Course",
+  "Full GDL Course",
+  ];
+
+  function sortCourses(courses: Course[]) {
+  return courses.sort((a, b) => {
+      const aIndex = COURSE_ORDER.indexOf(a.name);
+      const bIndex = COURSE_ORDER.indexOf(b.name);
+
+      return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
+    });
+  }
+
   courseTypesResult.data.forEach((courseType) => {
     courseGroupMap[courseType.id] = {
       id: courseType.id,
@@ -117,5 +133,8 @@ export async function getCourseGroups(): Promise<CourseGroup[]> {
     });
   });
 
-  return Object.values(courseGroupMap);
+  return Object.values(courseGroupMap).map((group) => ({
+  ...group,
+  courses: sortCourses(group.courses),
+  }));
 }

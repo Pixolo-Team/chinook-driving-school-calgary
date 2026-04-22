@@ -428,6 +428,7 @@ $createdAtTimestamp = gmdate('c');
 
 $studentRow = [
     'first_name'            => sanitizeString($input['student_first_name']),
+    'middle_name'           => sanitizeString($input['student_middle_name'] ?? null),
     'last_name'             => sanitizeString($input['student_last_name']),
     'address'               => sanitizeString($input['student_address']),
     'city'                  => sanitizeString($input['student_city']),

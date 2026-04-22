@@ -11,6 +11,10 @@ html {
   font-size: 16px;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 body {
@@ -19,7 +23,18 @@ body {
   padding: 0;
   min-height: 100vh;
   scroll-behavior: smooth;
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
   @apply transition-colors duration-300;
+}
+
+main {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 * {
@@ -183,6 +198,11 @@ body {
   color: #ffffff;
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.whatsapp-btn.is-footer-locked {
+  position: absolute;
+  bottom: auto;
 }
 
 .whatsapp-btn:hover {

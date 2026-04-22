@@ -5,7 +5,7 @@ import BrandLogo from "@/components/common/BrandLogo.astro";
 import { URLS } from "@/infrastructure/constants/urls";
 
 // DATA //
-import { menuItems } from "@/data/menu";
+import { isMenuItemActive, menuItems } from "@/data/menu";
 
 const navigationItems = menuItems.filter((menuItem) => menuItem.url !== "/enroll");
 const currentPath = Astro.url.pathname;
@@ -31,7 +31,7 @@ const currentPath = Astro.url.pathname;
         <BrandLogo
           containerClass="inline-flex h-14 items-center gap-0.5"
           markClass="h-full w-auto shrink-0 object-contain"
-          textClass="h-8 w-auto shrink-0 object-contain"
+          textClass="h-8 shrink-0 object-contain"
           textAlt="Chinook Driving Academy"
         />
       </a>
@@ -51,23 +51,28 @@ const currentPath = Astro.url.pathname;
       <!-- Links -->
       <nav aria-label="Mobile navigation" class="flex flex-col">
         {
-          navigationItems.map((menuItem, menuItemIndex) => (
-            <a
-              href={menuItem.url}
-              data-mobile-menu-section
-              data-mobile-menu-link
-              class:list={[
-                "flex items-center justify-between py-6 text-2xl leading-none transition-colors",
-                currentPath === menuItem.url
-                  ? "text-blue-500 font-semibold"
-                  : "text-n-800",
-                menuItemIndex < navigationItems.length - 1 && "border-n-200 border-b",
-              ]}
-            >
-              <span>{menuItem.name}</span>
-              <Icon name="mobile-menu-arrow" class="size-5 shrink-0" />
-            </a>
-          ))
+          navigationItems.map((menuItem, menuItemIndex) => {
+            const isActiveLink = isMenuItemActive(currentPath, menuItem.url);
+
+            return (
+              <a
+                href={menuItem.url}
+                data-mobile-menu-section
+                data-mobile-menu-link
+                aria-current={isActiveLink ? "page" : undefined}
+                class:list={[
+                  "flex items-center justify-between py-6 text-2xl leading-none transition-colors",
+                  isActiveLink
+                    ? "text-blue-500 font-semibold"
+                    : "text-n-800",
+                  menuItemIndex < navigationItems.length - 1 && "border-n-200 border-b",
+                ]}
+              >
+                <span>{menuItem.name}</span>
+                <Icon name="mobile-menu-arrow" class="size-5 shrink-0" />
+              </a>
+            );
+          })
         }
       </nav>
 

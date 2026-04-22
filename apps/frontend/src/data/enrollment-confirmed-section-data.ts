@@ -10,7 +10,7 @@ export const enrollmentConfirmedSectionData = {
       suffix: "",
     },
     {
-      text: "Your lessons will be scheduled based on your availability",
+      text: "Please call our office once you receive your confirmation of enrollment email to book your lessons.",
     },
     {
       prefix: "You'll receive ",

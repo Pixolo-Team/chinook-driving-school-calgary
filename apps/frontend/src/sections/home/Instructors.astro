@@ -11,6 +11,7 @@ const sectionContent = {
   description: instructorsViewModel.description,
 };
 const instructors = instructorsViewModel.instructors;
+const shouldCenterInstructorCards = instructors.length < 3;
 
 ---
 
@@ -27,7 +28,7 @@ const instructors = instructorsViewModel.instructors;
     <!-- Instructor Card Section -->
     <div class="carousel-wrapper relative mt-11 flex flex-col gap-5 lg:mt-16 lg:gap-16">
       <div class="embla overflow-hidden cursor-grab active:cursor-grabbing">
-        <div class="embla__container flex -ml-3">
+        <div class:list={["embla__container flex -ml-3", shouldCenterInstructorCards && "xl:justify-center"]}>
 
           <!-- Instructor Cards -->
           {instructors.map((instructor) => (
@@ -58,12 +59,21 @@ const instructors = instructorsViewModel.instructors;
     const wrappers = document.querySelectorAll(".carousel-wrapper");
 
     wrappers.forEach((wrapper) => {
+      if (!(wrapper instanceof HTMLElement) || wrapper.dataset.emblaInitialized === "true") {
+        return;
+      }
+
+      wrapper.dataset.emblaInitialized = "true";
+
       const viewport = wrapper.querySelector(".embla") as HTMLElement;
       if (!viewport) return;
 
+      const slideCount = viewport.querySelectorAll(".embla__slide").length;
+      const shouldLoop = slideCount > 2;
+
       // Create the slider with responsive scroll groups.
       let emblaApi = EmblaCarousel(viewport, {
-        loop: true,
+        loop: shouldLoop,
         align: "start",
         duration: 32,
         slidesToScroll: 1,
@@ -73,20 +83,61 @@ const instructors = instructorsViewModel.instructors;
         },
       });
 
-      wrapper.querySelectorAll("[data-embla-prev]").forEach((btn) => {
+      const prevButtons = [...wrapper.querySelectorAll("[data-embla-prev]")].filter(
+        (btn): btn is HTMLButtonElement => btn instanceof HTMLButtonElement,
+      );
+      const nextButtons = [...wrapper.querySelectorAll("[data-embla-next]")].filter(
+        (btn): btn is HTMLButtonElement => btn instanceof HTMLButtonElement,
+      );
+
+      const updateArrowStates = () => {
+        prevButtons.forEach((btn) => {
+          btn.disabled = !emblaApi.canScrollPrev();
+          btn.classList.toggle("opacity-40", btn.disabled);
+        });
+
+        nextButtons.forEach((btn) => {
+          btn.disabled = !emblaApi.canScrollNext();
+          btn.classList.toggle("opacity-40", btn.disabled);
+        });
+      };
+
+      prevButtons.forEach((btn) => {
         const handlePrevClick = () => emblaApi.scrollPrev();
         btn.addEventListener("click", handlePrevClick);
       });
 
-      wrapper.querySelectorAll("[data-embla-next]").forEach((btn) => {
+      nextButtons.forEach((btn) => {
         const handleNextClick = () => emblaApi.scrollNext();
         btn.addEventListener("click", handleNextClick);
       });
 
       const dotsContainer = wrapper.querySelector(".embla__dots");
+      const dotsWrapper = wrapper.querySelector("[data-embla-dots-wrapper]") as HTMLElement | null;
+      const mobileTabletArrows = wrapper.querySelector("[data-embla-mobile-arrows]") as HTMLElement | null;
+      const desktopArrows = wrapper.querySelector("[data-embla-desktop-arrows]") as HTMLElement | null;
       let dotNodes: HTMLButtonElement[] = [];
 
       if (dotsContainer) {
+        const updateControlsVisibility = () => {
+          const slideCount = emblaApi.slideNodes().length;
+          const isDesktop = window.matchMedia("(min-width: 1280px)").matches;
+          const isTablet = window.matchMedia("(min-width: 768px)").matches && !isDesktop;
+          const visibleCards = isDesktop ? 3 : isTablet ? 2 : 1;
+          const showControls = slideCount > visibleCards;
+
+          dotsWrapper?.classList.toggle("hidden", !showControls);
+
+          if (mobileTabletArrows) {
+            mobileTabletArrows.classList.toggle("hidden", isDesktop || !showControls);
+            mobileTabletArrows.classList.toggle("flex", !isDesktop && showControls);
+          }
+
+          if (desktopArrows) {
+            desktopArrows.classList.toggle("hidden", !isDesktop || !showControls);
+            desktopArrows.classList.toggle("lg:flex", isDesktop && showControls);
+          }
+        };
         
         // Build one dot per scroll snap.
         const createDots = () => {
@@ -129,12 +180,19 @@ const instructors = instructorsViewModel.instructors;
 
         createDots();
         updateDots();
+        updateControlsVisibility();
+        updateArrowStates();
 
-        emblaApi.on("select", updateDots);
+        emblaApi.on("select", () => {
+          updateDots();
+          updateArrowStates();
+        });
 
         emblaApi.on("reInit", () => {
           createDots();
           updateDots();
+          updateControlsVisibility();
+          updateArrowStates();
         });
       }
     });

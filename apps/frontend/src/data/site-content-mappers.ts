@@ -43,13 +43,11 @@ export async function getLegalContactDetails() {
 export async function getHomeHeroViewModel() {
   const siteContentData = await getSiteContentData();
   const heroApiData = siteContentData?.hero;
-  const heroApiSlides = Array.isArray(heroApiData?.image)
-    ? heroApiData.image
-        .map((imagePath) => normalizeApiImagePath(imagePath))
-        .filter((imagePath): imagePath is string => imagePath !== null)
-    : normalizeApiImagePath(heroApiData?.image)
-      ? [normalizeApiImagePath(heroApiData?.image) as string]
-      : [];
+  const heroApiSlides = Array.isArray(heroApiData?.images)
+  ? heroApiData.images
+      .map((imagePath) => normalizeApiImagePath(imagePath))
+      .filter((imagePath): imagePath is string => imagePath !== null)
+  : [];
 
   return {
     eyebrow: pickString(heroApiData?.title, heroSectionData.eyebrow),
@@ -227,6 +225,16 @@ export async function getContactInfoViewModel() {
   const siteContentData = await getSiteContentData();
   const contactApiData = siteContentData?.contact;
   const contactMetaData = siteContentData?.meta?.contact;
+  const getDirectionsHref = (title: string, address: string) => {
+    const normalizedTitle = title.trim().toLowerCase();
+    const normalizedAddress = address.trim().toLowerCase();
+
+    if (normalizedTitle.includes("manilla office") || normalizedAddress.includes("4620 manilla")) {
+      return "https://www.google.com/maps/place/Chinook+Driving+Academy/@51.0110821,-114.0516969,16.45z/data=!3m1!5s0x537170666dcb7b45:0xe9c3a982132c4794!4m6!3m5!1s0x537176b2fcd3357f:0x1692aea43ccc7ebb!8m2!3d51.012116!4d-114.0499908!16s%2Fg%2F1trpkwpx?entry=ttu&g_ep=EgoyMDI2MDQxNS4wIKXMDSoASAFQAw%3D%3D";
+    }
+
+    return `https://maps.google.com/?q=${encodeURIComponent(address)}`;
+  };
 
   const openingHoursFromApi =
     contactApiData?.opening_hours
@@ -245,7 +253,7 @@ export async function getContactInfoViewModel() {
         name: location.title ?? "",
         address: location.address ?? "",
         actionLabel: "Get Directions",
-        href: `https://maps.google.com/?q=${encodeURIComponent(location.address ?? "")}`,
+        href: getDirectionsHref(location.title ?? "", location.address ?? ""),
       })) ?? [];
 
   const serviceAreaLocation = contactMetaData?.locations?.find((location) =>

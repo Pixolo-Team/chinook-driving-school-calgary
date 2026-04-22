@@ -4,7 +4,7 @@ const PIXSHEET_SITE_CONTENT_API_URL =
 type HeroData = {
   title?: string;
   description?: string;
-  image?: string | string[];
+  images?: string[];
 };
 
 type StatsCardData = {

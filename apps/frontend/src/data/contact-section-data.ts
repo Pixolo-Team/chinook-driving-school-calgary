@@ -44,7 +44,7 @@ export const contactSectionData = {
           name: "Manilla Office",
           address: "4620 Manilla Road SE",
           actionLabel: "Get Directions",
-          href: "https://maps.google.com/?q=4620+Manilla+Road+SE+Calgary",
+          href: "https://www.google.com/maps/place/Chinook+Driving+Academy/@51.0110821,-114.0516969,16.45z/data=!3m1!5s0x537170666dcb7b45:0xe9c3a982132c4794!4m6!3m5!1s0x537176b2fcd3357f:0x1692aea43ccc7ebb!8m2!3d51.012116!4d-114.0499908!16s%2Fg%2F1trpkwpx?entry=ttu&g_ep=EgoyMDI2MDQxNS4wIKXMDSoASAFQAw%3D%3D",
         },
         {
           icon: "location-pin",

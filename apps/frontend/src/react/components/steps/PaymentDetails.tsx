@@ -261,7 +261,7 @@ export default function PaymentDetails({
             onClick={() => onPrevious?.(getStepState())}
             className="min-h-0 px-4 py-[14px] text-[12px] md:px-7 md:text-[14px] lg:px-8 lg:py-4 lg:text-lg"
           >
-            Back to Parent Info
+            Back to Emergency Contact Info
           </Button>
           <Button
             variant="filled"

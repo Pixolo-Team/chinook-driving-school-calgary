@@ -1,6 +1,6 @@
 export const statHeaderData = {
   eyebrow: "Our Track Record",
-  heading: "Our Driving School in Numbers"
+  heading: "Our Driving School in Numbers",
 };
 
 export const numberStatsData = [
@@ -26,12 +26,12 @@ export const numberStatsData = [
     icon: "document-contract-license",
     stat_number: "100",
     stat_suffix: "%",
-    description: "Licensed Coaches",
+    description: "Licensed Instructors",
   },
   {
     icon: "cars-traffic-jam",
     stat_number: "15",
-    stat_suffix: " Yrs",
-    description: "Combined Experience",
+    stat_suffix: "+",
+    description: "Years of Combined Experience",
   },
 ];
