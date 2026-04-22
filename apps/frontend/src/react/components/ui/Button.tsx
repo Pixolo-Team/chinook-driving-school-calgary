@@ -46,7 +46,7 @@ export default function Button({
         normalizedVariant === "filled" &&
           "bg-blue-500 text-white hover:bg-blue-400",
         normalizedVariant === "unfilled" &&
-          "border-2 border-blue-500 bg-transparent text-white hover:bg-blue-50",
+          "border-2 border-blue-500 bg-transparent [color:var(--color-n-950)] hover:bg-blue-50",
         disabled && "cursor-not-allowed opacity-60",
         className,
       )}
