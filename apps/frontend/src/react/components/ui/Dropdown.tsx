@@ -177,7 +177,13 @@ export default function Dropdown({
   }, [isDropdownOpen]);
 
   return (
-    <div className={joinClasses("flex w-full max-w-164 flex-col gap-2", containerClassName)}>
+    <div
+      className={joinClasses(
+        "relative flex w-full max-w-164 flex-col gap-2",
+        isDropdownOpen && "z-[80]",
+        containerClassName,
+      )}
+    >
       <label
         htmlFor={inputId}
         className={joinClasses(
@@ -282,7 +288,7 @@ export default function Dropdown({
           <div
             id={`${inputId}-listbox`}
             role="listbox"
-            className="bg-n-50 border-n-200 absolute top-[calc(100%+12px)] z-30 max-h-72 w-full overflow-y-auto rounded-[22px] border p-2 shadow-[0_24px_64px_rgba(14,23,43,0.14)]"
+            className="bg-n-50 border-n-200 absolute top-[calc(100%+12px)] z-[80] max-h-72 w-full overflow-y-auto rounded-[22px] border p-2 shadow-[0_24px_64px_rgba(14,23,43,0.14)]"
           >
             {options.map((optionItem) => {
               const isActive: boolean = optionItem.value === activeValue;
