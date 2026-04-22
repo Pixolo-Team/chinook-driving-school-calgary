@@ -201,7 +201,7 @@ export default function SubmissionModal({
           <Button
             variant="unfilled"
             onClick={onClose}
-            className="min-h-12 w-full px-6 py-3 text-base"
+            className="min-h-12 w-full px-6 py-3 text-base [color:var(--color-n-950)]"
           >
             Cancel
           </Button>

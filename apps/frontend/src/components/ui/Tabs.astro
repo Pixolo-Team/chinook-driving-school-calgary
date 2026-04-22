@@ -3,18 +3,24 @@ interface TabsProps {
   items: string[];
   activeIndex?: number;
   controlsPanels?: boolean;
+  activeTextClass?: string;
+  inactiveTextClass?: string;
 }
 
 const {
   items,
   activeIndex = 0,
   controlsPanels = false,
+  activeTextClass = "text-white",
+  inactiveTextClass = "text-n-500",
 } = Astro.props as TabsProps;
 ---
 
 <div
   data-tabs
   data-tabs-controls-panels={controlsPanels ? "true" : undefined}
+  data-active-text-class={activeTextClass}
+  data-inactive-text-class={inactiveTextClass}
   role="tablist"
   class="relative flex w-full items-center rounded-full border border-n-200 bg-n-50 p-1"
 >
@@ -35,7 +41,7 @@ const {
         tabindex={index === activeIndex ? "0" : "-1"}
         class:list={[
           "animate-bouncy-hover relative z-10 flex min-w-0 flex-1 cursor-pointer items-center justify-center rounded-full px-3 py-3 text-center text-xs font-semibold leading-tight whitespace-normal transition-colors duration-300 ease-out sm:text-sm lg:text-base",
-          index === activeIndex ? "text-n-50" : "text-n-600",
+          index === activeIndex ? activeTextClass : inactiveTextClass,
         ]}
       >
         {item}
@@ -45,8 +51,9 @@ const {
 </div>
 
 <script>
-  const activeClasses = ["text-n-50"];
-  const inactiveClasses = ["text-n-600"];
+  const getClassList = (value: string | undefined, fallback: string) =>
+    (value || fallback).split(" ").filter(Boolean);
+
   let tabsInstanceCount = 0;
 
   // Keep the sliding indicator aligned with the active tab.
@@ -87,6 +94,8 @@ const {
     activeIndex: number,
   ) => {
     const activeButton = buttons[activeIndex];
+    const activeClasses = getClassList(tabs.dataset.activeTextClass, "text-white");
+    const inactiveClasses = getClassList(tabs.dataset.inactiveTextClass, "text-white");
 
     if (!(activeButton instanceof HTMLButtonElement)) {
       return;
