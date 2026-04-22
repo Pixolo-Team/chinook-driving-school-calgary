@@ -63,8 +63,8 @@ const currentPath = Astro.url.pathname;
                 class:list={[
                   "flex items-center justify-between py-6 text-2xl leading-none transition-colors",
                   isActiveLink
-                    ? "text-blue-500 font-semibold"
-                    : "text-n-800",
+                    ? "text-blue-500 font-semibold dark:text-white"
+                    : "text-n-800 dark:text-white",
                   menuItemIndex < navigationItems.length - 1 && "border-n-200 border-b",
                 ]}
               >

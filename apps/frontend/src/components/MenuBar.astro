@@ -33,11 +33,13 @@ const navLabel = variant === "primary" ? "Primary" : "Floating navigation";
           ? [
               "dynamic-menu-link",
               isActiveLink ? "font-semibold" : "font-medium",
-              isHome ? "text-white hover:text-white/80" : "text-n-900 hover:text-n-600",
+              isHome
+                ? "text-white hover:text-white/80"
+                : "text-n-950 hover:text-n-800 dark:text-white dark:hover:text-white/80",
             ]
           : [
               isActiveLink ? "font-semibold" : "font-medium",
-              "text-n-800 hover:text-blue-500",
+              "text-n-950 hover:text-n-800 dark:text-white dark:hover:text-white/80",
             ];
       const indicatorClasses =
         variant === "primary"
