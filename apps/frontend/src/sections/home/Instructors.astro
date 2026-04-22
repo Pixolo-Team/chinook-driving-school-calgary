@@ -11,6 +11,7 @@ const sectionContent = {
   description: instructorsViewModel.description,
 };
 const instructors = instructorsViewModel.instructors;
+const shouldCenterInstructorCards = instructors.length < 3;
 
 ---
 
@@ -27,7 +28,7 @@ const instructors = instructorsViewModel.instructors;
     <!-- Instructor Card Section -->
     <div class="carousel-wrapper relative mt-11 flex flex-col gap-5 lg:mt-16 lg:gap-16">
       <div class="embla overflow-hidden cursor-grab active:cursor-grabbing">
-        <div class="embla__container flex -ml-3">
+        <div class:list={["embla__container flex -ml-3", shouldCenterInstructorCards && "justify-center"]}>
 
           <!-- Instructor Cards -->
           {instructors.map((instructor) => (

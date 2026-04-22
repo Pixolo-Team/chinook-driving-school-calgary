@@ -200,6 +200,11 @@ main {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 
+.whatsapp-btn.is-footer-locked {
+  position: absolute;
+  bottom: auto;
+}
+
 .whatsapp-btn:hover {
   transform: translateY(-2px) scale(1.03);
   box-shadow: 0 14px 28px rgba(0, 0, 0, 0.24);
