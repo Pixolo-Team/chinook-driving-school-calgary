@@ -28,7 +28,7 @@ const shouldCenterInstructorCards = instructors.length < 3;
     <!-- Instructor Card Section -->
     <div class="carousel-wrapper relative mt-11 flex flex-col gap-5 lg:mt-16 lg:gap-16">
       <div class="embla overflow-hidden cursor-grab active:cursor-grabbing">
-        <div class:list={["embla__container flex -ml-3", shouldCenterInstructorCards && "justify-center"]}>
+        <div class:list={["embla__container flex -ml-3", shouldCenterInstructorCards && "xl:justify-center"]}>
 
           <!-- Instructor Cards -->
           {instructors.map((instructor) => (
@@ -59,12 +59,21 @@ const shouldCenterInstructorCards = instructors.length < 3;
     const wrappers = document.querySelectorAll(".carousel-wrapper");
 
     wrappers.forEach((wrapper) => {
+      if (!(wrapper instanceof HTMLElement) || wrapper.dataset.emblaInitialized === "true") {
+        return;
+      }
+
+      wrapper.dataset.emblaInitialized = "true";
+
       const viewport = wrapper.querySelector(".embla") as HTMLElement;
       if (!viewport) return;
 
+      const slideCount = viewport.querySelectorAll(".embla__slide").length;
+      const shouldLoop = slideCount > 2;
+
       // Create the slider with responsive scroll groups.
       let emblaApi = EmblaCarousel(viewport, {
-        loop: true,
+        loop: shouldLoop,
         align: "start",
         duration: 32,
         slidesToScroll: 1,
@@ -74,12 +83,31 @@ const shouldCenterInstructorCards = instructors.length < 3;
         },
       });
 
-      wrapper.querySelectorAll("[data-embla-prev]").forEach((btn) => {
+      const prevButtons = [...wrapper.querySelectorAll("[data-embla-prev]")].filter(
+        (btn): btn is HTMLButtonElement => btn instanceof HTMLButtonElement,
+      );
+      const nextButtons = [...wrapper.querySelectorAll("[data-embla-next]")].filter(
+        (btn): btn is HTMLButtonElement => btn instanceof HTMLButtonElement,
+      );
+
+      const updateArrowStates = () => {
+        prevButtons.forEach((btn) => {
+          btn.disabled = !emblaApi.canScrollPrev();
+          btn.classList.toggle("opacity-40", btn.disabled);
+        });
+
+        nextButtons.forEach((btn) => {
+          btn.disabled = !emblaApi.canScrollNext();
+          btn.classList.toggle("opacity-40", btn.disabled);
+        });
+      };
+
+      prevButtons.forEach((btn) => {
         const handlePrevClick = () => emblaApi.scrollPrev();
         btn.addEventListener("click", handlePrevClick);
       });
 
-      wrapper.querySelectorAll("[data-embla-next]").forEach((btn) => {
+      nextButtons.forEach((btn) => {
         const handleNextClick = () => emblaApi.scrollNext();
         btn.addEventListener("click", handleNextClick);
       });
@@ -153,13 +181,18 @@ const shouldCenterInstructorCards = instructors.length < 3;
         createDots();
         updateDots();
         updateControlsVisibility();
+        updateArrowStates();
 
-        emblaApi.on("select", updateDots);
+        emblaApi.on("select", () => {
+          updateDots();
+          updateArrowStates();
+        });
 
         emblaApi.on("reInit", () => {
           createDots();
           updateDots();
           updateControlsVisibility();
+          updateArrowStates();
         });
       }
     });
