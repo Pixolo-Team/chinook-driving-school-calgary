@@ -71,6 +71,7 @@ type TestimonialCardData = {
 type TestimonialsData = {
   eyebrow?: string;
   title?: string;
+  rating_summary?: string;
   testimonial_cards?: TestimonialCardData[];
 };
 

@@ -73,6 +73,7 @@ $structure = (object) [
   "testimonials" => (object)[
     "eyebrow" => "",
     "title" => "",
+    "rating_summary" => "",
     "testimonial_cards" => array(
       (object)[
         "name" => "",

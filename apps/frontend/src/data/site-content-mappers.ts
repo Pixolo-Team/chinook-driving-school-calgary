@@ -191,7 +191,13 @@ export async function getHomeTestimonialsViewModel() {
   return {
     eyebrow: pickString(testimonialsApiData?.eyebrow, testimonialSectionDetails.eyebrow),
     heading: pickString(testimonialsApiData?.title, testimonialSectionDetails.heading),
-    reviewSummary: testimonialSectionDetails.reviewSummary,
+    reviewSummary: {
+      ...testimonialSectionDetails.reviewSummary,
+      summaryText: pickString(
+        testimonialsApiData?.rating_summary,
+        testimonialSectionDetails.reviewSummary.summaryText,
+      ),
+    },
     testimonials: testimonialCardsFromApi ? cardsFromApi : testimonialSectionDetails.testimonials,
   };
 }
