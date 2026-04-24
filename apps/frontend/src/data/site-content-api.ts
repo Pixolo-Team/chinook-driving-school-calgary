@@ -66,11 +66,13 @@ type TestimonialCardData = {
   role?: string;
   rating?: string;
   review?: string;
+  image?: string;
 };
 
 type TestimonialsData = {
   eyebrow?: string;
   title?: string;
+  rating_summary?: string;
   testimonial_cards?: TestimonialCardData[];
 };
 
@@ -194,8 +196,10 @@ type SiteContentApiResponse = {
 
 let siteContentRequestPromise: Promise<SiteContentData | null> | null = null;
 
+
 export async function getSiteContentData(): Promise<SiteContentData | null> {
   // Reuse the same request during one render/build cycle.
+  // In dev, keep a short cache so content updates show up quickly without restarting.
   if (siteContentRequestPromise) {
     return siteContentRequestPromise;
   }

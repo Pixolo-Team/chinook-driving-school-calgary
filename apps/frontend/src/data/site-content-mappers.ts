@@ -183,6 +183,7 @@ export async function getHomeTestimonialsViewModel() {
         name: testimonialCard.name ?? "",
         role: testimonialCard.role ?? "",
         profilePhoto:
+          normalizeApiImagePath(testimonialCard.image) ??
           testimonialSectionDetails.testimonials[index]?.profilePhoto ??
           "/images/testimonials/profile-photo-placeholder.png",
         backgroundImage: testimonialSectionDetails.testimonials[index]?.backgroundImage,
@@ -191,7 +192,13 @@ export async function getHomeTestimonialsViewModel() {
   return {
     eyebrow: pickString(testimonialsApiData?.eyebrow, testimonialSectionDetails.eyebrow),
     heading: pickString(testimonialsApiData?.title, testimonialSectionDetails.heading),
-    reviewSummary: testimonialSectionDetails.reviewSummary,
+    reviewSummary: {
+      ...testimonialSectionDetails.reviewSummary,
+      summaryText: pickString(
+        testimonialsApiData?.rating_summary,
+        testimonialSectionDetails.reviewSummary.summaryText,
+      ),
+    },
     testimonials: testimonialCardsFromApi ? cardsFromApi : testimonialSectionDetails.testimonials,
   };
 }
