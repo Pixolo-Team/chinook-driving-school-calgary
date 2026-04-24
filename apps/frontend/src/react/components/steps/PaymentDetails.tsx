@@ -214,9 +214,6 @@ export default function PaymentDetails({
               />
             </div>
 
-            <p className="text-n-600 text-base leading-5 font-semibold">
-              Your payment details are secure and encrypted
-            </p>
           </div>
         ) : null}
       </div>

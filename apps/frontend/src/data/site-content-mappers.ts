@@ -183,6 +183,7 @@ export async function getHomeTestimonialsViewModel() {
         name: testimonialCard.name ?? "",
         role: testimonialCard.role ?? "",
         profilePhoto:
+          normalizeApiImagePath(testimonialCard.image) ??
           testimonialSectionDetails.testimonials[index]?.profilePhoto ??
           "/images/testimonials/profile-photo-placeholder.png",
         backgroundImage: testimonialSectionDetails.testimonials[index]?.backgroundImage,
