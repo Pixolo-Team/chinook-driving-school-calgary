@@ -35,6 +35,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/helper/utils.php';
 require_once __DIR__ . '/helper/supabase.php';
 require_once __DIR__ . '/helper/validation.php';
+require_once __DIR__ . '/helper/mailer.php';
 
 // ---------------------------------------------------------------------------
 // Configuration: Supabase credentials and table names
@@ -530,6 +531,11 @@ $enrollmentCourseCount = 0;
 $paymentId      = null;
 $cardInfoId     = null;
 $availabilityId = null;
+$emailResult = [
+    'sent' => false,
+    'transport' => 'none',
+    'error' => null,
+];
 
 try {
     // Insert the student record first so we have a student_id for downstream rows
@@ -589,6 +595,8 @@ try {
         $availabilityId = (string)$availabilityInsert['data'][0]['id'];
     }
 
+    $emailResult = sendEnrollmentConfirmationEmail($input, $enrollmentId);
+
     // All inserts succeeded – return the IDs of the created records
     respond(201, [
         'status' => true,
@@ -601,6 +609,9 @@ try {
             'payment_id'          => $paymentId,
             'card_information_id' => $cardInfoId,
             'availability_id'     => $availabilityId,
+            'email_sent'          => $emailResult['sent'],
+            'email_transport'     => $emailResult['transport'],
+            'email_error'         => $emailResult['error'],
         ],
         'error' => '',
     ]);
