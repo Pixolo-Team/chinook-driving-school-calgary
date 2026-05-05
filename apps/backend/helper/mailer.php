@@ -27,14 +27,19 @@ function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = n
         ];
     }
 
-    $fromEmail = getenv('SMTP_FROM_EMAIL') ?: getenv('MAIL_FROM_EMAIL') ?: '';
-    $fromName = getenv('SMTP_FROM_NAME') ?: getenv('MAIL_FROM_NAME') ?: 'Chinook Driving School Calgary';
+    $fromEmail = getMailerConfigValue('SMTP_FROM_EMAIL')
+        ?: getMailerConfigValue('SMTP_FROM')
+        ?: getMailerConfigValue('MAIL_FROM_EMAIL')
+        ?: '';
+    $fromName = getMailerConfigValue('SMTP_FROM_NAME')
+        ?: getMailerConfigValue('MAIL_FROM_NAME')
+        ?: 'Chinook Driving School Calgary';
 
     if ($fromEmail === '') {
         return [
             'sent' => false,
             'transport' => 'none',
-            'error' => 'SMTP_FROM_EMAIL or MAIL_FROM_EMAIL is not configured',
+            'error' => 'SMTP_FROM_EMAIL, SMTP_FROM, or MAIL_FROM_EMAIL is not configured',
         ];
     }
 
@@ -42,17 +47,17 @@ function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = n
     $htmlBody = buildEnrollmentConfirmationHtml($input, $enrollmentId);
     $textBody = buildEnrollmentConfirmationText($input, $enrollmentId);
 
-    $smtpHost = trim((string)(getenv('SMTP_HOST') ?: ''));
+    $smtpHost = trim((string)(getMailerConfigValue('SMTP_HOST') ?: ''));
     if ($smtpHost !== '') {
         try {
             sendHtmlMailViaSmtp(
                 [
                     'host' => $smtpHost,
-                    'port' => (int)(getenv('SMTP_PORT') ?: 587),
-                    'username' => (string)(getenv('SMTP_USER') ?: ''),
-                    'password' => (string)(getenv('SMTP_PASS') ?: ''),
-                    'secure' => strtolower(trim((string)(getenv('SMTP_SECURE') ?: 'tls'))),
-                    'timeout' => (int)(getenv('SMTP_TIMEOUT') ?: 15),
+                    'port' => (int)(getMailerConfigValue('SMTP_PORT') ?: 587),
+                    'username' => (string)(getMailerConfigValue('SMTP_USER') ?: ''),
+                    'password' => (string)(getMailerConfigValue('SMTP_PASS') ?: ''),
+                    'secure' => strtolower(trim((string)(getMailerConfigValue('SMTP_SECURE') ?: 'tls'))),
+                    'timeout' => (int)(getMailerConfigValue('SMTP_TIMEOUT') ?: 15),
                 ],
                 [
                     'from_email' => $fromEmail,
@@ -83,6 +88,118 @@ function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = n
         encodeMimeHeader($subject),
         $message,
         implode("\r\n", $headers)
+    );
+
+    return [
+        'sent' => $mailSent,
+        'transport' => 'mail',
+        'error' => $mailSent ? null : 'PHP mail() returned false',
+    ];
+}
+
+/**
+ * Send a notification email for a contact inquiry.
+ *
+ * @param array $input Validated inquiry payload.
+ *
+ * @return array{sent: bool, transport: string, error: string|null}
+ */
+function sendInquiryNotificationEmail(array $input): array
+{
+    $fromEmail = getMailerConfigValue('SMTP_FROM_EMAIL')
+        ?: getMailerConfigValue('SMTP_FROM')
+        ?: getMailerConfigValue('MAIL_FROM_EMAIL')
+        ?: '';
+    $fromName = getMailerConfigValue('SMTP_FROM_NAME')
+        ?: getMailerConfigValue('MAIL_FROM_NAME')
+        ?: 'Chinook Driving School Calgary';
+    $toEmail = getMailerConfigValue('INQUIRY_NOTIFICATION_EMAIL')
+        ?: getMailerConfigValue('CONTACT_NOTIFICATION_EMAIL')
+        ?: $fromEmail;
+
+    if ($fromEmail === '') {
+        return [
+            'sent' => false,
+            'transport' => 'none',
+            'error' => 'SMTP_FROM_EMAIL, SMTP_FROM, or MAIL_FROM_EMAIL is not configured',
+        ];
+    }
+
+    if ($toEmail === '') {
+        return [
+            'sent' => false,
+            'transport' => 'none',
+            'error' => 'INQUIRY_NOTIFICATION_EMAIL, CONTACT_NOTIFICATION_EMAIL, or sender email is not configured',
+        ];
+    }
+
+    if (!isValidEmail($toEmail)) {
+        return [
+            'sent' => false,
+            'transport' => 'none',
+            'error' => 'Notification email address is invalid',
+        ];
+    }
+
+    $replyToEmail = sanitizeString((string)($input['email'] ?? '')) ?: $fromEmail;
+    if (!isValidEmail($replyToEmail)) {
+        $replyToEmail = $fromEmail;
+    }
+
+    $replyToName = sanitizeString((string)($input['name'] ?? '')) ?: $fromName;
+    $subject = 'New Chinook website inquiry';
+    $htmlBody = buildInquiryNotificationHtml($input);
+    $textBody = buildInquiryNotificationText($input);
+
+    $smtpHost = trim((string)(getMailerConfigValue('SMTP_HOST') ?: ''));
+    if ($smtpHost !== '') {
+        try {
+            sendHtmlMailViaSmtp(
+                [
+                    'host' => $smtpHost,
+                    'port' => (int)(getMailerConfigValue('SMTP_PORT') ?: 587),
+                    'username' => (string)(getMailerConfigValue('SMTP_USER') ?: ''),
+                    'password' => (string)(getMailerConfigValue('SMTP_PASS') ?: ''),
+                    'secure' => strtolower(trim((string)(getMailerConfigValue('SMTP_SECURE') ?: 'tls'))),
+                    'timeout' => (int)(getMailerConfigValue('SMTP_TIMEOUT') ?: 15),
+                ],
+                [
+                    'from_email' => $fromEmail,
+                    'from_name' => $fromName,
+                    'reply_to_email' => $replyToEmail,
+                    'reply_to_name' => $replyToName,
+                    'to_email' => $toEmail,
+                    'subject' => $subject,
+                    'html' => $htmlBody,
+                    'text' => $textBody,
+                ]
+            );
+
+            return [
+                'sent' => true,
+                'transport' => 'smtp',
+                'error' => null,
+            ];
+        } catch (Throwable $throwable) {
+            error_log('Inquiry notification email failed over SMTP: ' . $throwable->getMessage());
+        }
+    }
+
+    $mailParts = buildMailMessageParts(
+        $fromEmail,
+        $fromName,
+        generateMultipartAlternativeBody($htmlBody, $textBody),
+        $toEmail,
+        $subject,
+        $replyToEmail,
+        $replyToName
+    );
+
+    $mailSent = mail(
+        $toEmail,
+        encodeMimeHeader($subject),
+        $mailParts['body'],
+        implode("\r\n", $mailParts['headers'])
     );
 
     return [
@@ -219,6 +336,91 @@ function buildEnrollmentConfirmationText(array $input, ?string $enrollmentId = n
 }
 
 /**
+ * Read mailer settings from config.php or environment variables.
+ */
+function getMailerConfigValue(string $key): string
+{
+    if (function_exists('chinookConfig')) {
+        return (string) (chinookConfig($key, '') ?? '');
+    }
+
+    $envValue = getenv($key);
+    return $envValue === false ? '' : (string) $envValue;
+}
+
+/**
+ * Build the inquiry notification email HTML.
+ */
+function buildInquiryNotificationHtml(array $input): string
+{
+    $name = escapeHtml((string)($input['name'] ?? 'Not provided'));
+    $email = escapeHtml((string)($input['email'] ?? 'Not provided'));
+    $contactNumber = escapeHtml((string)($input['contact_number'] ?? 'Not provided'));
+    $reason = escapeHtml((string)($input['reason'] ?? ''));
+    $query = nl2br(escapeHtml((string)($input['query'] ?? '')));
+    $submittedAt = gmdate('Y-m-d H:i:s') . ' UTC';
+
+    return '<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Chinook Inquiry</title>
+</head>
+<body style="margin:0;padding:24px;background-color:#f4f7fb;font-family:Arial,sans-serif;color:#102a43;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="width:640px;max-width:640px;background:#ffffff;border:1px solid #d9e2ec;border-radius:16px;">
+          <tr>
+            <td style="padding:24px 28px;border-bottom:1px solid #d9e2ec;background:#0b1f33;color:#ffffff;">
+              <h1 style="margin:0;font-size:28px;line-height:36px;">New website inquiry</h1>
+              <p style="margin:10px 0 0 0;font-size:14px;line-height:22px;color:#d9e2ec;">A visitor submitted the Chinook contact form.</p>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:24px 28px;">
+              <p style="margin:0 0 12px 0;font-size:14px;line-height:22px;"><strong>Name:</strong> ' . $name . '</p>
+              <p style="margin:0 0 12px 0;font-size:14px;line-height:22px;"><strong>Email:</strong> ' . $email . '</p>
+              <p style="margin:0 0 12px 0;font-size:14px;line-height:22px;"><strong>Phone:</strong> ' . $contactNumber . '</p>
+              <p style="margin:0 0 12px 0;font-size:14px;line-height:22px;"><strong>Reason:</strong> ' . ($reason !== '' ? $reason : 'Not provided') . '</p>
+              <p style="margin:0 0 12px 0;font-size:14px;line-height:22px;"><strong>Submitted:</strong> ' . escapeHtml($submittedAt) . '</p>
+              <div style="margin-top:18px;padding:16px;border:1px solid #d9e2ec;border-radius:12px;background:#f8fbff;">
+                <p style="margin:0 0 8px 0;font-size:13px;line-height:20px;font-weight:700;text-transform:uppercase;color:#486581;">Message</p>
+                <p style="margin:0;font-size:14px;line-height:24px;color:#243b53;">' . ($query !== '' ? $query : 'No message provided.') . '</p>
+              </div>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>';
+}
+
+/**
+ * Build the inquiry notification email text body.
+ */
+function buildInquiryNotificationText(array $input): string
+{
+    $lines = [
+        'New website inquiry',
+        '',
+        'Name: ' . ((string)($input['name'] ?? 'Not provided')),
+        'Email: ' . ((string)($input['email'] ?? 'Not provided')),
+        'Phone: ' . ((string)($input['contact_number'] ?? 'Not provided')),
+        'Reason: ' . ((string)($input['reason'] ?? 'Not provided')),
+        'Submitted: ' . gmdate('Y-m-d H:i:s') . ' UTC',
+        '',
+        'Message:',
+        ((string)($input['query'] ?? 'No message provided.')),
+    ];
+
+    return implode("\n", $lines);
+}
+
+/**
  * Deliver an HTML email via SMTP.
  *
  * @param array $smtpConfig SMTP settings.
@@ -287,7 +489,9 @@ function sendHtmlMailViaSmtp(array $smtpConfig, array $message): void
             (string)$message['from_name'],
             generateMultipartAlternativeBody((string)$message['html'], (string)$message['text']),
             (string)$message['to_email'],
-            (string)$message['subject']
+            (string)$message['subject'],
+            isset($message['reply_to_email']) ? (string)$message['reply_to_email'] : null,
+            isset($message['reply_to_name']) ? (string)$message['reply_to_name'] : null
         );
 
         $payload = implode("\r\n", $mailParts['headers']) . "\r\n\r\n" . $mailParts['body'];
@@ -312,13 +516,15 @@ function buildMailMessageParts(
     string $fromName,
     string $body,
     ?string $toEmail = null,
-    ?string $subject = null
+    ?string $subject = null,
+    ?string $replyToEmail = null,
+    ?string $replyToName = null
 ): array {
     $boundary = 'chinook-' . bin2hex(random_bytes(12));
     $headers = [
         'MIME-Version: 1.0',
         'From: ' . formatMailbox($fromEmail, $fromName),
-        'Reply-To: ' . formatMailbox($fromEmail, $fromName),
+        'Reply-To: ' . formatMailbox($replyToEmail ?? $fromEmail, $replyToName ?? $fromName),
         'Content-Type: multipart/alternative; boundary="' . $boundary . '"',
     ];
 

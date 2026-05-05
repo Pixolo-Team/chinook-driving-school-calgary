@@ -744,7 +744,7 @@ export default function EnrollmentForm({
     <section className="bg-n-50 relative z-10 overflow-visible">
       <div
         ref={formContainerRef}
-        className="container mx-auto flex min-h-screen w-full flex-col gap-5 px-4 py-9 sm:px-6 md:gap-8 md:px-7 lg:px-8 lg:py-12 xl:px-10"
+        className="container mx-auto flex w-full flex-col gap-5 px-4 py-9 sm:px-6 md:gap-8 md:px-7 lg:px-8 lg:py-12 xl:px-10"
       >
         {/* Steps Component */}
         <Steps currentStep={currentStep} stepStates={stepStates} onStepChange={handleStepChange} />

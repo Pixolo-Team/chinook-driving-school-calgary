@@ -60,10 +60,13 @@ export async function getHomeHeroViewModel() {
   const siteContentData = await getSiteContentData();
   const heroApiData = siteContentData?.hero;
   const heroApiSlides = Array.isArray(heroApiData?.images)
-  ? heroApiData.images
-      .map((imagePath) => normalizeApiImagePath(imagePath))
-      .filter((imagePath): imagePath is string => imagePath !== null)
-  : [];
+    ? heroApiData.images
+        .map((imageItem) =>
+          typeof imageItem === "string" ? imageItem : imageItem?.url,
+        )
+        .map((imagePath) => normalizeApiImagePath(imagePath))
+        .filter((imagePath): imagePath is string => imagePath !== null)
+    : [];
 
   return {
     eyebrow: pickString(heroApiData?.title, heroSectionData.eyebrow),
