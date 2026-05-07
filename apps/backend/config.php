@@ -50,11 +50,3 @@ function chinookConfig(string $key, mixed $default = null): mixed
 
     return $default;
 }
-
-if (!defined('SUPABASE_URL')) {
-    define('SUPABASE_URL', (string) chinookConfig('SUPABASE_URL', ''));
-}
-
-if (!defined('SUPABASE_SERVICE_ROLE_KEY')) {
-    define('SUPABASE_SERVICE_ROLE_KEY', (string) chinookConfig('SUPABASE_SERVICE_ROLE_KEY', ''));
-}
