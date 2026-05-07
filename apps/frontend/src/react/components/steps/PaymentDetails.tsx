@@ -236,8 +236,7 @@ export default function PaymentDetails({
             <span className="text-sm leading-6" style={{ color: "var(--color-n-700)" }}>
               I agree to the{" "}
               <a
-                href="https://drive.google.com/uc?export=download&id=1lF3ghbzu1NLVCdZTlsgd9Srn31AkCyB8"
-                download=""
+                href="/conditions-of-enrollment-2026.pdf"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="font-semibold underline underline-offset-2"

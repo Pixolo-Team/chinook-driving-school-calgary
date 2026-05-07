@@ -28,6 +28,22 @@ function pickNonEmptyArray<T>(value: T[] | undefined, fallback: T[]): T[] {
   return Array.isArray(value) && value.length > 0 ? value : fallback;
 }
 
+function normalizeParagraphBreaks(value: string): string {
+  return value
+    .replace(/\r\n/g, "\n")
+    .replace(/\/n/g, "\n")
+    .replace(/\\n/g, "\n");
+}
+
+function splitParagraphBlocks(paragraphs: string[]): string[] {
+  return paragraphs.flatMap((paragraph) =>
+    normalizeParagraphBreaks(paragraph)
+      .split(/\n\s*\n/)
+      .map((block) => block.trim())
+      .filter((block) => block.length > 0),
+  );
+}
+
 export async function getLegalContactDetails() {
   const siteContentData = await getSiteContentData();
   const contactMetaData = siteContentData?.meta?.contact;
@@ -44,10 +60,13 @@ export async function getHomeHeroViewModel() {
   const siteContentData = await getSiteContentData();
   const heroApiData = siteContentData?.hero;
   const heroApiSlides = Array.isArray(heroApiData?.images)
-  ? heroApiData.images
-      .map((imagePath) => normalizeApiImagePath(imagePath))
-      .filter((imagePath): imagePath is string => imagePath !== null)
-  : [];
+    ? heroApiData.images
+        .map((imageItem) =>
+          typeof imageItem === "string" ? imageItem : imageItem?.url,
+        )
+        .map((imagePath) => normalizeApiImagePath(imagePath))
+        .filter((imagePath): imagePath is string => imagePath !== null)
+    : [];
 
   return {
     eyebrow: pickString(heroApiData?.title, heroSectionData.eyebrow),
@@ -347,13 +366,17 @@ export async function getAboutFounderViewModel() {
   const siteContentData = await getSiteContentData();
   const founderApiData = siteContentData?.about_founder;
 
-  const paragraphsFromApi =
-    founderApiData?.paragraphs?.filter((paragraph) => isNonEmptyString(paragraph)) ?? [];
+  const paragraphsFromApi = splitParagraphBlocks(
+    founderApiData?.paragraphs?.filter((paragraph) => isNonEmptyString(paragraph)) ?? [],
+  );
 
   return {
     eyebrow: pickString(founderApiData?.eyebrow, founderSectionData.eyebrow),
     heading: pickString(founderApiData?.title, founderSectionData.heading),
-    paragraphs: pickNonEmptyArray(paragraphsFromApi, founderSectionData.paragraphs),
+    paragraphs: pickNonEmptyArray(
+      paragraphsFromApi,
+      splitParagraphBlocks(founderSectionData.paragraphs),
+    ),
     name: pickString(founderApiData?.name, founderSectionData.name),
     title: pickString(founderApiData?.title_role, founderSectionData.title),
     imageSrc: normalizeApiImagePath(founderApiData?.image) ?? founderSectionData.imageSrc,
