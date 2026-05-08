@@ -1,5 +1,5 @@
 // REACT //
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 // TYPES //
 import type {
@@ -19,6 +19,12 @@ import {
   resolveCourseCategoryImage,
   SESSION_TYPE_OPTIONS,
 } from "@/react/constants/form-items";
+
+const DRIVING_CATEGORY_ID = "driving-courses";
+const BRUSH_UP_CATEGORY_ID = "brush-up-lessons";
+const CAR_RENTAL_CATEGORY_ID = "car-rental";
+
+type CourseSelectionCategoryData = "driving" | "brush_up" | "car_rental" | "unknown";
 
 type SelectCoursePropsData = Readonly<{
   courses: CourseCategoryData[];
@@ -57,7 +63,16 @@ export default function SelectCourse({
   // Define Refs
 
   // Define States
-  const [activeCourseCategoryValue, setActiveCourseCategoryValue] = useState<string>(courses[0]?.id ?? "");
+  const [activeCourseCategoryValue, setActiveCourseCategoryValue] = useState<string>(
+    courses.find((courseCategoryItem) => {
+      const normalizedCategoryId = courseCategoryItem.id.trim().toLowerCase();
+      const normalizedCategoryName = courseCategoryItem.name.trim().toLowerCase();
+
+      return normalizedCategoryId === DRIVING_CATEGORY_ID || normalizedCategoryName === "driving courses";
+    })?.id ??
+      courses[0]?.id ??
+      "",
+  );
   const [touchedFields, setTouchedFields] = useState<SelectCourseTouchedFieldsData>({
     session_type: false,
     course: false,
@@ -66,6 +81,71 @@ export default function SelectCourse({
   const activeSessionValue: string = value.session_type ?? "";
   const selectedCourseIds: string[] = value.course.selected_course_ids ?? [];
   const activeCourseTypeValue: string = activeCourseCategoryValue || courses[0]?.id || "";
+  const allCourses = useMemo(
+    () => courses.flatMap((courseCategoryItem) => courseCategoryItem.courses),
+    [courses],
+  );
+  const allCoursesById = useMemo(
+    () =>
+      allCourses.reduce<Record<string, CourseCategoryData["courses"][number]>>(
+        (accumulator, courseItem) => {
+          accumulator[courseItem.id] = courseItem;
+          return accumulator;
+        },
+        {},
+      ),
+    [allCourses],
+  );
+  const courseCategoryByCourseId = useMemo(() => {
+    const nextCourseCategoryByCourseId: Record<string, CourseSelectionCategoryData> = {};
+
+    courses.forEach((courseCategoryItem) => {
+      const normalizedCategoryId = courseCategoryItem.id.trim().toLowerCase();
+      const normalizedCategoryName = courseCategoryItem.name.trim().toLowerCase();
+
+      let resolvedCategory: CourseSelectionCategoryData = "unknown";
+
+      if (normalizedCategoryId === DRIVING_CATEGORY_ID || normalizedCategoryName === "driving courses") {
+        resolvedCategory = "driving";
+      } else if (
+        normalizedCategoryId === BRUSH_UP_CATEGORY_ID ||
+        normalizedCategoryName === "brush up lessons"
+      ) {
+        resolvedCategory = "brush_up";
+      } else if (
+        normalizedCategoryId === CAR_RENTAL_CATEGORY_ID ||
+        normalizedCategoryName === "car rental"
+      ) {
+        resolvedCategory = "car_rental";
+      }
+
+      courseCategoryItem.courses.forEach((courseItem) => {
+        nextCourseCategoryByCourseId[courseItem.id] = resolvedCategory;
+      });
+    });
+
+    return nextCourseCategoryByCourseId;
+  }, [courses]);
+  const selectedCourseInfos = useMemo(
+    () =>
+      selectedCourseIds
+        .map((courseId) => allCoursesById[courseId])
+        .filter(Boolean),
+    [allCoursesById, selectedCourseIds],
+  );
+  const selectedDrivingCourses = selectedCourseInfos.filter(
+    (courseItem) => courseCategoryByCourseId[courseItem.id] === "driving",
+  );
+  const selectedBrushUpCourses = selectedCourseInfos.filter(
+    (courseItem) => courseCategoryByCourseId[courseItem.id] === "brush_up",
+  );
+  const selectedCarRentalCourses = selectedCourseInfos.filter(
+    (courseItem) => courseCategoryByCourseId[courseItem.id] === "car_rental",
+  );
+  const hasSelectedDrivingCourse = selectedDrivingCourses.some(
+    (courseItem) => Number(courseItem.hours_in_classroom ?? 0) > 0,
+  );
+  const hasSelectedAnyCourse = selectedCourseIds.length > 0;
 
   /** Change the Courses when the Course Type changes */
   const selectedCourseCategoryInfo: CourseCategoryData | undefined = useMemo(
@@ -75,8 +155,29 @@ export default function SelectCourse({
       ),
     [activeCourseTypeValue, courses],
   );
-  const isDrivingCoursesCategory =
-    (selectedCourseCategoryInfo?.name ?? "").trim().toLowerCase() === "driving courses";
+  const activeCourseSelectionCategory = useMemo<CourseSelectionCategoryData>(() => {
+    const normalizedCategoryId = selectedCourseCategoryInfo?.id.trim().toLowerCase() ?? "";
+    const normalizedCategoryName = selectedCourseCategoryInfo?.name.trim().toLowerCase() ?? "";
+
+    if (normalizedCategoryId === DRIVING_CATEGORY_ID || normalizedCategoryName === "driving courses") {
+      return "driving";
+    }
+
+    if (normalizedCategoryId === BRUSH_UP_CATEGORY_ID || normalizedCategoryName === "brush up lessons") {
+      return "brush_up";
+    }
+
+    if (normalizedCategoryId === CAR_RENTAL_CATEGORY_ID || normalizedCategoryName === "car rental") {
+      return "car_rental";
+    }
+
+    return "unknown";
+  }, [selectedCourseCategoryInfo]);
+  const isDrivingCoursesCategory = activeCourseSelectionCategory === "driving";
+  const requiresSessionType = hasSelectedDrivingCourse;
+  const shouldShowSessionType =
+    activeCourseSelectionCategory === "driving" ||
+    (activeCourseSelectionCategory === "car_rental" && selectedDrivingCourses.length > 0);
 
   /** Set the Course Type options data as needed by the component */
   const courseTypeOptions = useMemo(
@@ -117,13 +218,12 @@ export default function SelectCourse({
   );
 
   // Helper Functions
-  const buildSelectedCourseValue = (
+  const buildSelectedCourseValue = useCallback((
     nextSelectedCourseIds: string[],
     preferredCourseId?: string | null,
   ): SelectCourseValueData["course"] => {
-    const allCourses = courses.flatMap((courseCategoryItem) => courseCategoryItem.courses);
     const selectedCourseInfos = nextSelectedCourseIds
-      .map((courseId) => allCourses.find((courseItem) => courseItem.id === courseId))
+      .map((courseId) => allCoursesById[courseId])
       .filter(Boolean);
 
     const primaryCourseInfo =
@@ -160,7 +260,80 @@ export default function SelectCourse({
       tax_amount: totals.tax_amount,
       total_amount: totals.total_amount,
     };
-  };
+  }, [allCoursesById]);
+
+  const sanitizeSelectedCourseIds = useCallback((courseIds: string[]): string[] => {
+    const nextSelectedCourseIds: string[] = [];
+    let hasDrivingCourse = false;
+    let hasBrushUpCourse = false;
+    let hasCarRentalCourse = false;
+
+    courseIds.forEach((courseId) => {
+      const courseCategory = courseCategoryByCourseId[courseId];
+
+      if (courseCategory === "driving") {
+        if (hasDrivingCourse || hasBrushUpCourse) {
+          return;
+        }
+
+        hasDrivingCourse = true;
+        nextSelectedCourseIds.push(courseId);
+        return;
+      }
+
+      if (courseCategory === "brush_up") {
+        if (hasBrushUpCourse || hasDrivingCourse) {
+          return;
+        }
+
+        hasBrushUpCourse = true;
+        nextSelectedCourseIds.push(courseId);
+        return;
+      }
+
+      if (courseCategory === "car_rental") {
+        if (hasCarRentalCourse) {
+          return;
+        }
+
+        hasCarRentalCourse = true;
+        nextSelectedCourseIds.push(courseId);
+        return;
+      }
+
+      nextSelectedCourseIds.push(courseId);
+    });
+
+    return nextSelectedCourseIds;
+  }, [courseCategoryByCourseId]);
+
+  const isCourseOptionDisabled = useCallback((courseId: string): boolean => {
+    if (selectedCourseIds.includes(courseId)) {
+      return false;
+    }
+
+    const courseCategory = courseCategoryByCourseId[courseId];
+
+    if (courseCategory === "driving") {
+      return selectedDrivingCourses.length > 0 || selectedBrushUpCourses.length > 0;
+    }
+
+    if (courseCategory === "brush_up") {
+      return selectedBrushUpCourses.length > 0 || selectedDrivingCourses.length > 0;
+    }
+
+    if (courseCategory === "car_rental") {
+      return selectedCarRentalCourses.length > 0;
+    }
+
+    return false;
+  }, [
+    courseCategoryByCourseId,
+    selectedBrushUpCourses.length,
+    selectedCarRentalCourses.length,
+    selectedCourseIds,
+    selectedDrivingCourses.length,
+  ]);
 
   const markFieldAsTouched = (fieldKey: keyof SelectCourseTouchedFieldsData): void => {
     setTouchedFields((currentTouchedFields) => ({
@@ -171,13 +344,17 @@ export default function SelectCourse({
 
   const revealValidationErrors = (): void => {
     setTouchedFields({
-      session_type: true,
+      session_type: requiresSessionType,
       course: true,
     });
   };
 
   const getSessionTypeError = (): string | null =>
-    activeSessionValue ? null : "Please select a session type.";
+    !requiresSessionType
+      ? null
+      : activeSessionValue && activeSessionValue !== "not_applicable"
+        ? null
+        : "Please select a session type.";
 
   const getCourseError = (): string | null =>
     isLoadingCourses
@@ -199,9 +376,46 @@ export default function SelectCourse({
    * Adds or removes a course from the multi-select state.
    */
   const handleCourseChange = (courseId: string, checked: boolean): void => {
-    const nextSelectedCourseIds = checked
+    const courseCategory = courseCategoryByCourseId[courseId];
+    let nextSelectedCourseIds = checked
       ? Array.from(new Set([...selectedCourseIds, courseId]))
       : selectedCourseIds.filter((selectedCourseId) => selectedCourseId !== courseId);
+
+    if (checked && (courseCategory === "driving" || courseCategory === "brush_up")) {
+      nextSelectedCourseIds = nextSelectedCourseIds.filter((selectedCourseId) => {
+        if (selectedCourseId === courseId) {
+          return true;
+        }
+
+        const selectedCourseCategory = courseCategoryByCourseId[selectedCourseId];
+
+        if (selectedCourseCategory === courseCategory) {
+          return false;
+        }
+
+        if (courseCategory === "driving" && selectedCourseCategory === "brush_up") {
+          return false;
+        }
+
+        if (courseCategory === "brush_up" && selectedCourseCategory === "driving") {
+          return false;
+        }
+
+        return true;
+      });
+    }
+
+    if (checked && courseCategory === "car_rental") {
+      nextSelectedCourseIds = nextSelectedCourseIds.filter((selectedCourseId) => {
+        if (selectedCourseId === courseId) {
+          return true;
+        }
+
+        return courseCategoryByCourseId[selectedCourseId] !== "car_rental";
+      });
+    }
+
+    nextSelectedCourseIds = sanitizeSelectedCourseIds(nextSelectedCourseIds);
 
     onChange(
       "course",
@@ -248,8 +462,20 @@ export default function SelectCourse({
 
   // Use Effects
   useEffect(() => {
-    if (!activeCourseCategoryValue && courses[0]?.id) {
-      setActiveCourseCategoryValue(courses[0].id);
+    if (activeCourseCategoryValue) {
+      return;
+    }
+
+    const defaultCourseCategory =
+      courses.find((courseCategoryItem) => {
+        const normalizedCategoryId = courseCategoryItem.id.trim().toLowerCase();
+        const normalizedCategoryName = courseCategoryItem.name.trim().toLowerCase();
+
+        return normalizedCategoryId === DRIVING_CATEGORY_ID || normalizedCategoryName === "driving courses";
+      }) ?? courses[0];
+
+    if (defaultCourseCategory?.id) {
+      setActiveCourseCategoryValue(defaultCourseCategory.id);
     }
   }, [activeCourseCategoryValue, courses]);
 
@@ -268,6 +494,40 @@ export default function SelectCourse({
   }, [activeCourseTypeValue, courses, selectedCourseIds]);
 
   useEffect(() => {
+    const sanitizedSelectedCourseIds = sanitizeSelectedCourseIds(selectedCourseIds);
+
+    const hasSelectionChanged =
+      sanitizedSelectedCourseIds.length !== selectedCourseIds.length ||
+      sanitizedSelectedCourseIds.some((courseId, index) => courseId !== selectedCourseIds[index]);
+
+    if (!hasSelectionChanged) {
+      return;
+    }
+
+    onChange(
+      "course",
+      buildSelectedCourseValue(sanitizedSelectedCourseIds, value.course.course_id),
+    );
+  }, [
+    buildSelectedCourseValue,
+    onChange,
+    sanitizeSelectedCourseIds,
+    selectedCourseIds,
+    value.course.course_id,
+  ]);
+
+  useEffect(() => {
+    if (hasSelectedAnyCourse && !requiresSessionType && value.session_type !== "not_applicable") {
+      onChange("session_type", "not_applicable");
+      return;
+    }
+
+    if (requiresSessionType && value.session_type === "not_applicable") {
+      onChange("session_type", null);
+    }
+  }, [hasSelectedAnyCourse, onChange, requiresSessionType, value.session_type]);
+
+  useEffect(() => {
     // Register the Validator (so parent can use it)
     registerValidator?.(1, getStepState);
   }, [registerValidator, value, activeCourseCategoryValue]);
@@ -275,25 +535,26 @@ export default function SelectCourse({
   return (
     <section className="bg-n-50 flex w-full flex-col gap-5 md:gap-7">
       <div className="flex w-full flex-col gap-5 md:gap-7">
-        {/* Session Type Dropdown */}
-        <Dropdown
-          label="Select Session Type:"
-          name="session-type"
-          value={activeSessionValue}
-          onChange={(event) => {
-            markFieldAsTouched("session_type");
-            handleSessionChange(event.target.value);
-          }}
-          placeholder="Select Session"
-          options={SESSION_TYPE_OPTIONS}
-          helperText=""
-          isError={shouldShowSessionTypeError}
-          errorMessage={sessionTypeError ?? undefined}
-          containerClassName="max-w-none gap-[10px]"
-          labelClassName="text-n-800 text-base leading-5 font-semibold md:text-lg"
-          showTriggerLabel={false}
-          styleVariant="minimal"
-        />
+        {shouldShowSessionType ? (
+          <Dropdown
+            label="Select Session Type:"
+            name="session-type"
+            value={activeSessionValue}
+            onChange={(event) => {
+              markFieldAsTouched("session_type");
+              handleSessionChange(event.target.value);
+            }}
+            placeholder="Select Session"
+            options={SESSION_TYPE_OPTIONS}
+            helperText=""
+            isError={shouldShowSessionTypeError}
+            errorMessage={sessionTypeError ?? undefined}
+            containerClassName="max-w-none gap-[10px]"
+            labelClassName="text-n-800 text-base leading-5 font-semibold md:text-lg"
+            showTriggerLabel={false}
+            styleVariant="minimal"
+          />
+        ) : null}
 
         {/* Course Type Options */}
         <div className="flex w-full flex-col gap-[10px] md:gap-3">
@@ -307,7 +568,7 @@ export default function SelectCourse({
             itemContainerClassName="min-w-0"
           />
           {coursesErrorMessage ? (
-            <p className="text-error-500 text-sm leading-5 font-normal">{coursesErrorMessage}</p>
+            <p className="text-red-500 text-sm leading-5 font-normal">{coursesErrorMessage}</p>
           ) : null}
         </div>
 
@@ -318,24 +579,32 @@ export default function SelectCourse({
           <div className="flex w-full flex-col gap-5 md:gap-10">
             <p className="text-n-900 flex items-center gap-1 text-lg leading-normal font-semibold">
               <span>Enroll me in</span>
+              <span aria-hidden="true" className="text-red-500">*</span>
+            </p>
+            <p className="text-n-600 text-sm leading-5 md:text-base">
+              Choose one driving lesson package or one brush up lesson. Car rental can be added to either of those, or booked on its own.
             </p>
 
             <div className="grid w-full grid-cols-1 gap-[10px] md:grid-cols-3 md:gap-4">
               {availableCourseOptions.map((courseOption) => {
                 const isChecked = selectedCourseIds.includes(courseOption.value);
+                const isDisabled = isCourseOptionDisabled(courseOption.value);
 
                 return (
                   <label
                     key={courseOption.value}
-                    className={`relative flex w-full cursor-pointer items-center gap-6 rounded-[8px] border px-[21px] py-[17px] transition-[transform,background-color,border-color,color,box-shadow] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
+                    className={`relative flex w-full items-center gap-6 rounded-[8px] border px-[21px] py-[17px] transition-[transform,background-color,border-color,color,box-shadow,opacity] duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${
                       isChecked
                         ? "border-blue-500 bg-blue-500 text-n-50"
-                        : "border-n-300 bg-n-50 text-n-600 hover:scale-[1.01] hover:shadow-[0_10px_24px_rgba(14,23,43,0.08)]"
+                        : isDisabled
+                          ? "cursor-not-allowed border-n-200 bg-n-100 text-n-400 opacity-70"
+                          : "cursor-pointer border-n-300 bg-n-50 text-n-600 hover:scale-[1.01] hover:shadow-[0_10px_24px_rgba(14,23,43,0.08)]"
                     }`}
                   >
                     <input
                       type="checkbox"
                       checked={isChecked}
+                      disabled={isDisabled}
                       onChange={(event) => {
                         markFieldAsTouched("course");
                         handleCourseChange(courseOption.value, event.target.checked);
@@ -372,7 +641,7 @@ export default function SelectCourse({
             </div>
 
             {shouldShowCourseError ? (
-              <p className="text-sm leading-5 font-normal text-error-500">{courseError}</p>
+              <p className="text-sm leading-5 font-normal text-red-500">{courseError}</p>
             ) : null}
           </div>
         </div>

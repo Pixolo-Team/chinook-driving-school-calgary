@@ -214,44 +214,6 @@ function sendInquiryNotificationEmail(array $input): array
  */
 function buildEnrollmentConfirmationHtml(array $input, ?string $enrollmentId = null): string
 {
-    $studentName = formatStudentFullName($input);
-    $courses = normalizeEnrollmentCourses($input);
-    $availabilityDate = formatDisplayDate($input['availability_date'] ?? null);
-    $availabilityDays = formatAvailabilityDays($input['availability_days_of_week'] ?? null);
-    $availabilityWindows = formatAvailabilityTimeSlots($input['avilability_time_slots'] ?? null);
-    $sessionType = formatSessionTypeLabel($input['session_type'] ?? null);
-    $year = gmdate('Y');
-
-    $courseCards = '';
-    foreach ($courses as $courseItem) {
-        $courseName = escapeHtml((string)($courseItem['name'] ?? 'Selected Course'));
-        $coursePrice = formatCurrency($courseItem['course_price'] ?? 0);
-        $courseTax = formatCurrency($courseItem['tax_amount'] ?? 0);
-        $courseTotal = formatCurrency($courseItem['total_amount'] ?? 0);
-        $courseCards .= '
-          <tr>
-            <td style="padding:0 0 12px 0;">
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #d9e2ec;border-radius:14px;background-color:#ffffff;">
-                <tr>
-                  <td style="padding:18px 20px;">
-                    <p style="margin:0 0 6px 0;font-size:18px;line-height:26px;font-weight:700;color:#102a43;">' . $courseName . '</p>
-                    <p style="margin:0;font-size:14px;line-height:22px;color:#486581;">Course: ' . $coursePrice . ' &nbsp;|&nbsp; GST: ' . $courseTax . ' &nbsp;|&nbsp; Total: ' . $courseTotal . '</p>
-                  </td>
-                </tr>
-              </table>
-            </td>
-          </tr>';
-    }
-
-    $summaryRows = buildEmailSummaryRows([
-        'Enrollment ID' => $enrollmentId ?? 'Pending assignment',
-        'Session Type' => $sessionType,
-        'Preferred Start Date' => $availabilityDate,
-        'Preferred Days' => $availabilityDays,
-        'Preferred Time Windows' => $availabilityWindows,
-        'Amount Received in Form' => formatCurrency($input['amount'] ?? 0),
-    ]);
-
     return '<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -260,38 +222,19 @@ function buildEnrollmentConfirmationHtml(array $input, ?string $enrollmentId = n
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <title>Chinook Enrollment Confirmation</title>
 </head>
-<body style="margin:0;padding:0;background-color:#f4f7fb;">
+<body style="margin:0;padding:0;background-color:#f4f7fb;font-family:Arial,sans-serif;color:#102a43;">
   <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="width:100%;background-color:#f4f7fb;">
     <tr>
       <td align="center" style="padding:24px 12px;">
-        <table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="width:640px;max-width:640px;background-color:#ffffff;border:1px solid #d9e2ec;border-radius:22px;overflow:hidden;">
+        <table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="width:640px;max-width:640px;background-color:#ffffff;border:1px solid #d9e2ec;border-radius:16px;">
           <tr>
-            <td style="padding:32px 32px 24px 32px;background:linear-gradient(135deg,#0b1f33 0%,#1b4d8c 100%);">
-              <p style="margin:0 0 10px 0;font-size:12px;line-height:18px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:#bcccdc;">Chinook Driving School Calgary</p>
-              <h1 style="margin:0;font-size:32px;line-height:40px;font-weight:700;color:#ffffff;">Enrollment received</h1>
-              <p style="margin:12px 0 0 0;font-size:16px;line-height:26px;color:#d9e2ec;">Thanks ' . escapeHtml($studentName) . '. We have your enrollment details and our team will follow up with next steps shortly.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:28px 32px 8px 32px;">
-              <p style="margin:0 0 14px 0;font-size:13px;line-height:20px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#486581;">Courses selected</p>
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">' . $courseCards . '</table>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:8px 32px 8px 32px;">
-              <p style="margin:0 0 14px 0;font-size:13px;line-height:20px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:#486581;">Availability details</p>
-              <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border:1px solid #d9e2ec;border-radius:14px;background-color:#f8fbff;">
-                <tr>
-                  <td style="padding:18px 20px;">' . $summaryRows . '</td>
-                </tr>
-              </table>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:24px 32px 32px 32px;">
-              <p style="margin:0 0 10px 0;font-size:15px;line-height:24px;color:#243b53;">If you need to update your availability or have questions about your course, reply to our team at <a href="mailto:chinookdriving@gmail.com" style="color:#1d4ed8;text-decoration:none;font-weight:700;">chinookdriving@gmail.com</a>.</p>
-              <p style="margin:0;font-size:12px;line-height:20px;color:#7b8794;">This is a confirmation of the information submitted through the enrollment form. © ' . $year . ' Chinook Driving School Calgary.</p>
+            <td style="padding:32px;">
+              <p style="margin:0 0 18px 0;font-size:16px;line-height:24px;">Hello,</p>
+              <p style="margin:0 0 18px 0;font-size:16px;line-height:24px;">Thank you for enrolling with Chinook Driving School Calgary.</p>
+              <p style="margin:0 0 18px 0;font-size:16px;line-height:24px;">We have received your message and will reach out to you with a confirmation of enrollment shortly.</p>
+              <p style="margin:0 0 18px 0;font-size:16px;line-height:24px;">Once received, please call our office.</p>
+              <p style="margin:24px 0 0 0;font-size:16px;line-height:24px;">Best Regards,</p>
+              <p style="margin:4px 0 0 0;font-size:16px;line-height:24px;">Chinook Driving School Calgary</p>
             </td>
           </tr>
         </table>
@@ -307,32 +250,15 @@ function buildEnrollmentConfirmationHtml(array $input, ?string $enrollmentId = n
  */
 function buildEnrollmentConfirmationText(array $input, ?string $enrollmentId = null): string
 {
-    $lines = [
-        'Chinook Driving School Calgary',
+    return implode("\n", [
+        'Hello,',
+        'Thank you for enrolling with Chinook Driving Academy.',
+        'We have received your message and will reach out to you with a confirmation of enrollment shortly.',
+        'Once received, please call our office.',
         '',
-        'Enrollment received for ' . formatStudentFullName($input),
-        'Enrollment ID: ' . ($enrollmentId ?? 'Pending assignment'),
-        'Session Type: ' . formatSessionTypeLabel($input['session_type'] ?? null),
-        'Preferred Start Date: ' . formatDisplayDate($input['availability_date'] ?? null),
-        'Preferred Days: ' . formatAvailabilityDays($input['availability_days_of_week'] ?? null),
-        'Preferred Time Windows: ' . formatAvailabilityTimeSlots($input['avilability_time_slots'] ?? null),
-        '',
-        'Courses Selected:',
-    ];
-
-    foreach (normalizeEnrollmentCourses($input) as $courseItem) {
-        $lines[] = '- ' . (string)($courseItem['name'] ?? 'Selected Course')
-            . ' | Course: ' . formatCurrency($courseItem['course_price'] ?? 0)
-            . ' | GST: ' . formatCurrency($courseItem['tax_amount'] ?? 0)
-            . ' | Total: ' . formatCurrency($courseItem['total_amount'] ?? 0);
-    }
-
-    $lines[] = '';
-    $lines[] = 'Amount Received in Form: ' . formatCurrency($input['amount'] ?? 0);
-    $lines[] = '';
-    $lines[] = 'Questions? Email chinookdriving@gmail.com';
-
-    return implode("\n", $lines);
+        'Best Regards,',
+        'Chinook Driving Academy',
+    ]);
 }
 
 /**

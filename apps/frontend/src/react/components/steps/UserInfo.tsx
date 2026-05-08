@@ -257,6 +257,7 @@ export default function UserInfo({
         <Input
           type="text"
           label="Residential Address"
+          required
           value={value.address}
           onChange={(event) => handleFieldChange("address", event.target.value)}
           placeholder="Street, Building, Floor"
@@ -268,6 +269,7 @@ export default function UserInfo({
         <Input
           type="text"
           label="City"
+          required
           value={value.city}
           onChange={(event) => handleFieldChange("city", event.target.value)}
           placeholder="Enter City"
@@ -279,6 +281,7 @@ export default function UserInfo({
         <Input
           type="text"
           label="Postal Code"
+          required
           value={value.postal_code}
           onChange={(event) => handleFieldChange("postal_code", event.target.value)}
           placeholder="e.g. T2X 1A1"

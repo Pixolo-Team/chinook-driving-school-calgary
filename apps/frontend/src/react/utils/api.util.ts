@@ -53,9 +53,15 @@ export function transformEnrollmentPayload(
         total_amount: enrollmentFormValue.select_course.course.total_amount ?? selectedCourseInfo.total_amount,
       }
     : {};
+  const requiresSessionType = selectedCourseInfos.some(
+    (courseItem) => Number(courseItem.hours_in_classroom ?? 0) > 0,
+  );
+  const normalizedSessionType = requiresSessionType
+    ? enrollmentFormValue.select_course.session_type ?? ""
+    : "not_applicable";
 
   return {
-    session_type: enrollmentFormValue.select_course.session_type ?? "",
+    session_type: normalizedSessionType,
     course: aggregatedCourseInfo,
     courses: selectedCourseInfos,
     student_first_name: enrollmentFormValue.user_info.first_name,
