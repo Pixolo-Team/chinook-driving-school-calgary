@@ -44,8 +44,8 @@ function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = n
     }
 
     $subject = 'Your Chinook enrollment confirmation';
-    $htmlBody = buildEnrollmentConfirmationHtml($input, $enrollmentId);
-    $textBody = buildEnrollmentConfirmationText($input, $enrollmentId);
+    $htmlBody = buildEnrollmentConfirmationHtml();
+    $textBody = buildEnrollmentConfirmationText();
 
     $smtpHost = trim((string)(getMailerConfigValue('SMTP_HOST') ?: ''));
     if ($smtpHost !== '') {
@@ -98,121 +98,9 @@ function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = n
 }
 
 /**
- * Send a notification email for a contact inquiry.
- *
- * @param array $input Validated inquiry payload.
- *
- * @return array{sent: bool, transport: string, error: string|null}
- */
-function sendInquiryNotificationEmail(array $input): array
-{
-    $fromEmail = getMailerConfigValue('SMTP_FROM_EMAIL')
-        ?: getMailerConfigValue('SMTP_FROM')
-        ?: getMailerConfigValue('MAIL_FROM_EMAIL')
-        ?: '';
-    $fromName = getMailerConfigValue('SMTP_FROM_NAME')
-        ?: getMailerConfigValue('MAIL_FROM_NAME')
-        ?: 'Chinook Driving School Calgary';
-    $toEmail = getMailerConfigValue('INQUIRY_NOTIFICATION_EMAIL')
-        ?: getMailerConfigValue('CONTACT_NOTIFICATION_EMAIL')
-        ?: $fromEmail;
-
-    if ($fromEmail === '') {
-        return [
-            'sent' => false,
-            'transport' => 'none',
-            'error' => 'SMTP_FROM_EMAIL, SMTP_FROM, or MAIL_FROM_EMAIL is not configured',
-        ];
-    }
-
-    if ($toEmail === '') {
-        return [
-            'sent' => false,
-            'transport' => 'none',
-            'error' => 'INQUIRY_NOTIFICATION_EMAIL, CONTACT_NOTIFICATION_EMAIL, or sender email is not configured',
-        ];
-    }
-
-    if (!isValidEmail($toEmail)) {
-        return [
-            'sent' => false,
-            'transport' => 'none',
-            'error' => 'Notification email address is invalid',
-        ];
-    }
-
-    $replyToEmail = sanitizeString((string)($input['email'] ?? '')) ?: $fromEmail;
-    if (!isValidEmail($replyToEmail)) {
-        $replyToEmail = $fromEmail;
-    }
-
-    $replyToName = sanitizeString((string)($input['name'] ?? '')) ?: $fromName;
-    $subject = 'New Chinook website inquiry';
-    $htmlBody = buildInquiryNotificationHtml($input);
-    $textBody = buildInquiryNotificationText($input);
-
-    $smtpHost = trim((string)(getMailerConfigValue('SMTP_HOST') ?: ''));
-    if ($smtpHost !== '') {
-        try {
-            sendHtmlMailViaSmtp(
-                [
-                    'host' => $smtpHost,
-                    'port' => (int)(getMailerConfigValue('SMTP_PORT') ?: 587),
-                    'username' => (string)(getMailerConfigValue('SMTP_USER') ?: ''),
-                    'password' => (string)(getMailerConfigValue('SMTP_PASS') ?: ''),
-                    'secure' => strtolower(trim((string)(getMailerConfigValue('SMTP_SECURE') ?: 'tls'))),
-                    'timeout' => (int)(getMailerConfigValue('SMTP_TIMEOUT') ?: 15),
-                ],
-                [
-                    'from_email' => $fromEmail,
-                    'from_name' => $fromName,
-                    'reply_to_email' => $replyToEmail,
-                    'reply_to_name' => $replyToName,
-                    'to_email' => $toEmail,
-                    'subject' => $subject,
-                    'html' => $htmlBody,
-                    'text' => $textBody,
-                ]
-            );
-
-            return [
-                'sent' => true,
-                'transport' => 'smtp',
-                'error' => null,
-            ];
-        } catch (Throwable $throwable) {
-            error_log('Inquiry notification email failed over SMTP: ' . $throwable->getMessage());
-        }
-    }
-
-    $mailParts = buildMailMessageParts(
-        $fromEmail,
-        $fromName,
-        generateMultipartAlternativeBody($htmlBody, $textBody),
-        $toEmail,
-        $subject,
-        $replyToEmail,
-        $replyToName
-    );
-
-    $mailSent = mail(
-        $toEmail,
-        encodeMimeHeader($subject),
-        $mailParts['body'],
-        implode("\r\n", $mailParts['headers'])
-    );
-
-    return [
-        'sent' => $mailSent,
-        'transport' => 'mail',
-        'error' => $mailSent ? null : 'PHP mail() returned false',
-    ];
-}
-
-/**
  * Build the enrollment confirmation email HTML.
  */
-function buildEnrollmentConfirmationHtml(array $input, ?string $enrollmentId = null): string
+function buildEnrollmentConfirmationHtml(): string
 {
     return '<!DOCTYPE html>
 <html lang="en">
@@ -231,7 +119,7 @@ function buildEnrollmentConfirmationHtml(array $input, ?string $enrollmentId = n
             <td style="padding:32px;">
               <p style="margin:0 0 18px 0;font-size:16px;line-height:24px;">Hello,</p>
               <p style="margin:0 0 18px 0;font-size:16px;line-height:24px;">Thank you for enrolling with Chinook Driving School Calgary.</p>
-              <p style="margin:0 0 18px 0;font-size:16px;line-height:24px;">We have received your message and will reach out to you with a confirmation of enrollment shortly.</p>
+              <p style="margin:0 0 18px 0;font-size:16px;line-height:24px;">We have received your enrollment request and will reach out to you with a confirmation shortly.</p>
               <p style="margin:0 0 18px 0;font-size:16px;line-height:24px;">Once received, please call our office.</p>
               <p style="margin:24px 0 0 0;font-size:16px;line-height:24px;">Best Regards,</p>
               <p style="margin:4px 0 0 0;font-size:16px;line-height:24px;">Chinook Driving School Calgary</p>
@@ -248,12 +136,12 @@ function buildEnrollmentConfirmationHtml(array $input, ?string $enrollmentId = n
 /**
  * Build a plain text alternative for the email.
  */
-function buildEnrollmentConfirmationText(array $input, ?string $enrollmentId = null): string
+function buildEnrollmentConfirmationText(): string
 {
     return implode("\n", [
         'Hello,',
         'Thank you for enrolling with Chinook Driving Academy.',
-        'We have received your message and will reach out to you with a confirmation of enrollment shortly.',
+        'We have received your enrollment request and will reach out to you with a confirmation shortly.',
         'Once received, please call our office.',
         '',
         'Best Regards,',
@@ -272,78 +160,6 @@ function getMailerConfigValue(string $key): string
 
     $envValue = getenv($key);
     return $envValue === false ? '' : (string) $envValue;
-}
-
-/**
- * Build the inquiry notification email HTML.
- */
-function buildInquiryNotificationHtml(array $input): string
-{
-    $name = escapeHtml((string)($input['name'] ?? 'Not provided'));
-    $email = escapeHtml((string)($input['email'] ?? 'Not provided'));
-    $contactNumber = escapeHtml((string)($input['contact_number'] ?? 'Not provided'));
-    $reason = escapeHtml((string)($input['reason'] ?? ''));
-    $query = nl2br(escapeHtml((string)($input['query'] ?? '')));
-    $submittedAt = gmdate('Y-m-d H:i:s') . ' UTC';
-
-    return '<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>New Chinook Inquiry</title>
-</head>
-<body style="margin:0;padding:24px;background-color:#f4f7fb;font-family:Arial,sans-serif;color:#102a43;">
-  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
-    <tr>
-      <td align="center">
-        <table role="presentation" width="640" cellpadding="0" cellspacing="0" border="0" style="width:640px;max-width:640px;background:#ffffff;border:1px solid #d9e2ec;border-radius:16px;">
-          <tr>
-            <td style="padding:24px 28px;border-bottom:1px solid #d9e2ec;background:#0b1f33;color:#ffffff;">
-              <h1 style="margin:0;font-size:28px;line-height:36px;">New website inquiry</h1>
-              <p style="margin:10px 0 0 0;font-size:14px;line-height:22px;color:#d9e2ec;">A visitor submitted the Chinook contact form.</p>
-            </td>
-          </tr>
-          <tr>
-            <td style="padding:24px 28px;">
-              <p style="margin:0 0 12px 0;font-size:14px;line-height:22px;"><strong>Name:</strong> ' . $name . '</p>
-              <p style="margin:0 0 12px 0;font-size:14px;line-height:22px;"><strong>Email:</strong> ' . $email . '</p>
-              <p style="margin:0 0 12px 0;font-size:14px;line-height:22px;"><strong>Phone:</strong> ' . $contactNumber . '</p>
-              <p style="margin:0 0 12px 0;font-size:14px;line-height:22px;"><strong>Reason:</strong> ' . ($reason !== '' ? $reason : 'Not provided') . '</p>
-              <p style="margin:0 0 12px 0;font-size:14px;line-height:22px;"><strong>Submitted:</strong> ' . escapeHtml($submittedAt) . '</p>
-              <div style="margin-top:18px;padding:16px;border:1px solid #d9e2ec;border-radius:12px;background:#f8fbff;">
-                <p style="margin:0 0 8px 0;font-size:13px;line-height:20px;font-weight:700;text-transform:uppercase;color:#486581;">Message</p>
-                <p style="margin:0;font-size:14px;line-height:24px;color:#243b53;">' . ($query !== '' ? $query : 'No message provided.') . '</p>
-              </div>
-            </td>
-          </tr>
-        </table>
-      </td>
-    </tr>
-  </table>
-</body>
-</html>';
-}
-
-/**
- * Build the inquiry notification email text body.
- */
-function buildInquiryNotificationText(array $input): string
-{
-    $lines = [
-        'New website inquiry',
-        '',
-        'Name: ' . ((string)($input['name'] ?? 'Not provided')),
-        'Email: ' . ((string)($input['email'] ?? 'Not provided')),
-        'Phone: ' . ((string)($input['contact_number'] ?? 'Not provided')),
-        'Reason: ' . ((string)($input['reason'] ?? 'Not provided')),
-        'Submitted: ' . gmdate('Y-m-d H:i:s') . ' UTC',
-        '',
-        'Message:',
-        ((string)($input['query'] ?? 'No message provided.')),
-    ];
-
-    return implode("\n", $lines);
 }
 
 /**
@@ -485,161 +301,6 @@ function generateMultipartAlternativeBody(string $html, string $text): string
         . 'Content-Transfer-Encoding: quoted-printable' . "\r\n\r\n"
         . $safeHtml . "\r\n\r\n"
         . '--[[BOUNDARY]]--';
-}
-
-/**
- * Normalize the selected courses into a guaranteed non-empty list.
- *
- * @return array<int, array<string, mixed>>
- */
-function normalizeEnrollmentCourses(array $input): array
-{
-    if (isset($input['courses']) && is_array($input['courses']) && count($input['courses']) > 0) {
-        return $input['courses'];
-    }
-
-    if (isset($input['course']) && is_array($input['course'])) {
-        return [$input['course']];
-    }
-
-    return [];
-}
-
-/**
- * Build summary rows for the email details card.
- */
-function buildEmailSummaryRows(array $rows): string
-{
-    $html = '';
-    foreach ($rows as $label => $value) {
-        $html .= '
-          <p style="margin:0 0 10px 0;font-size:14px;line-height:22px;color:#243b53;">
-            <span style="display:inline-block;min-width:170px;font-weight:700;color:#102a43;">' . escapeHtml((string)$label) . ':</span>
-            <span style="color:#486581;">' . escapeHtml((string)$value) . '</span>
-          </p>';
-    }
-
-    return $html;
-}
-
-/**
- * Format the session type for human-friendly display.
- */
-function formatSessionTypeLabel($value): string
-{
-    $normalizedValue = (string)$value;
-
-    if ($normalizedValue === 'in_person') {
-        return 'In Person';
-    }
-
-    if ($normalizedValue === 'online') {
-        return 'Online';
-    }
-
-    if ($normalizedValue === 'not_applicable') {
-        return 'Not Applicable';
-    }
-
-    return 'Not provided';
-}
-
-/**
- * Format the student name for display.
- */
-function formatStudentFullName(array $input): string
-{
-    $parts = array_filter([
-        sanitizeString((string)($input['student_first_name'] ?? '')),
-        sanitizeString((string)($input['student_middle_name'] ?? '')),
-        sanitizeString((string)($input['student_last_name'] ?? '')),
-    ]);
-
-    return count($parts) > 0 ? implode(' ', $parts) : 'there';
-}
-
-/**
- * Format a monetary amount in CAD style.
- */
-function formatCurrency($amount): string
-{
-    return '$' . number_format((float)$amount, 2);
-}
-
-/**
- * Format a Y-m-d date for email display.
- */
-function formatDisplayDate($date): string
-{
-    if (!is_string($date) || trim($date) === '' || !isValidDate(trim($date))) {
-        return 'Not provided';
-    }
-
-    $dateObject = DateTime::createFromFormat('Y-m-d', trim($date));
-    return $dateObject instanceof DateTime ? $dateObject->format('F j, Y') : trim($date);
-}
-
-/**
- * Format availability days for email display.
- */
-function formatAvailabilityDays($days): string
-{
-    if (!is_array($days) || count($days) === 0) {
-        return 'Not provided';
-    }
-
-    $labels = array_map(static function ($day): string {
-        return ucfirst((string)$day);
-    }, $days);
-
-    return implode(', ', $labels);
-}
-
-/**
- * Format the submitted time slot objects for email display.
- */
-function formatAvailabilityTimeSlots($slots): string
-{
-    if (!is_array($slots) || count($slots) === 0) {
-        return 'Not provided';
-    }
-
-    $formattedSlots = [];
-    foreach ($slots as $slot) {
-        if (!is_array($slot)) {
-            continue;
-        }
-
-        $startTime = formatClockTime($slot['start_time'] ?? null);
-        $endTime = formatClockTime($slot['end_time'] ?? null);
-        $formattedSlots[] = $startTime . ' - ' . $endTime;
-    }
-
-    return count($formattedSlots) > 0 ? implode(', ', $formattedSlots) : 'Not provided';
-}
-
-/**
- * Format an HH:MM style value to a 12-hour clock string.
- */
-function formatClockTime($value): string
-{
-    if (!is_string($value) || trim($value) === '') {
-        return 'Not provided';
-    }
-
-    $normalizedValue = trim($value);
-    $dateTime = DateTime::createFromFormat('H:i:s', $normalizedValue)
-        ?: DateTime::createFromFormat('H:i', $normalizedValue);
-
-    return $dateTime instanceof DateTime ? $dateTime->format('g:i A') : $normalizedValue;
-}
-
-/**
- * Escape user-controlled values for safe HTML output.
- */
-function escapeHtml(string $value): string
-{
-    return htmlspecialchars($value, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
 }
 
 /**
