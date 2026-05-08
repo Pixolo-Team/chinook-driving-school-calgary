@@ -191,6 +191,20 @@ if (count($inputCourses) === 0 && !isset($errors['course']) && is_array($input['
     $inputCourses = [$input['course']];
 }
 
+// Only enforce rules that can be derived safely from the submitted payload.
+$requiresSessionType = false;
+
+foreach ($inputCourses as $courseItem) {
+    if (!is_array($courseItem)) {
+        continue;
+    }
+
+    if ((float)($courseItem['hours_in_classroom'] ?? 0) > 0) {
+        $requiresSessionType = true;
+        break;
+    }
+}
+
 // ---------------------------------------------------------------------------
 // Step 5: Validate email addresses and date fields
 // ---------------------------------------------------------------------------
@@ -233,6 +247,14 @@ if (isset($input['license_status']) && !in_array($input['license_status'], ALLOW
 
 if (isset($input['payment_method']) && !in_array($input['payment_method'], ALLOWED_PAYMENT_METHODS, true)) {
     $errors['payment_method'] = 'Invalid payment_method';
+}
+
+if ($requiresSessionType) {
+    if (!isset($input['session_type']) || !in_array($input['session_type'], ['in_person', 'online'], true)) {
+        $errors['session_type'] = 'Driving lesson packages with classroom training require an online or in_person session_type';
+    }
+} elseif (isset($input['session_type']) && $input['session_type'] !== 'not_applicable') {
+    $errors['session_type'] = 'session_type must be not_applicable when only brush up lessons and/or car rental are selected';
 }
 
 // Validate each day in the availability_days_of_week array
