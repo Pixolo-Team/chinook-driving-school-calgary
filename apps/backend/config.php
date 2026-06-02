@@ -21,6 +21,8 @@ $chinookConfig = [
     'SMTP_FROM' => '',
     'MAIL_FROM_EMAIL' => '',
     'MAIL_FROM_NAME' => 'Chinook Driving School Calgary',
+    // Admin inbox for enrollment notifications.
+    'ENROLLMENT_NOTIFICATION_EMAIL' => '',
     'INQUIRY_NOTIFICATION_EMAIL' => '',
     'CONTACT_NOTIFICATION_EMAIL' => '',
 ];

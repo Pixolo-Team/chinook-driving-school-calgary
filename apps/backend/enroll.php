@@ -554,6 +554,12 @@ $emailResult = [
     'transport' => 'none',
     'error' => null,
 ];
+// Track the admin notification separately so enrollment creation stays non-blocking.
+$adminEmailResult = [
+    'sent' => false,
+    'transport' => 'none',
+    'error' => null,
+];
 
 try {
     // Insert the student record first so we have a student_id for downstream rows
@@ -614,6 +620,8 @@ try {
     }
 
     $emailResult = sendEnrollmentConfirmationEmail($input, $enrollmentId);
+    // The admin copy is attempted after the student mail and never blocks the 201 response.
+    $adminEmailResult = sendEnrollmentAdminNotificationEmail($input, $enrollmentId);
 
     // All inserts succeeded – return the IDs of the created records
     respond(201, [
@@ -630,6 +638,9 @@ try {
             'email_sent'          => $emailResult['sent'],
             'email_transport'     => $emailResult['transport'],
             'email_error'         => $emailResult['error'],
+            'admin_email_sent'    => $adminEmailResult['sent'],
+            'admin_email_transport' => $adminEmailResult['transport'],
+            'admin_email_error'   => $adminEmailResult['error'],
         ],
         'error' => '',
     ]);

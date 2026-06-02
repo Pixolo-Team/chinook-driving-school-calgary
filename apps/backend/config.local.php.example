@@ -10,4 +10,6 @@ return [
     'SMTP_TIMEOUT' => '15',
     'SMTP_FROM_EMAIL' => 'no-reply@yourdomain.com',
     'SMTP_FROM_NAME' => 'Chinook Driving School Calgary',
+    // Receives the internal admin copy for each enrollment.
+    'ENROLLMENT_NOTIFICATION_EMAIL' => 'admin@yourdomain.com',
 ];
