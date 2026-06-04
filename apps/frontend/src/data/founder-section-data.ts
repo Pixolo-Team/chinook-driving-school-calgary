@@ -10,6 +10,6 @@ export const founderSectionData = {
   name: "Amit",
   title: "Founder & Chief Instructor",
   // TODO: Update the image source and alt text with the actual founder's image and description.
-  imageSrc: "/images/testimonials/bg-image.png",
+  imageSrc: "/images/testimonials/founder-image.png",
   imageAlt: "Founder of Chinook Driving School Calgary.",
 };
