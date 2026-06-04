@@ -82,11 +82,22 @@ function sendEnrollmentAdminNotificationEmail(array $input, ?string $enrollmentI
         ];
     }
 
+    $ccEmails = getConfiguredEmailList('ENROLLMENT_NOTIFICATION_CC');
+    if ($ccEmails === null) {
+        error_log('Enrollment admin notification email not sent: ENROLLMENT_NOTIFICATION_CC contains an invalid email address');
+        return [
+            'sent' => false,
+            'transport' => 'none',
+            'error' => 'ENROLLMENT_NOTIFICATION_CC contains an invalid email address',
+        ];
+    }
+
     return deliverMailMessage(
         [
             'from_email' => $sender['email'],
             'from_name' => $sender['name'],
             'to_email' => $recipientEmail,
+            'cc_emails' => $ccEmails,
             'subject' => buildEnrollmentAdminNotificationSubject($input, $enrollmentId),
             'html' => buildEnrollmentAdminNotificationHtml($input, $enrollmentId),
             'text' => buildEnrollmentAdminNotificationText($input, $enrollmentId),
@@ -287,12 +298,42 @@ function getMailerSender(): ?array
 }
 
 /**
+ * Read a comma-separated config value as a validated email list.
+ *
+ * @return array<int, string>|null Null means at least one entry was invalid.
+ */
+function getConfiguredEmailList(string $key): ?array
+{
+    $rawValue = sanitizeString(getMailerConfigValue($key));
+    if ($rawValue === null) {
+        return [];
+    }
+
+    $emails = [];
+    foreach (explode(',', $rawValue) as $part) {
+        $email = sanitizeString($part);
+        if ($email === null) {
+            continue;
+        }
+
+        if (!isValidEmail($email)) {
+            return null;
+        }
+
+        $emails[] = $email;
+    }
+
+    return array_values(array_unique($emails));
+}
+
+/**
  * Send an email through SMTP when configured, then fall back to PHP mail().
  *
  * @param array{
  *   from_email: string,
  *   from_name: string,
  *   to_email: string,
+ *   cc_emails?: array<int, string>,
  *   subject: string,
  *   html: string,
  *   text: string,
@@ -336,6 +377,7 @@ function deliverMailMessage(array $message, string $logContext): array
         generateMultipartAlternativeBody((string)$message['html'], (string)$message['text']),
         (string)$message['to_email'],
         (string)$message['subject'],
+        isset($message['cc_emails']) && is_array($message['cc_emails']) ? $message['cc_emails'] : [],
         isset($message['reply_to_email']) ? sanitizeString((string)$message['reply_to_email']) : null,
         isset($message['reply_to_name']) ? sanitizeString((string)$message['reply_to_name']) : null
     );
@@ -642,6 +684,10 @@ function sendHtmlMailViaSmtp(array $smtpConfig, array $message): void
         expectSmtpResponse($socket, [250]);
         writeSmtpCommand($socket, 'RCPT TO:<' . $message['to_email'] . '>');
         expectSmtpResponse($socket, [250, 251]);
+        foreach (($message['cc_emails'] ?? []) as $ccEmail) {
+            writeSmtpCommand($socket, 'RCPT TO:<' . $ccEmail . '>');
+            expectSmtpResponse($socket, [250, 251]);
+        }
         writeSmtpCommand($socket, 'DATA');
         expectSmtpResponse($socket, [354]);
 
@@ -651,6 +697,7 @@ function sendHtmlMailViaSmtp(array $smtpConfig, array $message): void
             generateMultipartAlternativeBody((string)$message['html'], (string)$message['text']),
             (string)$message['to_email'],
             (string)$message['subject'],
+            isset($message['cc_emails']) && is_array($message['cc_emails']) ? $message['cc_emails'] : [],
             isset($message['reply_to_email']) ? (string)$message['reply_to_email'] : null,
             isset($message['reply_to_name']) ? (string)$message['reply_to_name'] : null
         );
@@ -678,6 +725,7 @@ function buildMailMessageParts(
     string $body,
     ?string $toEmail = null,
     ?string $subject = null,
+    array $ccEmails = [],
     ?string $replyToEmail = null,
     ?string $replyToName = null
 ): array {
@@ -691,6 +739,10 @@ function buildMailMessageParts(
 
     if ($toEmail !== null) {
         $headers[] = 'To: ' . $toEmail;
+    }
+
+    if (count($ccEmails) > 0) {
+        $headers[] = 'Cc: ' . implode(', ', $ccEmails);
     }
 
     if ($subject !== null) {

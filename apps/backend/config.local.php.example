@@ -12,4 +12,6 @@ return [
     'SMTP_FROM_NAME' => 'Chinook Driving School Calgary',
     // Receives the internal admin copy for each enrollment.
     'ENROLLMENT_NOTIFICATION_EMAIL' => 'admin@yourdomain.com',
+    // Optional comma-separated CC list for additional recipients.
+    'ENROLLMENT_NOTIFICATION_CC' => 'ops@yourdomain.com, owner@yourdomain.com',
 ];
