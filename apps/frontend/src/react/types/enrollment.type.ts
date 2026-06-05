@@ -9,11 +9,13 @@ export interface EnrollmentPayloadData {
   student_last_name: string;
   student_date_of_birth: string; // YYYY-MM-DD
   student_address: string;
+  student_pickup_dropoff_address?: string | null;
   student_city: string;
   student_state: string;
   student_postal_code: string;
   student_email: string;
   student_mobile_phone_number: string;
+  student_school_attended: string;
 
   license_status: string;
   license_number: string | null;
@@ -104,11 +106,13 @@ export type UserInfoValueData = {
   last_name: string;
   date_of_birth: string;
   address: string;
+  pickup_dropoff_address: string;
   city: string;
   state: string;
   postal_code: string;
   email: string;
   phone: string;
+  school_attended: string;
 };
 
 export type LicenseInformationValueData = {

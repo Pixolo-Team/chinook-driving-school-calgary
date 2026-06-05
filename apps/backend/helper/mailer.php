@@ -14,13 +14,15 @@ declare(strict_types=1);
  * @param array       $input        Validated enrollment payload.
  * @param string|null $enrollmentId Created enrollment UUID.
  *
+ * @param string $deliveryMode Human-readable delivery mode for logging (for example: immediate or deferred).
+ *
  * @return array{sent: bool, transport: string, error: string|null}
  */
-function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = null): array
+function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = null, string $deliveryMode = 'immediate'): array
 {
     $recipientEmail = sanitizeString((string)($input['student_email'] ?? ''));
     if ($recipientEmail === null || !isValidEmail($recipientEmail)) {
-        error_log('Enrollment confirmation email not sent: student email address is missing or invalid');
+        error_log(buildMailLogPrefix('Enrollment confirmation email', $deliveryMode) . ' not sent: student email address is missing or invalid');
         return [
             'sent' => false,
             'transport' => 'none',
@@ -30,7 +32,7 @@ function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = n
 
     $sender = getMailerSender();
     if ($sender === null) {
-        error_log('Enrollment confirmation email not sent: sender email is not configured');
+        error_log(buildMailLogPrefix('Enrollment confirmation email', $deliveryMode) . ' not sent: sender email is not configured');
         return [
             'sent' => false,
             'transport' => 'none',
@@ -47,7 +49,7 @@ function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = n
             'html' => buildEnrollmentConfirmationHtml(),
             'text' => buildEnrollmentConfirmationText(),
         ],
-        'Enrollment confirmation email'
+        buildMailLogPrefix('Enrollment confirmation email', $deliveryMode)
     );
 }
 
@@ -57,14 +59,16 @@ function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = n
  * @param array       $input        Validated enrollment payload.
  * @param string|null $enrollmentId Created enrollment UUID.
  *
+ * @param string $deliveryMode Human-readable delivery mode for logging (for example: immediate or deferred).
+ *
  * @return array{sent: bool, transport: string, error: string|null}
  */
-function sendEnrollmentAdminNotificationEmail(array $input, ?string $enrollmentId = null): array
+function sendEnrollmentAdminNotificationEmail(array $input, ?string $enrollmentId = null, string $deliveryMode = 'immediate'): array
 {
     // Admin notifications use a separate recipient so the student confirmation flow stays unchanged.
     $recipientEmail = sanitizeString(getMailerConfigValue('ENROLLMENT_NOTIFICATION_EMAIL'));
     if ($recipientEmail === null || !isValidEmail($recipientEmail)) {
-        error_log('Enrollment admin notification email not sent: ENROLLMENT_NOTIFICATION_EMAIL is missing or invalid');
+        error_log(buildMailLogPrefix('Enrollment admin notification email', $deliveryMode) . ' not sent: ENROLLMENT_NOTIFICATION_EMAIL is missing or invalid');
         return [
             'sent' => false,
             'transport' => 'none',
@@ -74,7 +78,7 @@ function sendEnrollmentAdminNotificationEmail(array $input, ?string $enrollmentI
 
     $sender = getMailerSender();
     if ($sender === null) {
-        error_log('Enrollment admin notification email not sent: sender email is not configured');
+        error_log(buildMailLogPrefix('Enrollment admin notification email', $deliveryMode) . ' not sent: sender email is not configured');
         return [
             'sent' => false,
             'transport' => 'none',
@@ -84,7 +88,7 @@ function sendEnrollmentAdminNotificationEmail(array $input, ?string $enrollmentI
 
     $ccEmails = getConfiguredEmailList('ENROLLMENT_NOTIFICATION_CC');
     if ($ccEmails === null) {
-        error_log('Enrollment admin notification email not sent: ENROLLMENT_NOTIFICATION_CC contains an invalid email address');
+        error_log(buildMailLogPrefix('Enrollment admin notification email', $deliveryMode) . ' not sent: ENROLLMENT_NOTIFICATION_CC contains an invalid email address');
         return [
             'sent' => false,
             'transport' => 'none',
@@ -104,8 +108,16 @@ function sendEnrollmentAdminNotificationEmail(array $input, ?string $enrollmentI
             'reply_to_email' => sanitizeString((string)($input['student_email'] ?? '')),
             'reply_to_name' => buildStudentFullName($input),
         ],
-        'Enrollment admin notification email'
+        buildMailLogPrefix('Enrollment admin notification email', $deliveryMode)
     );
+}
+
+/**
+ * Build a consistent log prefix for mail delivery attempts.
+ */
+function buildMailLogPrefix(string $mailType, string $deliveryMode = 'immediate'): string
+{
+    return $mailType . ' [' . strtolower(trim($deliveryMode)) . ']';
 }
 
 /**
@@ -166,11 +178,8 @@ function buildEnrollmentConfirmationText(): string
 function buildEnrollmentAdminNotificationSubject(array $input, ?string $enrollmentId = null): string
 {
     $studentName = buildStudentFullName($input);
-    $enrollmentSuffix = $enrollmentId !== null && $enrollmentId !== ''
-        ? ' (' . $enrollmentId . ')'
-        : '';
 
-    return 'New enrollment: ' . $studentName . $enrollmentSuffix;
+    return 'New enrollment: ' . $studentName;
 }
 
 /**
@@ -220,7 +229,7 @@ function buildEnrollmentAdminNotificationHtml(array $input, ?string $enrollmentI
               <h1 style="margin:0 0 16px 0;font-size:24px;line-height:32px;">New enrollment received</h1>
               <p style="margin:0 0 24px 0;font-size:16px;line-height:24px;">A new enrollment has been submitted through the Chinook Driving School Calgary website.</p>'
               . implode('', $htmlSections) .
-            '<p style="margin:24px 0 0 0;font-size:14px;line-height:22px;color:#486581;">Sensitive payment data has been intentionally excluded from this notification.</p>
+            '<p style="margin:24px 0 0 0;font-size:14px;line-height:22px;color:#486581;"></p>
             </td>
           </tr>
         </table>
@@ -367,38 +376,20 @@ function deliverMailMessage(array $message, string $logContext): array
                 'error' => null,
             ];
         } catch (Throwable $throwable) {
-            error_log($logContext . ' failed over SMTP: ' . $throwable->getMessage());
+            $smtpError = $throwable->getMessage();
+            error_log($logContext . ' delivery failed over SMTP: ' . $smtpError);
+            return [
+                'sent' => false,
+                'transport' => 'smtp',
+                'error' => $smtpError,
+            ];
         }
     }
 
-    $mailParts = buildMailMessageParts(
-        (string)$message['from_email'],
-        (string)$message['from_name'],
-        generateMultipartAlternativeBody((string)$message['html'], (string)$message['text']),
-        (string)$message['to_email'],
-        (string)$message['subject'],
-        isset($message['cc_emails']) && is_array($message['cc_emails']) ? $message['cc_emails'] : [],
-        isset($message['reply_to_email']) ? sanitizeString((string)$message['reply_to_email']) : null,
-        isset($message['reply_to_name']) ? sanitizeString((string)$message['reply_to_name']) : null
-    );
-    $headers = $mailParts['headers'];
-    $body = $mailParts['body'];
-
-    $mailSent = mail(
-        (string)$message['to_email'],
-        encodeMimeHeader((string)$message['subject']),
-        $body,
-        implode("\r\n", $headers)
-    );
-
-    if (!$mailSent) {
-        error_log($logContext . ' failed via PHP mail()');
-    }
-
     return [
-        'sent' => $mailSent,
-        'transport' => 'mail',
-        'error' => $mailSent ? null : 'PHP mail() returned false',
+        'sent' => false,
+        'transport' => 'none',
+        'error' => 'SMTP_HOST is not configured',
     ];
 }
 
@@ -418,34 +409,20 @@ function buildEnrollmentAdminSummarySections(array $input, ?string $enrollmentId
             sanitizeString((string)($input['student_postal_code'] ?? '')),
         ]),
     ]));
-    $availabilityDate = sanitizeString((string)($input['availability_date'] ?? ''));
-    $availabilityDays = formatStringList(is_array($input['availability_days_of_week'] ?? null) ? $input['availability_days_of_week'] : []);
-    $availabilityTimeSlots = formatAvailabilityTimeSlots(is_array($input['avilability_time_slots'] ?? null) ? $input['avilability_time_slots'] : []);
     $courseSummaries = formatCourseSummaries($input);
-    $paymentMethod = sanitizeString((string)($input['payment_method'] ?? '')) ?? 'Not provided';
 
     $sections = [
-        // Keep the admin email operational: enough detail to act on, but no raw card data.
         'Enrollment' => [
-            'Enrollment ID' => $enrollmentId !== null && $enrollmentId !== '' ? $enrollmentId : 'Pending',
-            'Student Name' => $studentName,
-            'Session Type' => sanitizeString((string)($input['session_type'] ?? '')) ?? 'Not provided',
+            'Session Type' => formatEnrollmentSessionType($input['session_type'] ?? null),
             'Selected Course(s)' => $courseSummaries,
-            'Amount' => formatCurrencyValue($input['amount'] ?? null),
-            'Payment Method' => $paymentMethod,
         ],
         'Student Details' => [
+            'Student Name' => $studentName,
             'Email' => sanitizeString((string)($input['student_email'] ?? '')) ?? 'Not provided',
             'Phone' => sanitizeString((string)($input['student_mobile_phone_number'] ?? '')) ?? 'Not provided',
-            'Date of Birth' => sanitizeString((string)($input['student_date_of_birth'] ?? '')) ?? 'Not provided',
             'Address' => count($studentAddressParts) > 0 ? implode("\n", $studentAddressParts) : 'Not provided',
-            'License Status' => sanitizeString((string)($input['license_status'] ?? '')) ?? 'Not provided',
-            'Driving Experience' => sanitizeString((string)($input['driving_experience'] ?? '')) ?? 'Not provided',
-        ],
-        'Availability' => [
-            'Preferred Start Date' => $availabilityDate ?? 'Not provided',
-            'Days of Week' => $availabilityDays,
-            'Time Slots' => $availabilityTimeSlots,
+            'Pickup / Drop Off Address' => sanitizeString((string)($input['student_pickup_dropoff_address'] ?? '')) ?? 'Not provided',
+            'School Attended' => sanitizeString((string)($input['student_school_attended'] ?? '')) ?? 'Not provided',
         ],
     ];
 
@@ -495,27 +472,37 @@ function formatCourseSummaries(array $input): string
         }
 
         $courseName = sanitizeString((string)($course['name'] ?? ''));
-        $courseId = sanitizeString((string)($course['id'] ?? ''));
         $price = formatCurrencyValue($course['total_amount'] ?? null);
 
         $summaryParts = [];
         if ($courseName !== null) {
             $summaryParts[] = $courseName;
-        } elseif ($courseId !== null) {
-            $summaryParts[] = 'Course ' . $courseId;
         } else {
             $summaryParts[] = 'Unnamed course';
         }
 
-        if ($courseId !== null && $courseName !== null) {
-            $summaryParts[] = 'ID: ' . $courseId;
-        }
-
-        $summaryParts[] = 'Total: ' . $price;
+        $summaryParts[] = 'Amount: ' . $price;
         $summaries[] = implode(' | ', $summaryParts);
     }
 
     return count($summaries) > 0 ? implode("\n", $summaries) : 'Not provided';
+}
+
+/**
+ * Convert machine-readable session type values into a human-friendly label.
+ */
+function formatEnrollmentSessionType(mixed $sessionType): string
+{
+    if (!is_string($sessionType)) {
+        return 'Not provided';
+    }
+
+    $sanitizedSessionType = sanitizeString($sessionType);
+    if ($sanitizedSessionType === null) {
+        return 'Not provided';
+    }
+
+    return ucwords(str_replace('_', ' ', $sanitizedSessionType));
 }
 
 /**
@@ -730,11 +717,15 @@ function buildMailMessageParts(
     ?string $replyToName = null
 ): array {
     $boundary = 'chinook-' . bin2hex(random_bytes(12));
+    $messageId = buildMessageId($fromEmail);
     $headers = [
+        'Date: ' . gmdate('D, d M Y H:i:s O'),
         'MIME-Version: 1.0',
+        'Message-ID: <' . $messageId . '>',
         'From: ' . formatMailbox($fromEmail, $fromName),
         'Reply-To: ' . formatMailbox($replyToEmail ?? $fromEmail, $replyToName ?? $fromName),
         'Content-Type: multipart/alternative; boundary="' . $boundary . '"',
+        'X-Mailer: Chinook PHP Mailer',
     ];
 
     if ($toEmail !== null) {
@@ -788,6 +779,24 @@ function encodeMimeHeader(string $value): string
 function formatMailbox(string $email, string $name): string
 {
     return encodeMimeHeader($name) . ' <' . $email . '>';
+}
+
+/**
+ * Build a stable-looking Message-ID using the sender domain when possible.
+ */
+function buildMessageId(string $fromEmail): string
+{
+    $domain = 'localhost';
+    $atPosition = strrpos($fromEmail, '@');
+
+    if ($atPosition !== false) {
+        $candidateDomain = substr($fromEmail, $atPosition + 1);
+        if ($candidateDomain !== '') {
+            $domain = $candidateDomain;
+        }
+    }
+
+    return bin2hex(random_bytes(16)) . '@' . $domain;
 }
 
 /**
