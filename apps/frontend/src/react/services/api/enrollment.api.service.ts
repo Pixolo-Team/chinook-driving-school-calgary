@@ -13,7 +13,7 @@ export async function submitEnrollmentRequest(
   // Prepare the API Call
   const config: AxiosRequestConfig = {
     method: "post",
-    url: "https://api.pixoloproductions.com/chinook/calgary/enroll.php",
+    url: "http://127.0.0.1:8000/enroll.php",
     headers: {
       "Content-Type": "application/json",
     },

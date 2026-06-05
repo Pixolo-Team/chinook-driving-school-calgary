@@ -18,9 +18,55 @@ declare(strict_types=1);
  */
 function respond(int $statusCode, array $payload): void
 {
-    http_response_code($statusCode);
-    echo json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    echoJsonResponse($statusCode, $payload);
     exit;
+}
+
+/**
+ * Send a JSON response without terminating execution.
+ *
+ * @param int   $statusCode HTTP status code to send.
+ * @param array $payload    Associative array that will be JSON-encoded as the response body.
+ */
+function echoJsonResponse(int $statusCode, array $payload): void
+{
+    $json = json_encode($payload, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+    if ($json === false) {
+        $json = '{"status":false,"status_code":500,"message":"Failed to encode JSON response","data":null,"error":"JSON encoding failed"}';
+        $statusCode = 500;
+    }
+
+    http_response_code($statusCode);
+
+    if (!headers_sent()) {
+        header('Content-Type: application/json');
+        header('Content-Length: ' . strlen($json));
+        header('Connection: close');
+    }
+
+    echo $json;
+}
+
+/**
+ * Send a JSON response, flush it to the client, and continue executing.
+ *
+ * @param int   $statusCode HTTP status code to send.
+ * @param array $payload    Associative array that will be JSON-encoded as the response body.
+ */
+function flushJsonResponse(int $statusCode, array $payload): void
+{
+    echoJsonResponse($statusCode, $payload);
+
+    if (function_exists('fastcgi_finish_request')) {
+        fastcgi_finish_request();
+        return;
+    }
+
+    while (ob_get_level() > 0) {
+        ob_end_flush();
+    }
+
+    flush();
 }
 
 /**

@@ -81,6 +81,7 @@ requireField($input, 'student_city',                  $errors);
 requireField($input, 'student_postal_code',           $errors);
 requireField($input, 'student_email',                 $errors);
 requireField($input, 'student_mobile_phone_number',   $errors);
+requireField($input, 'student_school_attended',       $errors);
 requireField($input, 'student_date_of_birth',         $errors);
 requireField($input, 'license_status',                $errors);
 requireField($input, 'driving_experience',            $errors);
@@ -450,11 +451,13 @@ $studentRow = [
     'middle_name'           => sanitizeString($input['student_middle_name'] ?? null),
     'last_name'             => sanitizeString($input['student_last_name']),
     'address'               => sanitizeString($input['student_address']),
+    'pickup_dropoff_address'=> sanitizeString($input['student_pickup_dropoff_address'] ?? null),
     'city'                  => sanitizeString($input['student_city']),
     'state'                 => sanitizeString($input['student_state']),
     'postal_code'           => sanitizeString($input['student_postal_code']),
     'email'                 => sanitizeString($input['student_email']),
     'mobile_phone_number'   => normalizePhone($input['student_mobile_phone_number']),
+    'school_attended'       => sanitizeString($input['student_school_attended'] ?? null),
     'parent_full_name'      => sanitizeString($input['parent_full_name'] ?? null),
     'parent_email'          => sanitizeString($input['parent_email'] ?? null),
     'parent_contact_number' => normalizePhone($input['parent_contact_number'] ?? null),
@@ -549,17 +552,6 @@ $enrollmentCourseCount = 0;
 $paymentId      = null;
 $cardInfoId     = null;
 $availabilityId = null;
-$emailResult = [
-    'sent' => false,
-    'transport' => 'none',
-    'error' => null,
-];
-// Track the admin notification separately so enrollment creation stays non-blocking.
-$adminEmailResult = [
-    'sent' => false,
-    'transport' => 'none',
-    'error' => null,
-];
 
 try {
     // Insert the student record first so we have a student_id for downstream rows
@@ -619,12 +611,8 @@ try {
         $availabilityId = (string)$availabilityInsert['data'][0]['id'];
     }
 
-    $emailResult = sendEnrollmentConfirmationEmail($input, $enrollmentId);
-    // The admin copy is attempted after the student mail and never blocks the 201 response.
-    $adminEmailResult = sendEnrollmentAdminNotificationEmail($input, $enrollmentId);
-
-    // All inserts succeeded – return the IDs of the created records
-    respond(201, [
+    // All inserts succeeded, so return the response before attempting email delivery.
+    flushJsonResponse(201, [
         'status' => true,
         'status_code' => 201,
         'message' => 'Enrollment created successfully',
@@ -635,15 +623,26 @@ try {
             'payment_id'          => $paymentId,
             'card_information_id' => $cardInfoId,
             'availability_id'     => $availabilityId,
-            'email_sent'          => $emailResult['sent'],
-            'email_transport'     => $emailResult['transport'],
-            'email_error'         => $emailResult['error'],
-            'admin_email_sent'    => $adminEmailResult['sent'],
-            'admin_email_transport' => $adminEmailResult['transport'],
-            'admin_email_error'   => $adminEmailResult['error'],
+            'email_status'        => 'deferred',
         ],
         'error' => '',
     ]);
+
+    ignore_user_abort(true);
+
+    try {
+        sendEnrollmentConfirmationEmail($input, $enrollmentId, 'deferred');
+    } catch (Throwable $emailThrowable) {
+        error_log('Deferred enrollment confirmation email crashed after response: ' . $emailThrowable->getMessage());
+    }
+
+    try {
+        sendEnrollmentAdminNotificationEmail($input, $enrollmentId, 'deferred');
+    } catch (Throwable $emailThrowable) {
+        error_log('Deferred enrollment admin notification email crashed after response: ' . $emailThrowable->getMessage());
+    }
+
+    exit;
 
 } catch (Throwable $e) {
     // ---------------------------------------------------------------------------
