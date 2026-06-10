@@ -10,7 +10,7 @@ import type { CourseCategoryData, EnrollmentResponseData } from "../../types/enr
 export async function fetchCoursesRequest(): Promise<EnrollmentResponseData<CourseCategoryData[]>> {
   const config: AxiosRequestConfig = {
     method: "get",
-    url: "http://127.0.0.1:8000/courses.php",
+    url: "https://api.pixoloproductions.com/chinook/calgary/courses.php",
     headers: {
       "Content-Type": "application/json",
     },
