@@ -357,39 +357,53 @@ function deliverMailMessage(array $message, string $logContext): array
     $smtpHost = trim((string)(getMailerConfigValue('SMTP_HOST') ?: ''));
 
     if ($smtpHost !== '') {
-        try {
-            sendHtmlMailViaSmtp(
-                [
-                    'host' => $smtpHost,
-                    'port' => (int)(getMailerConfigValue('SMTP_PORT') ?: 587),
-                    'username' => (string)(getMailerConfigValue('SMTP_USER') ?: ''),
-                    'password' => (string)(getMailerConfigValue('SMTP_PASS') ?: ''),
-                    'secure' => strtolower(trim((string)(getMailerConfigValue('SMTP_SECURE') ?: 'tls'))),
-                    'timeout' => (int)(getMailerConfigValue('SMTP_TIMEOUT') ?: 15),
-                ],
-                $message
-            );
+        sendHtmlMailViaSmtp(
+            [
+                'host' => $smtpHost,
+                'port' => (int)(getMailerConfigValue('SMTP_PORT') ?: 587),
+                'username' => (string)(getMailerConfigValue('SMTP_USER') ?: ''),
+                'password' => (string)(getMailerConfigValue('SMTP_PASS') ?: ''),
+                'secure' => strtolower(trim((string)(getMailerConfigValue('SMTP_SECURE') ?: 'tls'))),
+                'timeout' => (int)(getMailerConfigValue('SMTP_TIMEOUT') ?: 15),
+            ],
+            $message
+        );
 
-            return [
-                'sent' => true,
-                'transport' => 'smtp',
-                'error' => null,
-            ];
-        } catch (Throwable $throwable) {
-            $smtpError = $throwable->getMessage();
-            error_log($logContext . ' delivery failed over SMTP: ' . $smtpError);
-            return [
-                'sent' => false,
-                'transport' => 'smtp',
-                'error' => $smtpError,
-            ];
-        }
+        return [
+            'sent' => true,
+            'transport' => 'smtp',
+            'error' => null,
+        ];
+    }
+
+    $mailParts = buildMailMessageParts(
+        (string)$message['from_email'],
+        (string)$message['from_name'],
+        generateMultipartAlternativeBody((string)$message['html'], (string)$message['text']),
+        (string)$message['to_email'],
+        (string)$message['subject'],
+        isset($message['cc_emails']) && is_array($message['cc_emails']) ? $message['cc_emails'] : [],
+        isset($message['reply_to_email']) ? sanitizeString((string)$message['reply_to_email']) : null,
+        isset($message['reply_to_name']) ? sanitizeString((string)$message['reply_to_name']) : null
+    );
+    $headers = $mailParts['headers'];
+    $body = $mailParts['body'];
+
+    $mailSent = mail(
+        (string)$message['to_email'],
+        encodeMimeHeader((string)$message['subject']),
+        $body,
+        implode("\r\n", $headers)
+    );
+
+    if (!$mailSent) {
+        error_log($logContext . ' failed via PHP mail()');
     }
 
     return [
-        'sent' => false,
-        'transport' => 'none',
-        'error' => 'SMTP_HOST is not configured',
+        'sent' => $mailSent,
+        'transport' => 'mail',
+        'error' => $mailSent ? null : 'PHP mail() returned false',
     ];
 }
 

@@ -611,8 +611,24 @@ try {
         $availabilityId = (string)$availabilityInsert['data'][0]['id'];
     }
 
-    // All inserts succeeded, so return the response before attempting email delivery.
-    flushJsonResponse(201, [
+    $emailResult = ['sent' => false, 'transport' => 'none', 'error' => 'Mail not sent'];
+    $adminEmailResult = ['sent' => false, 'transport' => 'none', 'error' => 'Mail not sent'];
+
+    try {
+        $emailResult = sendEnrollmentConfirmationEmail($input, $enrollmentId);
+    } catch (Throwable $mailException) {
+        error_log('Enrollment ' . $enrollmentId . ': student confirmation email failed: ' . $mailException->getMessage());
+        $emailResult = ['sent' => false, 'transport' => 'none', 'error' => $mailException->getMessage()];
+    }
+
+    try {
+        $adminEmailResult = sendEnrollmentAdminNotificationEmail($input, $enrollmentId);
+    } catch (Throwable $mailException) {
+        error_log('Enrollment ' . $enrollmentId . ': admin notification email failed: ' . $mailException->getMessage());
+        $adminEmailResult = ['sent' => false, 'transport' => 'none', 'error' => $mailException->getMessage()];
+    }
+
+    respond(201, [
         'status' => true,
         'status_code' => 201,
         'message' => 'Enrollment created successfully',
@@ -623,26 +639,15 @@ try {
             'payment_id'          => $paymentId,
             'card_information_id' => $cardInfoId,
             'availability_id'     => $availabilityId,
-            'email_status'        => 'deferred',
+            'email_sent'          => $emailResult['sent'],
+            'email_transport'     => $emailResult['transport'],
+            'email_error'         => $emailResult['error'],
+            'admin_email_sent'    => $adminEmailResult['sent'],
+            'admin_email_transport' => $adminEmailResult['transport'],
+            'admin_email_error'   => $adminEmailResult['error'],
         ],
         'error' => '',
     ]);
-
-    ignore_user_abort(true);
-
-    try {
-        sendEnrollmentConfirmationEmail($input, $enrollmentId, 'deferred');
-    } catch (Throwable $emailThrowable) {
-        error_log('Deferred enrollment confirmation email crashed after response: ' . $emailThrowable->getMessage());
-    }
-
-    try {
-        sendEnrollmentAdminNotificationEmail($input, $enrollmentId, 'deferred');
-    } catch (Throwable $emailThrowable) {
-        error_log('Deferred enrollment admin notification email crashed after response: ' . $emailThrowable->getMessage());
-    }
-
-    exit;
 
 } catch (Throwable $e) {
     // ---------------------------------------------------------------------------
