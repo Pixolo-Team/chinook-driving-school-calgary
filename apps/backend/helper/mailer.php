@@ -48,6 +48,8 @@ function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = n
     $textBody = buildEnrollmentConfirmationText();
 
     $smtpHost = trim((string)(getMailerConfigValue('SMTP_HOST') ?: ''));
+    $smtpError = null;
+
     if ($smtpHost !== '') {
         try {
             sendHtmlMailViaSmtp(
@@ -75,7 +77,8 @@ function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = n
                 'error' => null,
             ];
         } catch (Throwable $throwable) {
-            error_log('Enrollment confirmation email failed over SMTP: ' . $throwable->getMessage());
+            $smtpError = $throwable->getMessage();
+            error_log('Enrollment confirmation email failed over SMTP: ' . $smtpError);
         }
     }
 
@@ -93,7 +96,11 @@ function sendEnrollmentConfirmationEmail(array $input, ?string $enrollmentId = n
     return [
         'sent' => $mailSent,
         'transport' => 'mail',
-        'error' => $mailSent ? null : 'PHP mail() returned false',
+        'error' => $mailSent
+            ? null
+            : ($smtpError === null
+                ? 'PHP mail() returned false'
+                : 'SMTP failed: ' . $smtpError . '; PHP mail() also returned false'),
     ];
 }
 
