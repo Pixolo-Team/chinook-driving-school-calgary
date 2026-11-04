@@ -175,7 +175,9 @@ export default function SelectCourse({
   }, [selectedCourseCategoryInfo]);
   const isDrivingCoursesCategory = activeCourseSelectionCategory === "driving";
   const requiresSessionType = hasSelectedDrivingCourse;
+  // Must stay visible whenever a session type is required, even while another category panel is open.
   const shouldShowSessionType =
+    requiresSessionType ||
     activeCourseSelectionCategory === "driving" ||
     (activeCourseSelectionCategory === "car_rental" && selectedDrivingCourses.length > 0);
 
@@ -333,6 +335,43 @@ export default function SelectCourse({
     selectedCarRentalCourses.length,
     selectedCourseIds,
     selectedDrivingCourses.length,
+  ]);
+
+  /** Explains why the open panel is locked and how to switch to it. */
+  const categorySwitchHint: string | null = useMemo(() => {
+    const blockingOtherCategoryCourse =
+      activeCourseSelectionCategory === "driving"
+        ? selectedBrushUpCourses[0]
+        : activeCourseSelectionCategory === "brush_up"
+          ? selectedDrivingCourses[0]
+          : undefined;
+
+    if (blockingOtherCategoryCourse?.name) {
+      const otherCategoryLabel =
+        activeCourseSelectionCategory === "driving" ? "Brush Up Lessons" : "Driving Courses";
+
+      return `You already selected "${blockingOtherCategoryCourse.name}". Deselect it under ${otherCategoryLabel} to choose from this list.`;
+    }
+
+    const selectedSameCategoryCourse =
+      activeCourseSelectionCategory === "driving"
+        ? selectedDrivingCourses[0]
+        : activeCourseSelectionCategory === "brush_up"
+          ? selectedBrushUpCourses[0]
+          : activeCourseSelectionCategory === "car_rental"
+            ? selectedCarRentalCourses[0]
+            : undefined;
+
+    if (selectedSameCategoryCourse?.name) {
+      return `Only one option can be selected here. Deselect "${selectedSameCategoryCourse.name}" to choose a different one.`;
+    }
+
+    return null;
+  }, [
+    activeCourseSelectionCategory,
+    selectedBrushUpCourses,
+    selectedCarRentalCourses,
+    selectedDrivingCourses,
   ]);
 
   const markFieldAsTouched = (fieldKey: keyof SelectCourseTouchedFieldsData): void => {
@@ -584,6 +623,10 @@ export default function SelectCourse({
             <p className="text-n-600 text-sm leading-5 md:text-base">
               Choose one driving lesson package or one brush up lesson. Car rental can be added to either of those, or booked on its own.
             </p>
+
+            {categorySwitchHint ? (
+              <p className="text-n-700 text-sm leading-5 font-medium">{categorySwitchHint}</p>
+            ) : null}
 
             <div className="grid w-full grid-cols-1 gap-[10px] md:grid-cols-3 md:gap-4">
               {availableCourseOptions.map((courseOption) => {
