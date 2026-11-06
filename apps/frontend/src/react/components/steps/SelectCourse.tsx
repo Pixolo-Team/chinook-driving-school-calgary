@@ -587,7 +587,6 @@ export default function SelectCourse({
             options={SESSION_TYPE_OPTIONS}
             helperText=""
             isError={shouldShowSessionTypeError}
-            errorMessage={sessionTypeError ?? undefined}
             containerClassName="max-w-none gap-[10px]"
             labelClassName="text-n-800 text-base leading-5 font-semibold md:text-lg"
             showTriggerLabel={false}
@@ -685,6 +684,10 @@ export default function SelectCourse({
 
             {shouldShowCourseError ? (
               <p className="text-sm leading-5 font-normal text-red-500">{courseError}</p>
+            ) : null}
+
+            {shouldShowSessionTypeError ? (
+              <p className="text-sm leading-5 font-normal text-red-500">{sessionTypeError}</p>
             ) : null}
           </div>
         </div>
