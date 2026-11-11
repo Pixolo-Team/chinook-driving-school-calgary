@@ -389,21 +389,33 @@ function deliverMailMessage(array $message, string $logContext): array
     $headers = $mailParts['headers'];
     $body = $mailParts['body'];
 
-    $mailSent = mail(
-        (string)$message['to_email'],
-        encodeMimeHeader((string)$message['subject']),
-        $body,
-        implode("\r\n", $headers)
-    );
+    // Capture mail() warnings instead of letting them print into the HTTP
+    // response body, which would corrupt the JSON the frontend parses.
+    $mailWarning = null;
+    set_error_handler(static function (int $errno, string $errstr) use (&$mailWarning): bool {
+        $mailWarning = $errstr;
+        return true;
+    });
+
+    try {
+        $mailSent = mail(
+            (string)$message['to_email'],
+            encodeMimeHeader((string)$message['subject']),
+            $body,
+            implode("\r\n", $headers)
+        );
+    } finally {
+        restore_error_handler();
+    }
 
     if (!$mailSent) {
-        error_log($logContext . ' failed via PHP mail()');
+        error_log($logContext . ' failed via PHP mail()' . ($mailWarning !== null ? ': ' . $mailWarning : ''));
     }
 
     return [
         'sent' => $mailSent,
         'transport' => 'mail',
-        'error' => $mailSent ? null : 'PHP mail() returned false',
+        'error' => $mailSent ? null : ($mailWarning ?? 'PHP mail() returned false'),
     ];
 }
 
