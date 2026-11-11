@@ -131,11 +131,13 @@ export default function EnrollmentForm({
       last_name: "",
       date_of_birth: "",
       address: "",
+      pickup_dropoff_address: "",
       city: "",
       state: "",
       postal_code: "",
       email: "",
       phone: "",
+      school_attended: "",
     },
     license_information: {
       status: "none",

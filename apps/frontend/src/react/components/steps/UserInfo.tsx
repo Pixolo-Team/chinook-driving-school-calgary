@@ -33,6 +33,7 @@ type UserInfoTouchedFieldsData = {
   date_of_birth: boolean;
   email: boolean;
   phone: boolean;
+  school_attended: boolean;
 };
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,6 +62,7 @@ export default function UserInfo({
     date_of_birth: false,
     email: false,
     phone: false,
+    school_attended: false,
   });
   const todayDateValue: string = getLocalTodayDateValue();
 
@@ -79,6 +81,7 @@ export default function UserInfo({
       date_of_birth: true,
       email: true,
       phone: true,
+      school_attended: true,
     });
   };
 
@@ -123,6 +126,9 @@ export default function UserInfo({
     return null;
   };
 
+  const getSchoolAttendedError = (): string | null =>
+    value.school_attended.trim().length > 0 ? null : "Please enter your school attended.";
+
   /**
    * Returns the current completion state for the User information step.
    */
@@ -131,7 +137,8 @@ export default function UserInfo({
       !getLastNameError() &&
       !getDateOfBirthError() &&
       !getEmailError() &&
-      !getPhoneError()
+      !getPhoneError() &&
+      !getSchoolAttendedError()
       ? "completed"
       : "pending";
   };
@@ -151,11 +158,14 @@ export default function UserInfo({
   const dateOfBirthError = getDateOfBirthError();
   const emailError = getEmailError();
   const phoneError = getPhoneError();
+  const schoolAttendedError = getSchoolAttendedError();
   const shouldShowFirstNameError = touchedFields.first_name && Boolean(firstNameError);
   const shouldShowLastNameError = touchedFields.last_name && Boolean(lastNameError);
   const shouldShowDateOfBirthError = touchedFields.date_of_birth && Boolean(dateOfBirthError);
   const shouldShowEmailError = touchedFields.email && Boolean(emailError);
   const shouldShowPhoneError = touchedFields.phone && Boolean(phoneError);
+  const shouldShowSchoolAttendedError =
+    touchedFields.school_attended && Boolean(schoolAttendedError);
 
   // Use Effects
   useEffect(() => {
@@ -265,6 +275,17 @@ export default function UserInfo({
           containerClassName="w-full"
         />
 
+        {/* Pickup / Drop Off Address */}
+        <Input
+          type="text"
+          label="Pickup / Drop Off Address"
+          value={value.pickup_dropoff_address}
+          onChange={(event) => handleFieldChange("pickup_dropoff_address", event.target.value)}
+          placeholder="Street, Building, Landmark"
+          caption="Add the address your instructor should use for pickup and drop off if different from your home address."
+          containerClassName="w-full"
+        />
+
         {/* City */}
         <Input
           type="text"
@@ -286,6 +307,21 @@ export default function UserInfo({
           onChange={(event) => handleFieldChange("postal_code", event.target.value)}
           placeholder="e.g. T2X 1A1"
           caption="Enter a valid postal code for your area (used to assign nearby instructors)."
+          containerClassName="w-full"
+        />
+
+        {/* School Attended */}
+        <Input
+          type="text"
+          label="School Attended"
+          required
+          value={value.school_attended}
+          onChange={(event) => handleFieldChange("school_attended", event.target.value)}
+          onBlur={() => markFieldAsTouched("school_attended")}
+          placeholder="Enter School Name"
+          caption="Add the school you currently attend or most recently attended."
+          isError={shouldShowSchoolAttendedError}
+          errorMessage={schoolAttendedError ?? undefined}
           containerClassName="w-full"
         />
 

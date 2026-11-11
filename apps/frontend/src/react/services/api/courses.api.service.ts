@@ -7,9 +7,7 @@ import type { CourseCategoryData, EnrollmentResponseData } from "../../types/enr
 /**
  * Fetches the available course catalog from the Chinook Calgary courses API.
  */
-export async function fetchCoursesRequest(): Promise<
-  EnrollmentResponseData<CourseCategoryData[]>
-> {
+export async function fetchCoursesRequest(): Promise<EnrollmentResponseData<CourseCategoryData[]>> {
   const config: AxiosRequestConfig = {
     method: "get",
     url: "https://api.pixoloproductions.com/chinook/calgary/courses.php",

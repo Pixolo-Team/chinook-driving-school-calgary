@@ -196,6 +196,22 @@ export default function ReviewResponse({
                   {[value.user_info.address, value.user_info.city, value.user_info.state].filter(Boolean).join(", ") || "Not provided"}
                 </p>
               </div>
+              <div className="flex flex-col gap-1">
+                <p className="text-n-500 text-xs leading-4 font-semibold tracking-[0.6px] uppercase">
+                  Pickup / Drop Off Address
+                </p>
+                <p className="text-n-800 text-base leading-5 font-medium">
+                  {value.user_info.pickup_dropoff_address || "Not provided"}
+                </p>
+              </div>
+              <div className="flex flex-col gap-1">
+                <p className="text-n-500 text-xs leading-4 font-semibold tracking-[0.6px] uppercase">
+                  School Attended
+                </p>
+                <p className="text-n-800 text-base leading-5 font-medium">
+                  {value.user_info.school_attended || "Not provided"}
+                </p>
+              </div>
             </div>
           </div>
 

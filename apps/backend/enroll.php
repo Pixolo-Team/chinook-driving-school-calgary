@@ -81,6 +81,7 @@ requireField($input, 'student_city',                  $errors);
 requireField($input, 'student_postal_code',           $errors);
 requireField($input, 'student_email',                 $errors);
 requireField($input, 'student_mobile_phone_number',   $errors);
+requireField($input, 'student_school_attended',       $errors);
 requireField($input, 'student_date_of_birth',         $errors);
 requireField($input, 'license_status',                $errors);
 requireField($input, 'driving_experience',            $errors);
@@ -450,11 +451,13 @@ $studentRow = [
     'middle_name'           => sanitizeString($input['student_middle_name'] ?? null),
     'last_name'             => sanitizeString($input['student_last_name']),
     'address'               => sanitizeString($input['student_address']),
+    'pickup_dropoff_address'=> sanitizeString($input['student_pickup_dropoff_address'] ?? null),
     'city'                  => sanitizeString($input['student_city']),
     'state'                 => sanitizeString($input['student_state']),
     'postal_code'           => sanitizeString($input['student_postal_code']),
     'email'                 => sanitizeString($input['student_email']),
     'mobile_phone_number'   => normalizePhone($input['student_mobile_phone_number']),
+    'school_attended'       => sanitizeString($input['student_school_attended'] ?? null),
     'parent_full_name'      => sanitizeString($input['parent_full_name'] ?? null),
     'parent_email'          => sanitizeString($input['parent_email'] ?? null),
     'parent_contact_number' => normalizePhone($input['parent_contact_number'] ?? null),
@@ -549,11 +552,6 @@ $enrollmentCourseCount = 0;
 $paymentId      = null;
 $cardInfoId     = null;
 $availabilityId = null;
-$emailResult = [
-    'sent' => false,
-    'transport' => 'none',
-    'error' => null,
-];
 
 try {
     // Insert the student record first so we have a student_id for downstream rows
@@ -613,9 +611,23 @@ try {
         $availabilityId = (string)$availabilityInsert['data'][0]['id'];
     }
 
-    $emailResult = sendEnrollmentConfirmationEmail($input, $enrollmentId);
+    $emailResult = ['sent' => false, 'transport' => 'none', 'error' => 'Mail not sent'];
+    $adminEmailResult = ['sent' => false, 'transport' => 'none', 'error' => 'Mail not sent'];
 
-    // All inserts succeeded – return the IDs of the created records
+    try {
+        $emailResult = sendEnrollmentConfirmationEmail($input, $enrollmentId);
+    } catch (Throwable $mailException) {
+        error_log('Enrollment ' . $enrollmentId . ': student confirmation email failed: ' . $mailException->getMessage());
+        $emailResult = ['sent' => false, 'transport' => 'none', 'error' => $mailException->getMessage()];
+    }
+
+    try {
+        $adminEmailResult = sendEnrollmentAdminNotificationEmail($input, $enrollmentId);
+    } catch (Throwable $mailException) {
+        error_log('Enrollment ' . $enrollmentId . ': admin notification email failed: ' . $mailException->getMessage());
+        $adminEmailResult = ['sent' => false, 'transport' => 'none', 'error' => $mailException->getMessage()];
+    }
+
     respond(201, [
         'status' => true,
         'status_code' => 201,
@@ -630,6 +642,9 @@ try {
             'email_sent'          => $emailResult['sent'],
             'email_transport'     => $emailResult['transport'],
             'email_error'         => $emailResult['error'],
+            'admin_email_sent'    => $adminEmailResult['sent'],
+            'admin_email_transport' => $adminEmailResult['transport'],
+            'admin_email_error'   => $adminEmailResult['error'],
         ],
         'error' => '',
     ]);
