@@ -1,17 +1,37 @@
 <?php
 declare(strict_types=1);
 
+/**
+ * Template matching the config.local.php currently deployed on the server
+ * (api.pixoloproductions.com/chinook/calgary/config.local.php).
+ *
+ * Copy to config.local.php (gitignored) and fill in the two secrets:
+ *   - SMTP_PASS            Brevo SMTP key (app.brevo.com -> Settings -> SMTP & API)
+ *   - SUPABASE_SERVICE_ROLE_KEY  (note: not currently read by the code - see below)
+ */
+
 return [
-    'SMTP_HOST' => 'smtp.yourmailserver.com',
-    'SMTP_PORT' => '587',
-    'SMTP_USER' => 'your-smtp-username',
-    'SMTP_PASS' => 'your-smtp-password',
-    'SMTP_SECURE' => 'tls',
-    'SMTP_TIMEOUT' => '15',
-    'SMTP_FROM_EMAIL' => 'no-reply@yourdomain.com',
-    'SMTP_FROM_NAME' => 'Chinook Driving School Calgary',
-    // Receives the internal admin copy for each enrollment.
-    'ENROLLMENT_NOTIFICATION_EMAIL' => 'admin@yourdomain.com',
-    // Optional comma-separated CC list for additional recipients.
-    'ENROLLMENT_NOTIFICATION_CC' => 'ops@yourdomain.com, owner@yourdomain.com',
+    // Supabase REST credentials. Read by helper/supabase.php, so a deploy
+    // MUST provide these (previously they were hardcoded in every endpoint).
+    'SUPABASE_URL'              => 'https://rwosruoldgimytqwdkwg.supabase.co',
+    'SUPABASE_SERVICE_ROLE_KEY' => 'PASTE_SUPABASE_SERVICE_ROLE_KEY_HERE',
+
+    // Outbound mail - Brevo SMTP relay. This is what delivers both the student
+    // confirmation and the admin notification for every enrollment.
+    'SMTP_HOST'     => 'smtp-relay.brevo.com',
+    'SMTP_PORT'     => '587',
+    'SMTP_USER'     => 'b16eee001@smtp-brevo.com',
+    'SMTP_PASS'     => 'PASTE_BREVO_SMTP_KEY_HERE',
+    'SMTP_SECURE'   => 'tls',
+    'SMTP_TIMEOUT'  => '10',
+    'SMTP_FROM_EMAIL' => 'email@chinookdrivingschoolcalgary.com',
+    'SMTP_FROM_NAME'  => 'Chinook Driving School Calgary',
+
+    // Internal copy of every enrollment.
+    'ENROLLMENT_NOTIFICATION_EMAIL' => 'chinookdriving@gmail.com',
+    'ENROLLMENT_NOTIFICATION_CC'    => 'jyoti.pandey@pixolotechnologies.com',
+
+    // Notification recipients for contact / inquiry submissions.
+    'INQUIRY_NOTIFICATION_EMAIL'  => 'email@chinookdrivingschoolcalgary.com',
+    'CONTACT_NOTIFICATION_EMAIL'  => 'email@chinookdrivingschoolcalgary.com',
 ];

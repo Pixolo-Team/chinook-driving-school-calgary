@@ -1,28 +1,3 @@
-interface SupabaseResult<T> {
-  data: T | null;
-  ok: boolean;
-}
-
-interface CourseTypeRow {
-  description: string | null;
-  id: string;
-  image: string | null;
-  name: string;
-}
-
-interface CourseRow {
-  features?: string[] | null;
-  course_price?: number | string | null;
-  course_type_id: string;
-  hours_in_car?: number | string | null;
-  hours_in_classroom?: number | string | null;
-  id: string;
-  image?: string | null;
-  name: string;
-  tax_amount?: number | string | null;
-  total_amount?: number | string | null;
-}
-
 export interface CourseFeature {
   title: string;
 }
@@ -47,78 +22,64 @@ export interface CourseGroup {
   name: string;
 }
 
-const SUPABASE_URL = "https://rwosruoldgimytqwdkwg.supabase.co";
-const SUPABASE_SERVICE_ROLE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3b3NydW9sZGdpbXl0cXdka3dnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDgzNjI2MSwiZXhwIjoyMDkwNDEyMjYxfQ.Cy9CHcQhqM1_fgPsIofIVS8ivTn50LSBEola2OgADR0";
+// Served by the PHP backend so the Supabase service-role key never appears in
+// frontend source (direct Supabase calls shipped that key to the browser).
+const COURSES_API_URL = "https://api.pixoloproductions.com/chinook/calgary/courses.php";
 
-async function supabaseSelect<T>(table: string): Promise<SupabaseResult<T>> {
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}?select=*`, {
+interface CourseApiRow {
+  course_price?: number | string | null;
+  features?: Array<{ title?: string }> | null;
+  hours_in_car?: number | string | null;
+  hours_in_classroom?: number | string | null;
+  id: string;
+  image?: string | null;
+  name: string;
+  tax_amount?: number | string | null;
+  total_amount?: number | string | null;
+}
+
+interface CourseCategoryApiRow {
+  courses?: CourseApiRow[] | null;
+  description: string | null;
+  id: string;
+  image: string | null;
+  name: string;
+}
+
+interface CoursesApiResponse {
+  data?: CourseCategoryApiRow[] | null;
+  status?: boolean;
+}
+
+/**
+ * Fetches the full course catalog from the Chinook Calgary courses API.
+ *
+ * @throws When the request fails or the payload is malformed, so callers can
+ * fall back to static content instead of rendering a half-empty section.
+ */
+export async function getCourseGroups(): Promise<CourseGroup[]> {
+  const response = await fetch(COURSES_API_URL, {
     headers: {
-      apikey: SUPABASE_SERVICE_ROLE_KEY,
-      Authorization: `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
       "Content-Type": "application/json",
     },
   });
 
   if (!response.ok) {
-    return {
-      ok: false,
-      data: null,
-    };
+    throw new Error(`Course catalog request failed with status ${response.status}.`);
   }
 
-  return {
-    ok: true,
-    data: await response.json() as T,
-  };
-}
+  const payload = (await response.json()) as CoursesApiResponse;
 
-export async function getCourseGroups(): Promise<CourseGroup[]> {
-  const [courseTypesResult, coursesResult] = await Promise.all([
-    supabaseSelect<CourseTypeRow[]>("course_types"),
-    supabaseSelect<CourseRow[]>("courses"),
-  ]);
-
-  if (!courseTypesResult.ok || !coursesResult.ok || !courseTypesResult.data || !coursesResult.data) {
-    throw new Error("Failed to fetch course data from Supabase.");
+  if (payload.status !== true || !Array.isArray(payload.data)) {
+    throw new Error("Course catalog response did not contain any groups.");
   }
 
-  const courseGroupMap: Record<string, CourseGroup> = {};
-
-  const COURSE_ORDER = [
-  "Basic Course",
-  "Premium Course",
-  "Ultimate Course",
-  "Full GDL Course",
-  ];
-
-  function sortCourses(courses: Course[]) {
-  return courses.sort((a, b) => {
-      const aIndex = COURSE_ORDER.indexOf(a.name);
-      const bIndex = COURSE_ORDER.indexOf(b.name);
-
-      return (aIndex === -1 ? 999 : aIndex) - (bIndex === -1 ? 999 : bIndex);
-    });
-  }
-
-  courseTypesResult.data.forEach((courseType) => {
-    courseGroupMap[courseType.id] = {
-      id: courseType.id,
-      name: courseType.name,
-      description: courseType.description,
-      image: courseType.image,
-      courses: [],
-    };
-  });
-
-  coursesResult.data.forEach((course) => {
-    const group = courseGroupMap[course.course_type_id];
-
-    if (!group) {
-      return;
-    }
-
-    group.courses.push({
+  return payload.data.map((category) => ({
+    id: category.id,
+    name: category.name,
+    description: category.description,
+    image: category.image,
+    courses: (category.courses ?? []).map((course) => ({
       id: course.id,
       name: course.name,
       course_price: course.course_price,
@@ -127,14 +88,9 @@ export async function getCourseGroups(): Promise<CourseGroup[]> {
       hours_in_car: course.hours_in_car,
       hours_in_classroom: course.hours_in_classroom,
       image: course.image,
-      features: (course.features || []).map((feature) => ({
-        title: feature,
-      })),
-    });
-  });
-
-  return Object.values(courseGroupMap).map((group) => ({
-  ...group,
-  courses: sortCourses(group.courses),
+      features: (course.features ?? []).flatMap((feature) =>
+        feature?.title ? [{ title: feature.title }] : [],
+      ),
+    })),
   }));
 }

@@ -42,12 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 require_once __DIR__ . '/helper/utils.php';
 require_once __DIR__ . '/helper/supabase.php';
 
-// ---------------------------------------------------------------------------
-// Configuration: Supabase credentials
-// ---------------------------------------------------------------------------
-
-const SUPABASE_URL              = 'https://rwosruoldgimytqwdkwg.supabase.co';
-const SUPABASE_SERVICE_ROLE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ3b3NydW9sZGdpbXl0cXdka3dnIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NDgzNjI2MSwiZXhwIjoyMDkwNDEyMjYxfQ.Cy9CHcQhqM1_fgPsIofIVS8ivTn50LSBEola2OgADR0';
+// Supabase credentials are resolved from config by helper/supabase.php.
 
 // ---------------------------------------------------------------------------
 // Step 1: Reject non-GET requests early
