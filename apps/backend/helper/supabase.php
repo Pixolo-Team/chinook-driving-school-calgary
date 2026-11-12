@@ -7,9 +7,19 @@ declare(strict_types=1);
  * Provides low-level HTTP request handling (via cURL) as well as convenience
  * wrappers for inserting and deleting rows through the Supabase PostgREST API.
  *
- * Depends on the SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY constants being
- * defined before this file is included.
+ * Resolves SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY from config (see
+ * config.php / config.local.php) so no secret lives in the repository.
  */
+
+require_once __DIR__ . '/../config.php';
+
+if (!defined('SUPABASE_URL')) {
+    define('SUPABASE_URL', (string) chinookConfig('SUPABASE_URL', 'https://rwosruoldgimytqwdkwg.supabase.co'));
+}
+
+if (!defined('SUPABASE_SERVICE_ROLE_KEY')) {
+    define('SUPABASE_SERVICE_ROLE_KEY', (string) chinookConfig('SUPABASE_SERVICE_ROLE_KEY', ''));
+}
 
 /**
  * Execute an HTTP request against the Supabase REST API.
@@ -37,6 +47,18 @@ function supabaseRequest(
     ?array $body = null,
     array $extraHeaders = []
 ): array {
+    // Fail fast with a clear message when the service-role key is not configured,
+    // instead of sending unauthenticated requests that fail with a vague 401.
+    if (SUPABASE_SERVICE_ROLE_KEY === '') {
+        return [
+            'ok'     => false,
+            'status' => 500,
+            'data'   => null,
+            'raw'    => null,
+            'error'  => 'SUPABASE_SERVICE_ROLE_KEY is not configured - set it in config.local.php',
+        ];
+    }
+
     // Build the full endpoint URL
     $url = rtrim(SUPABASE_URL, '/') . $endpoint;
 
