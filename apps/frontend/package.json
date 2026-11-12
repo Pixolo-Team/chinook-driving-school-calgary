@@ -24,7 +24,6 @@
     "embla-carousel": "^8.6.0",
     "framer-motion": "^12.38.0",
     "motion": "^12.38.0",
-    "pip": "^0.0.1",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "tailwindcss": "^4.2.1"
